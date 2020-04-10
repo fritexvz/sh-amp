@@ -1,1 +1,1 @@
-# sh-stack-lite
+# sh-amp
