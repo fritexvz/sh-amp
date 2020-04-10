@@ -45,7 +45,7 @@ hostnamectl set-hostname "$HOSTNAME"
 
 printf "\n\nSetting up hosts ... \n"
 cp /etc/hosts /etc/hosts.bak
-sed -i -e "1 /a\127\.0\.1\.1 $HOSTNAME" /etc/hosts
+sed -i "1 a\127.0.1.1 $HOSTNAME" /etc/hosts
 
 # This will cause the set+update hostname module to not operate (if true)
 printf "\n\nSetting up cloud.cfg ... \n"
