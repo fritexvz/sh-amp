@@ -43,4 +43,4 @@ done
 # Start Installing
 SCRIPTPATH="$OS_ID/$OS_VERSION_ID"
 
-./$SCRIPTPATH/install.sh
+./$SCRIPTPATH/amp.sh

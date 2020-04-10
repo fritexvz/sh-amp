@@ -1,5 +1,8 @@
 # amp   
 
+# 0.0.5
+1. fixed: file path
+
 # 0.0.4
 1. change select os(operating system) typed syntax
 2. change file name
