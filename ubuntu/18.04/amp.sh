@@ -6,8 +6,8 @@
 # Usage
 # git clone https://github.com/w3src/sh-amp.git
 # cd sh-amp
-# chmod +x ./install.sh
-# ./install.sh
+# chmod +x ./amp.sh
+# ./amp.sh
 
 # check to see if script is being run as root
 if [ "$EUID" -ne 0 ]; then
