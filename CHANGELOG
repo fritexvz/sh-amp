@@ -1,0 +1,14 @@
+# amp   
+
+# 0.0.3
+1. change directory structure
+2. add install.sh
+3. add update.sh
+4. add CHANGELOG
+5. edit typo
+
+# 0.0.2
+fixed: sed: -e expression #1, char 3: unknown command: `/'
+
+# 0.0.1
+initial release
