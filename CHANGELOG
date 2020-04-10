@@ -1,5 +1,9 @@
 # amp   
 
+# 0.0.4
+1. change select os(operating system) typed syntax
+2. change file name
+
 # 0.0.3
 1. change directory structure
 2. add install.sh
