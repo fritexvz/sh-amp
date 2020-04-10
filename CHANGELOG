@@ -1,21 +1,15 @@
 # amp   
 
-# 0.0.5
+# 0.0.12
 1. fixed: file path
-
-# 0.0.4
-1. change select os(operating system) typed syntax
-2. change file name
-
-# 0.0.3
-1. change directory structure
-2. add install.sh
-3. add update.sh
-4. add CHANGELOG
-5. edit typo
-
-# 0.0.2
-fixed: sed: -e expression #1, char 3: unknown command: `/'
+2. change select os(operating system) typed syntax
+3. change file name
+4. change directory structure
+5. add install.sh
+6. add update.sh
+7. add CHANGELOG
+8. edit typo
+9. fixed: sed: -e expression #1, char 3: unknown command: `/'
 
 # 0.0.1
 initial release
