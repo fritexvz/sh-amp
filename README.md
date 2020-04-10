@@ -1,17 +1,18 @@
 # amp   
-Easy and fast installation minimum amp stack (apache2 + mariadb10 + php7 + vsftpd + sendmail).   
+Easy and fast installation of the latest version of the amp stack (apache2 + mariadb10 + php7 + vsftpd + sendmail).   
 
-## Installation   
+## Install   
 ```
 $ sudo su
 $ git clone https://github.com/w3src/sh-amp.git
+$ cd sh-amp
+$ chmod +x ./*.sh
+$ ./install.sh
 ```
 
-## Usage   
+## Update   
 ```
-$ cd sh-amp
-$ chmod +x ./ubuntu18.04-amp.sh
-$ ./ubuntu18.04-amp.sh
+$ ./update.sh
 ```
 
 ## List of installed php modules for wordpress and laravel   
