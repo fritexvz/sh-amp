@@ -9,9 +9,9 @@
 # chmod +x ./amp.sh
 # ./amp.sh
 
-# check to see if script is being run as root
-if [ "$EUID" -ne 0 ]; then
-  echo "Please run as root"
+# Check to see if script is being run as root
+if [ "$(whoami)" != 'root' ]; then
+  echo "You have no permission to run $0 as non-root user. Use sudo"
   exit
 fi
 
