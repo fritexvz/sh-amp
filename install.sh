@@ -20,27 +20,23 @@ set -e # Work even if somebody does "sh thisscript.sh".
 # Recursive chmod to make all .sh files in the directory executable.
 find ./ -type f -name "*.sh" -exec chmod +x {} +
 
-# operating system
-echo
-echo
+# Selecting operating system
 echo "On what operating system do you want to install this script?"
-echo
-while true; do
-  read -p "(1) Ubuntu 18.04 (2) Centos 7 : " os
+PS3="Please select your operating system. (1-2): "
+select os in "Ubuntu 18.04" "Centos 7"; do
   case $os in
-  1)
+  "Ubuntu 18.04")
     OS_ID="ubuntu"
     OS_VERSION_ID="18.04"
     break
     ;;
-  2)
-    echo "Sorry. Installing the amp does not support centos 7."
-    echo
+  "Centos 7")
+    echo "Sorry. installation of amp is not supported on centos 7."
     ;;
   esac
 done
 
-# Start Installing
+# installation
 SCRIPTPATH="$OS_ID/$OS_VERSION_ID"
 
 ./$SCRIPTPATH/amp.sh
