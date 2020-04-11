@@ -1,15 +1,21 @@
 # amp   
 
+# 0.0.13
+1. updated: The syntax has been updated to see if the script is running as root.
+2. added: Exception syntax for file existence was added.
+3. modified: The contents of the CHANGELOG have been modified.
+4. updated: The select statement has been updated.
+
 # 0.0.12
-1. fixed: file path
-2. change select os(operating system) typed syntax
-3. change file name
-4. change directory structure
-5. add install.sh
-6. add update.sh
-7. add CHANGELOG
-8. edit typo
-9. fixed: sed: -e expression #1, char 3: unknown command: `/'
+1. fixed: The wrong file path was fixed.
+2. updated: The select statement has been updated.
+3. changed: The file name has been changed.
+4. changed: The directory structure has been changed.
+5. added: The install.sh file was added.
+6. added: The update.sh file was added.
+7. added: The CHANGELOG file was added.
+8. modified: The comment has been modified.
+9. fixed: sed -e expression #1, char 3: unknown command: `/'
 
 # 0.0.1
 initial release
