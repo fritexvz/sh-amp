@@ -2,6 +2,10 @@
 
 # 0.0.14
 1. updated: Added syntax to prevent duplicates when host names are added.
+2. updated: The CHANGELOG file has been updated.
+3. added: The amp-cnf.sh file was added.
+4. removed: Unnecessary code has been removed.
+5. modified: The comment has been modified.
 
 # 0.0.13
 1. updated: The syntax has been updated to see if the script is running as root.
