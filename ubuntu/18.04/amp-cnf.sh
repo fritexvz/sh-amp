@@ -50,7 +50,7 @@ fi
 
 printf "\n\nSetting up apache2.conf ... \n"
 if ! egrep -q 'W3SRC DYNAMIC CONFIG' /etc/apache2/apache2.conf; then
-  sed -i.bak -e "$ i\
+  sed -i.bak -e '$ i\
 #\
 #\
 # W3SRC DYNAMIC CONFIG: START\
@@ -82,7 +82,7 @@ if ! egrep -q 'W3SRC DYNAMIC CONFIG' /etc/apache2/apache2.conf; then
 </DirectoryMatch>\
 # W3SRC DYNAMIC CONFIG: END\
 \
-" /etc/apache2/apache2.conf
+' /etc/apache2/apache2.conf
 fi
 
 # mpm-itk allows you to run each of your vhost under a separate uid and gid—in short, the scripts and configuration files for one vhost no longer have to be readable for all the other vhosts.
