@@ -101,10 +101,7 @@ chmod -R 700 /home/*
 printf "\n\nSetting up mpm_prefork.conf ... \n"
 
 STARTSERVERS=5
-MINSPARESERVERS=$STARTSERVERS
-MAXSPARESERVERS=$(($MINSPARESERVERS * 2))
 MAXREQUESTWORKERS=300
-SERVERLIMIT=$MAXREQUESTWORKERS
 MAXCONNECTIONSPERCHILD=0
 
 # StartServers
@@ -141,6 +138,10 @@ while true; do
     ;;
   esac
 done
+
+MINSPARESERVERS=$STARTSERVERS
+MAXSPARESERVERS=$(($MINSPARESERVERS * 2))
+SERVERLIMIT=$MAXREQUESTWORKERS
 
 if [ -f /etc/apache2/mods-available/mpm_prefork.conf ]; then
   if ! egrep -q 'ServerLimit\s+' /etc/apache2/mods-available/mpm_prefork.conf; then
