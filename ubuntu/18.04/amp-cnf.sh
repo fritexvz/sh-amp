@@ -81,7 +81,6 @@ if ! egrep -q 'W3SRC DYNAMIC CONFIG' /etc/apache2/apache2.conf; then
   </FilesMatch>\
 </DirectoryMatch>\
 # W3SRC DYNAMIC CONFIG: END\
-\
 ' /etc/apache2/apache2.conf
 fi
 
@@ -100,9 +99,9 @@ chmod -R 700 /home/*
 # MaxConnectionsPerChild: maximum number of requests a server process serves
 printf "\n\nSetting up mpm_prefork.conf ... \n"
 
-STARTSERVERS=5
-MAXREQUESTWORKERS=300
-MAXCONNECTIONSPERCHILD=0
+STARTSERVERS="5"
+MAXREQUESTWORKERS="300"
+MAXCONNECTIONSPERCHILD="0"
 
 # StartServers
 while true; do
@@ -150,12 +149,12 @@ if [ -f /etc/apache2/mods-available/mpm_prefork.conf ]; then
       /etc/apache2/mods-available/mpm_prefork.conf
   fi
   sed -i.bak -E \
-    -e "/StartServers\s+/{ s/^\s+//; s/\s+\d+/ $STARTSERVERS/; }" \
-    -e "/MinSpareServers\s+/{ s/^\s+//; s/\s+\d+/ $MINSPARESERVERS/; }" \
-    -e "/MaxSpareServers\s+/{ s/^\s+//; s/\s+\d+/ $MAXSPARESERVERS/; }" \
-    -e "/MaxRequestWorkers\s+/{ s/^\s+//; s/\s+\d+/ $MAXREQUESTWORKERS/; }" \
-    -e "/ServerLimit\s+/{ s/^\s+//; s/\s+\d+/ $SERVERLIMIT/; }" \
-    -e "/MaxConnectionsPerChild\s+/{ s/^\s+//; s/\s+\d+/ $MAXCONNECTIONSPERCHILD/; }" \
+    -e "s/^\s{0,}(StartServers)\s+.*/\1 $STARTSERVERS/" \
+    -e "s/^\s{0,}(MinSpareServers)\s+.*/\1 $MINSPARESERVERS/" \
+    -e "s/^\s{0,}(MaxSpareServers)\s+.*/\1 $MAXSPARESERVERS/" \
+    -e "s/^\s{0,}(MaxRequestWorkers)\s+.*/\1 $MAXREQUESTWORKERS/" \
+    -e "s/^\s{0,}(ServerLimit)\s+.*/\1 $SERVERLIMIT/" \
+    -e "s/^\s{0,}(MaxConnectionsPerChild)\s+.*/\1 $MAXCONNECTIONSPERCHILD/" \
     /etc/apache2/mods-available/mpm_prefork.conf
 fi
 
