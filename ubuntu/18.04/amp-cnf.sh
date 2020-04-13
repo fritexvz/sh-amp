@@ -202,10 +202,9 @@ if [ -f /etc/mysql/mariadb.conf.d/50-server.cnf ]; then
 fi
 
 printf "\n\nSetting up my.cnf ... \n"
-if [ ! -f /etc/my.cnf ]; then
-  touch /etc/my.cnf
+if [ -f /etc/my.cnf ]; then
+  cp /etc/my.cnf /etc/my.cnf.bak
 fi
-cp /etc/my.cnf /etc/my.cnf.bak
 cat >/etc/my.cnf <<EOT
 [client]
 default-character-set = utf8mb4
