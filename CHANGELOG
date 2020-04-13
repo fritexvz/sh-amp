@@ -7,6 +7,7 @@
 4. fixed: The order of incorrectly declared variables has changed.
 5. fixed: The double quotes used in regular expressions have been changed to single quotes.
 6. removed: Unnecessary code has been removed.
+7. updated: The README.md file has been updated.
 
 # 0.0.14
 1. updated: Added syntax to prevent duplicates when host names are added.

@@ -1,6 +1,21 @@
 # amp   
 Easy and fast installation of the latest version of the amp stack (apache2 + mariadb10 + php7 + vsftpd + sendmail).   
 
+## Firewall   
+If you are installing scripts on cloud servers like aws, gcloud and azure, you need to open the following ports.   
+```
+apache: 80/tcp, 443/tcp
+ssh: 22/tcp
+ftp: 21/tcp, 990/tcp, 12000:12100/tcp
+db: 3306/tcp, 5432/tcp
+memcached: 11211/tcp
+redis: 6379/tcp
+elasticsearch: 9200/tcp
+smtp: 25/tcp, 465/tcp, 587/tcp, 2525/tcp
+pop3: 110/tcp, 995/tcp
+imap: 143/tcp, 993/tcp
+```
+
 ## Install   
 ```
 $ sudo su
