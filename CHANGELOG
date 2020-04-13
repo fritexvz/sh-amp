@@ -1,5 +1,8 @@
 # amp   
 
+# 0.0.14
+1. updated: Added syntax to prevent duplicates when host names are added.
+
 # 0.0.13
 1. updated: The syntax has been updated to see if the script is running as root.
 2. added: Exception syntax for file existence was added.
