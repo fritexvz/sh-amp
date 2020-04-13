@@ -47,17 +47,15 @@ fi
 
 if [ -f /etc/hosts ]; then
   printf "\n\nSetting up hosts ... \n"
-  cp /etc/hosts /etc/hosts.bak
   if ! grep -q "127.0.1.1 $HOSTNAME" /etc/hosts; then
-    sed -i "1 a\127.0.1.1 $HOSTNAME" /etc/hosts
+    sed -i.bak "1 a\127.0.1.1 $HOSTNAME" /etc/hosts
   fi
 fi
 
 # This will cause the set+update hostname module to not operate (if true)
 if [ -f /etc/cloud/cloud.cfg ]; then
   printf "\n\nSetting up cloud.cfg ... \n"
-  cp /etc/cloud/cloud.cfg /etc/cloud/cloud.cfg.bak
-  sed -i -E -e '/preserve\_hostname\s{0,}?\:/{ s/\:.*/\: true/; }' /etc/cloud/cloud.cfg
+  sed -i.bak -E -e '/preserve_hostname\s{0,}?\:/{ s/\:.*/\: true/; }' /etc/cloud/cloud.cfg
 fi
 
 
