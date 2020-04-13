@@ -241,7 +241,7 @@ fi
 # Deny access to files without filename (e.g. '.php')
 printf "\n\nSetting up php.conf ... \n"
 if [ -f /etc/apache2/mods-available/php$PHP_VERSION.conf ]; then
-  sed -i.bak - E \
+  sed -i.bak -E \
     -e "/\<FilesMatch/{ s/.ph(ar|p|tml)/.ph(ar|p[3457]?|tml)/; }" \
     -e "/\<FilesMatch/{ s/.ph(ar|p|ps|tml)/.ph(p[3457]?|t|tml|ps)/; }" \
     /etc/apache2/mods-available/php$PHP_VERSION.conf
