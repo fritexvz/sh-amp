@@ -284,6 +284,7 @@ if ! grep -q 'W3SRC DYNAMIC CONFIG' /etc/vsftpd.conf; then
   cat >>/etc/vsftpd.conf <<EOF
 #
 # W3SRC DYNAMIC CONFIG: START
+#
 # Chroot Jail
 # To prevent the FTP users to access any files outside of their home directories uncomment the chroot setting.
 # 500 OOPS: vsftpd: refusing to run with writable root inside chroot()
@@ -308,6 +309,21 @@ userlist_deny=NO
 # After creating an ftp user, all files/folders were uploading with 711 to 755 permissions.
 chmod_enable=YES
 file_open_mode=0755
+# 
+# deny anonymous access over SSL:
+#allow_anon_ssl=NO
+#force_local_data_ssl=YES
+#force_local_logins_ssl=YES
+#
+# server to use TLS:
+#ssl_tlsv1=YES
+#ssl_sslv2=NO
+#ssl_sslv3=NO
+#
+# We will need high encrypted cipher suites meaning that the key lengths will be 128 bits or more
+#require_ssl_reuse=NO
+#ssl_ciphers=HIGH
+#
 # W3SRC DYNAMIC CONFIG: END
 EOF
 fi
@@ -326,14 +342,25 @@ if [ -f /etc/vsftpd.conf ]; then
     -e "/chroot_list_enable\s{0,}?=/{ s/^\#\s{0,}?//; }" \
     -e "/chroot_list_file\s{0,}?=/{ s/^\#\s{0,}?//; }" \
     -e "/connect_from_port_20\s{0,}?=/{ s/=.*/=YES/; s/^\#\s{0,}?//; }" \
+    -e "/ssl_enable\s{0,}?=/{ s/=.*/=NO/; s/^\#\s{0,}?//; }" \
     -e "/pasv_address\s{0,}?=/{ s/=.*/\=$IP_ADDR/; }" \
     /etc/vsftpd.conf
   # Securing Transmissions with SSL/TLS
+  openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout /etc/ssl/private/vsftpd.pem -out /etc/ssl/private/vsftpd.pem
+  openssl rsa -in /etc/ssl/private/vsftpd.pem -out /etc/ssl/private/vsftpd.key
   if [ -f /etc/ssl/private/vsftpd.pem ]; then
   sed -i -E \
     -e "/rsa_cert_file\s{0,}?=/{ s/=.*/=\/etc\/ssl\/private\/vsftpd.pem/; s/^\#\s{0,}?//; }" \
     -e "/rsa_private_key_file\s{0,}?=/{ s/=.*/=\/etc\/ssl\/private\/vsftpd.pem/; s/^\#\s{0,}?//; }" \
     -e "/ssl_enable\s{0,}?=/{ s/=.*/=YES/; s/^\#\s{0,}?//; }" \
+    -e "/allow_anon_ssl\s{0,}?=/{ s/^\#\s{0,}?//; }" \
+    -e "/force_local_data_ssl\s{0,}?=/{ s/^\#\s{0,}?//; }" \
+    -e "/force_local_logins_ssl\s{0,}?=/{ s/^\#\s{0,}?//; }" \
+    -e "/ssl_tlsv1\s{0,}?=/{ s/^\#\s{0,}?//; }" \
+    -e "/ssl_sslv2\s{0,}?=/{ s/^\#\s{0,}?//; }" \
+    -e "/ssl_sslv3\s{0,}?=/{ s/^\#\s{0,}?//; }" \
+    -e "/require_ssl_reuse\s{0,}?=/{ s/^\#\s{0,}?//; }" \
+    -e "/ssl_ciphers\s{0,}?=/{ s/^\#\s{0,}?//; }" \
     /etc/vsftpd.conf
   fi
 fi
