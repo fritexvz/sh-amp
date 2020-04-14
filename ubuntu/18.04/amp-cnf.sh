@@ -219,6 +219,7 @@ printf "\n\nRestarting mariadb ... \n"
 service mysqld restart
 
 printf "\n\nSetting up php config ... \n"
+
 # Detect php version
 PHP_VEROUT=$(php -v)
 PHP_VERSION=$(expr substr "$PHP_VEROUT" 5 3)
@@ -330,4 +331,4 @@ if [ -f /etc/vsftpd.conf ]; then
 fi
 
 printf "\n\nRestarting apache2 ... \n"
-systemctl restart apache2
+systemctl restart vsftpd
