@@ -6,8 +6,8 @@
 # Usage
 # git clone https://github.com/w3src/sh-amp.git
 # cd sh-amp
-# chmod +x ./recovery.sh
-# ./recovery.sh
+# chmod +x ./restore.sh
+# ./restore.sh
 
 # Check to see if script is being run as root
 if [ "$(whoami)" != 'root' ]; then
@@ -28,7 +28,7 @@ select os in "Ubuntu 18.04" "Centos 7"; do
     break
     ;;
   "Centos 7")
-    echo "Sorry. recovery of amp is not supported on centos 7."
+    echo "Sorry. restore of amp is not supported on centos 7."
     ;;
   esac
 done
