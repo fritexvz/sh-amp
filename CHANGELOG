@@ -5,6 +5,7 @@
 2. fixed: The vsftpd restart command has been fixed.
 3. added: The config.sh file was added.
 4. modified: The comment has been modified.
+5. added: Added securing transmissions with SSL/TLS settings to vsftpd.
 
 # 0.0.15
 1. fixed: syntax error near unexpected token `?i:log'

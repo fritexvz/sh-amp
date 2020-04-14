@@ -210,6 +210,9 @@ systemctl restart apache2
 printf "\n\nInstalling vsftpd ... \n"
 apt -y install vsftpd
 
+# Securing Transmissions with SSL/TLS
+openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout /etc/ssl/private/vsftpd.pem -out /etc/ssl/private/vsftpd.pem
+
 printf "\n\nCreate a file to restore configuration settings of vsftpd ... \n"
 copy "/etc/vsftpd.conf"
 
