@@ -166,7 +166,7 @@ systemctl restart apache2
 printf "\n\nSetting up 000-default.conf ... \n"
 if [ -f /etc/apache2/sites-available/000-default.conf ]; then
   sed -i -E \
-    -e "s/\#\s{0,}(ServerName)\s+\S+/\1 localhost" \
+    -e "s/\#\s{0,}(ServerName)\s+\S+/\1 localhost/" \
     /etc/apache2/sites-available/000-default.conf
 fi
 
