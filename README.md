@@ -31,6 +31,17 @@ Only configuration settings are installed.
 # ./config.sh
 ```
 
+## User   
+You can change the default options for ftp users.   
+- Create a new ftp user?   
+- Allow user's root access?   
+- Change user's password?   
+- Change user's home directory?   
+- Delete a exist user?   
+```
+# ./user.sh
+```
+
 ## Update   
 ```
 # ./update.sh
