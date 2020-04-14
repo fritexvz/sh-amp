@@ -20,6 +20,7 @@ set -e # Work even if somebody does "sh thisscript.sh".
 function username_exists() {
   if ! cut -d: -f1 /etc/passwd | egrep -q "^$1$"; then
     echo "The user '$1' does not exist."
+    exists_username=""
     while [[ -z "$exists_username" ]]; do
       read -p "username: " exists_username
       if ! cut -d: -f1 /etc/passwd | egrep -q "^$exists_username$"; then
@@ -35,6 +36,7 @@ function username_exists() {
 function username_create() {
   if cut -d: -f1 /etc/passwd | egrep -q "^$1$"; then
     echo "The user '$1' already exists."
+    create_username=""
     while [[ -z "$create_username" ]]; do
       read -p "username: " create_username
       if cut -d: -f1 /etc/passwd | egrep -q "^$create_username$"; then
@@ -78,6 +80,7 @@ select choice in "Create a new ftp user?" "Allow user root access?" "Change user
   esac
 done
 
+username=""
 while [[ -z "$username" ]]; do
   read -p "username: " username
 done
@@ -111,6 +114,7 @@ fi
 
 if [ $step == "usrmod" ]; then
   username_exists "$username"
+  userdir=""
   while [[ -z "$userdir" ]]; do
     read -p "user's home directory: " userdir
     if [ ! -d $userdir ]; then

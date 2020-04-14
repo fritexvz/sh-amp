@@ -127,8 +127,8 @@ while true; do
   read -p "The default MaxRequestWorkers value is 300. Would you like to change? (y/n)? " answer
   case ${answer} in
   y | Y)
-    MAXREQUESTWORKERS=""
     echo "The recommended server limits are 150 for 1G memory and 300 for 4G memory."
+    MAXREQUESTWORKERS=""
     while [[ -z "$MAXREQUESTWORKERS" ]]; do
       read -p "MaxRequestWorkers: " MAXREQUESTWORKERS
     done

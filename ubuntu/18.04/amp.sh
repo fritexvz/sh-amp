@@ -40,6 +40,7 @@ dpkg-reconfigure tzdata
 #
 # hostname
 printf "\n\nUpdate hostname... \n"
+HOSTNAME=""
 while [[ -z "$HOSTNAME" ]]; do
   read -p "hostname or FQDN (ex) www.example.com : " HOSTNAME
 done
