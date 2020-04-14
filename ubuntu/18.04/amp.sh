@@ -214,9 +214,60 @@ openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout /etc/ssl/private/vs
 
 printf "\n\nCreate a file to restore configuration settings of vsftpd ... \n"
 copy "/etc/vsftpd.conf"
+copy "/etc/vsftpd.user_list"
+copy "/etc/vsftpd.chroot_list"
 
 # Restart vsftpd. And when Ubuntu restarts, it runs like this:
 printf "\n\nRestarting vsftpd ... \n"
 systemctl stop vsftpd.service
 systemctl start vsftpd.service
 systemctl enable vsftpd.service
+
+printf "\n\nCreate a new ftp user ... \n"
+while true; do
+  echo
+  echo
+  read -p "Create a new ftp user? (y/n)? " answer
+  case $answer in
+  y | Y)
+    while [[ -z "$FTP_USERNAME" ]]; do
+      read -p "username: " FTP_USERNAME
+      if cut -d: -f1 /etc/passwd | grep -q "$FTP_USERNAME"; then
+        echo "The user '$FTP_USERNAME' already exists."
+        FTP_USERNAME=""
+      fi
+    done
+    break
+    ;;
+  n | N)
+    break
+    ;;
+  esac
+done
+
+if [ ! -z $FTP_USERNAME ]; then
+  adduser $FTP_USERNAME
+  if ! grep -q "$FTP_USERNAME" /etc/vsftpd.user_list; then
+    echo "$FTP_USERNAME" | tee -a /etc/vsftpd.user_list
+  fi
+fi
+
+if [ ! -z $FTP_USERNAME ]; then
+  while true; do
+    echo
+    read -p "Do you want to allow user's root access? (y/n)? " answer
+    case $answer in
+    y | Y)
+      if ! grep -q "$FTP_USERNAME" /etc/vsftpd.chroot_list; then
+        echo "$FTP_USERNAME" | tee -a /etc/vsftpd.chroot_list
+      fi
+      break
+      ;;
+    n | N)
+      break
+      ;;
+    esac
+  done
+fi
+
+systemctl restart vsftpd

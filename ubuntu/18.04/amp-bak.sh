@@ -59,3 +59,5 @@ copy "/etc/mail/local-host-names"
 # vsftpd
 printf "\n\nRestoring vsftpd's configuration settings ... \n"
 copy "/etc/vsftpd.conf"
+copy "/etc/vsftpd.user_list"
+copy "/etc/vsftpd.chroot_list"

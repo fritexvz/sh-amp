@@ -6,6 +6,13 @@
 3. added: The config.sh file was added.
 4. modified: The comment has been modified.
 5. added: Added securing transmissions with SSL/TLS settings to vsftpd.
+6. updated: Added a script to track running platforms.
+7. deleted: Unnecessary variables have been deleted.
+8. changed: The default variable name has been changed.
+9. added: The user.sh file was added.
+10. added: The amp-usr.sh file was added.
+11. added: Added a script to create ftp users.
+12. updated: The README.md file has been updated.
 
 # 0.0.15
 1. fixed: syntax error near unexpected token `?i:log'
