@@ -1,5 +1,16 @@
 # amp   
 
+# 0.0.17
+1. added: Restoring ufw's configuration settings.
+2. added: Securing Transmissions with SSL/TLS
+3. updated: The README.md file has been updated.
+4. modified: The comment has been modified.
+5. added: Port 20 has been added to the firewall.
+6. added: The ftpusers file has been added to vsftpd's restore configuration settings.
+7. updated: The rsa file path has been updated.
+8. added: Settings were added after creating an ftp user.
+9. updated: The amp-user.sh has been updated.
+
 # 0.0.16
 1. fixed: sed: -e expression #1, char 41: unterminated `s' command
 2. fixed: The vsftpd restart command has been fixed.
@@ -17,7 +28,6 @@
 14. changed: The wrongly declared function name has been changed.
 15. updated: Updated regex to find correct username.
 16. fixed: Fixed the message to wrap.
-
 
 # 0.0.15
 1. fixed: syntax error near unexpected token `?i:log'

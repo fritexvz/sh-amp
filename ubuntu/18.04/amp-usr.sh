@@ -17,28 +17,62 @@ fi
 
 set -e # Work even if somebody does "sh thisscript.sh".
 
+function username_exists() {
+  if ! cut -d: -f1 /etc/passwd | egrep -q "^$1$"; then
+    echo "The user '$1' does not exist."
+    while [[ -z "$exists_username" ]]; do
+      read -p "username: " exists_username
+      if ! cut -d: -f1 /etc/passwd | egrep -q "^$exists_username$"; then
+        echo "The user '$exists_username' does not exist."
+        exists_username=""
+      fi
+    done
+  else
+    exists_username="$1"
+  fi
+}
+
+function username_create() {
+  if cut -d: -f1 /etc/passwd | egrep -q "^$1$"; then
+    echo "The user '$1' already exists."
+    while [[ -z "$create_username" ]]; do
+      read -p "username: " create_username
+      if cut -d: -f1 /etc/passwd | egrep -q "^$create_username$"; then
+        echo "The user '$create_username' already exists."
+        create_username=""
+      fi
+    done
+  else
+    create_username="$1"
+  fi
+}
+
 # Selecting Step
 PS3="Choose the next step. (1-5): "
-select choice in "Create a new ftp user?" "Allow user's root access?" "Change user's password?" "Change user's home directory?" "Delete a exist user?"; do
+select choice in "Create a new ftp user?" "Allow user root access?" "Change user password?" "Change user home directory?" "Delete an exist user?" "Allow access to the root account?"; do
   case $choice in
   "Create a new ftp user?")
     step="create"
     break
     ;;
-  "Allow user's root access?")
+  "Allow user root access?")
     step="chroot"
     break
     ;;
-  "Change user's password?")
+  "Change user password?")
     step="passwd"
     break
     ;;
-  "Change user's home directory?")
+  "Change user home directory?")
     step="usrmod"
     break
     ;;
-  "Delete a exist user?")
+  "Delete an exist user?")
     step="delete"
+    break
+    ;;
+  "Allow access to the root account?")
+    step="root"
     break
     ;;
   esac
@@ -49,165 +83,76 @@ while [[ -z "$username" ]]; do
 done
 
 if [ $step == "create" ]; then
-  # check username
-  if cut -d: -f1 /etc/passwd | egrep -q "^$username$"; then
-    echo "The user '$username' already exists."
-    while [[ -z "$create_username" ]]; do
-      read -p "username: " create_username
-      if cut -d: -f1 /etc/passwd | egrep -q "^$create_username$"; then
-        echo "The user '$create_username' already exists."
-        create_username=""
-      fi
-    done
-  else
-    create_username=username
-  fi
-  # do something
+  username_create "$username"
   adduser $create_username
   if ! egrep -q "^$create_username$" /etc/vsftpd.user_list; then
     echo "$create_username" | tee -a /etc/vsftpd.user_list
-  else 
-    echo "'$create_username' is already in user_list."
+  else
+    echo $create_username " is already in user_list."
   fi
+  echo "New users have been added."
 fi
 
 if [ $step == "chroot" ]; then
-  # check username
-  if ! cut -d: -f1 /etc/passwd | egrep -q "^$username$"; then
-    echo "The user '$username' does not exist."
-    while [[ -z "$exists_username" ]]; do
-      read -p "username: " exists_username
-      if ! cut -d: -f1 /etc/passwd | egrep -q "^$exists_username$"; then
-        echo "The user '$exists_username' does not exist."
-        exists_username=""
-      fi
-    done
+  username_exists "$username"
+  if ! egrep -q "^$exists_username$" /etc/vsftpd.chroot_list; then
+    echo "$exists_username" | tee -a /etc/vsftpd.chroot_list
   else
-    exists_username=username
+    echo $exists_username " is already in chroot_list."
   fi
-  # do something
-  while true; do
-    echo
-    read -p "Do you want to allow user's root access? (y/n)? " answer
-    case $answer in
-    y | Y)
-      if ! egrep -q "^$exists_username$" /etc/vsftpd.chroot_list; then
-        echo "$exists_username" | tee -a /etc/vsftpd.chroot_list
-      else 
-        echo "'$exists_username' is already in chroot_list."
-      fi
-      break
-      ;;
-    n | N)
-      break
-      ;;
-    esac
-  done
+  echo "User root access is allowed."
 fi
 
 if [ $step == "passwd" ]; then
-  # check username
-  if ! cut -d: -f1 /etc/passwd | egrep -q "^$username$"; then
-    echo "The user '$username' does not exist."
-    while [[ -z "$exists_username" ]]; do
-      read -p "username: " exists_username
-      if ! cut -d: -f1 /etc/passwd | egrep -q "^$exists_username$"; then
-        echo "The user '$exists_username' does not exist."
-        exists_username=""
-      fi
-    done
-  else
-    exists_username=username
-  fi
-  # do something
-  while true; do
-    echo
-    read -p "Would you like to change user's password? (y/n)? " answer
-    case $answer in
-    y | Y)
-      passwd "$exists_username"
-      break
-      ;;
-    n | N)
-      break
-      ;;
-    esac
-  done
+  username_exists "$username"
+  passwd "$exists_username"
+  echo "User password has been changed."
 fi
 
 if [ $step == "usrmod" ]; then
-  # check username
-  if ! cut -d: -f1 /etc/passwd | egrep -q "^$username$"; then
-    echo "The user '$username' does not exist."
-    while [[ -z "$exists_username" ]]; do
-      read -p "username: " exists_username
-      if ! cut -d: -f1 /etc/passwd | egrep -q "^$exists_username$"; then
-        echo "The user '$exists_username' does not exist."
-        exists_username=""
-      fi
-    done
-  else
-    exists_username=username
-  fi
-  # do something
-  while true; do
-    echo
-    read -p "Would you like to change user's home directory? (y/n)? " answer
-    case $answer in
-    y | Y)
-      while [[ -z "$userdir" ]]; do
-        read -p "user's home directory: " userdir
-        if [ ! -d $userdir ]; then
-          echo "Directory does not exist."
-          while true; do
-            read -p "Do you want to make a directory? (y/n)? " ans
-            case $ans in
-              y | Y)
-                mkdir -p $userdir
-                break 2
-                ;;
-              n | N)
-                userdir=""
-                break
-                ;;
-            esac
-          done
-        fi
+  username_exists "$username"
+  while [[ -z "$userdir" ]]; do
+    read -p "user's home directory: " userdir
+    if [ ! -d $userdir ]; then
+      echo "Directory does not exist."
+      while true; do
+        read -p "Do you want to create a directory? (y/n)? " ans
+        case $ans in
+        y | Y)
+          mkdir -p $userdir
+          break 2
+          ;;
+        n | N)
+          userdir=""
+          break
+          ;;
+        esac
       done
-      usermod -d "$userdir" "$exists_username"
-      chown '$USER:$USER' "$userdir"
-      chown -R "$exists_username" "$userdir"
-      break
-      ;;
-    n | N)
-      break
-      ;;
-    esac
+    fi
   done
+  usermod -d "$userdir" "$exists_username"
+  chown -R nobody:nogroup "$userdir"
+  chmod -R 755 /var/www
+  echo "The user home directory has been changed."
 fi
 
 if [ $step == "delete" ]; then
-  # check username
-  if ! cut -d: -f1 /etc/passwd | egrep -q "^$username$"; then
-    echo "The user '$username' does not exist."
-    while [[ -z "$exists_username" ]]; do
-      read -p "username: " exists_username
-      if ! cut -d: -f1 /etc/passwd | egrep -q "^$exists_username$"; then
-        echo "The user '$exists_username' does not exist."
-        exists_username=""
-      fi
-    done
-  else
-    exists_username=username
-  fi
-  # do something
+  username_exists "$username"
   deluser --remove-home "$exists_username"
   if egrep -q "^$exists_username$" /etc/vsftpd.user_list; then
-    sed -i "/$exists_username/d" /etc/vsftpd.user_list
+    sed -i -E "/^$exists_username$/d" /etc/vsftpd.user_list
   fi
   if egrep -q "^$exists_username$" /etc/vsftpd.chroot_list; then
-    sed -i "/$exists_username/d" /etc/vsftpd.chroot_list
+    sed -i -E "/^$exists_username$/d" /etc/vsftpd.chroot_list
   fi
+  echo "The existing user has been deleted."
+fi
+
+if [ $step == "root" ]; then
+  if egrep -q "^root$" /etc/ftpusers; then
+    sed -i -E "/^root$/d" /etc/ftpusers
+  fi
+  echo "Allowed access to the root account."
 fi
 
 systemctl restart vsftpd
