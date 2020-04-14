@@ -36,18 +36,18 @@ select os in "Ubuntu 18.04" "Centos 7"; do
   esac
 done
 
-SCRIPTPATH="$OS_ID/$OS_VERSION_ID"
+DIR="$OS_ID/$OS_VERSION_ID"
+
+./$DIR/amp.sh
 
 while true; do
-  read -p "Would you like to update your preferences after installation? (y/n)? " answer
-  case ${answer} in
+  read -p "Would you like to install the configuration? (y/n)? " config
+  case $config in
   y | Y)
-    ./$SCRIPTPATH/amp.sh
-    ./$SCRIPTPATH/amp-cnf.sh
+    ./$DIR/amp-cnf.sh
     break
     ;;
   n | N)
-    ./$SCRIPTPATH/amp.sh
     break
     ;;
   esac
