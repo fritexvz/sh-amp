@@ -14,6 +14,7 @@
 11. added: The restore.sh file was added.
 12. added: Code for restore settings was added.
 13. updated: The order in which messages appear during installation has changed.
+14. changed: Changed text indentation.
 
 # 0.0.14
 1. updated: Added syntax to prevent duplicates when host names are added.

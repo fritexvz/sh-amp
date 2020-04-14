@@ -52,40 +52,39 @@ printf "\n\nSetting up apache2.conf ... \n"
 if [ -f /etc/apache2/apache2.conf ]; then
   if ! egrep -q 'W3SRC DYNAMIC CONFIG' /etc/apache2/apache2.conf; then
     sed -i -e '$ i\
-  #\
-  #\
-  # W3SRC DYNAMIC CONFIG: START\
-  # Deny access to file and folder names beginning with dot.\
-  <DirectoryMatch "^\.|\/\.">\
-    Require all denied\
-  </DirectoryMatch>\
-  #\
-  # Deny access to file extensions(log file, binary, certificate, shell script, sql dump file).\
-  <FilesMatch "\.(?i:log|binary|pem|enc|crt|conf|cnf|sql|sh|key|yml|lock|gitignore)$">\
+#\
+#\
+# W3SRC DYNAMIC CONFIG: START\
+# Deny access to file and folder names beginning with dot.\
+#<DirectoryMatch "^\.|\/\.">\
+#  Require all denied\
+#</DirectoryMatch>\
+#\
+# Deny access to file extensions(log file, binary, certificate, shell script, sql dump file).\
+<FilesMatch "\.(?i:log|binary|pem|enc|crt|conf|cnf|sql|sh|key|yml|lock|gitignore)$">\
+  Require all denied\
+</FilesMatch>\
+#\
+# Deny access to file names.\
+<FilesMatch "(?i:composer\.json|contributing\.md|license\.txt|readme\.rst|readme\.md|readme\.txt|copyright|artisan|gulpfile\.js|package\.json|phpunit\.xml|access_log|error_log|gruntfile\.js|bower\.json|changelog\.md|console|legalnotice|license|security\.md|privacy\.md)$">\
+  Require all denied\
+</FilesMatch>\
+#\
+# Allow Lets Encrypt Domain Validation Program.\
+<DirectoryMatch "\.well-known/acme-challenge/">\
+  Require all granted\
+</DirectoryMatch>\
+#\
+# Block .php file inside upload folder. uploads(wp), files(drupal), data(gnuboard).\
+<DirectoryMatch "/(uploads|default/files|data|wp-content/themes)/">\
+  <FilesMatch ".+\.php$">\
     Require all denied\
   </FilesMatch>\
-  #\
-  # Deny access to file names.\
-  <FilesMatch "(?i:composer\.json|contributing\.md|license\.txt|readme\.rst|readme\.md|readme\.txt|copyright|artisan|gulpfile\.js|package\.json|phpunit\.xml|access_log|error_log|gruntfile\.js|bower\.json|changelog\.md|console|legalnotice|license|security\.md|privacy\.md)$">\
-    Require all denied\
-  </FilesMatch>\
-  #\
-  # Allow Lets Encrypt Domain Validation Program.\
-  <DirectoryMatch "\.well-known/acme-challenge/">\
-    Require all granted\
-  </DirectoryMatch>\
-  #\
-  # Block .php file inside upload folder. uploads(wp), files(drupal), data(gnuboard).\
-  <DirectoryMatch "/(uploads|default/files|data|wp-content/themes)/">\
-    <FilesMatch ".+\.php$">\
-      Require all denied\
-    </FilesMatch>\
-  </DirectoryMatch>\
-  # W3SRC DYNAMIC CONFIG: END\
+</DirectoryMatch>\
+# W3SRC DYNAMIC CONFIG: END\
   ' /etc/apache2/apache2.conf
   fi
 fi
-
 
 # mpm-itk allows you to run each of your vhost under a separate uid and gid—in short, the scripts and configuration files for one vhost no longer have to be readable for all the other vhosts.
 printf "\n\nSetting up permission ... \n"

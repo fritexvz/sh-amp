@@ -41,6 +41,8 @@ DIR="$OS_ID/$OS_VERSION_ID"
 ./$DIR/amp.sh
 
 while true; do
+  echo 
+  echo 
   read -p "Would you like to install the configuration? (y/n)? " config
   case $config in
   y | Y)
