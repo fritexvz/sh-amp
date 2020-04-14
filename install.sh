@@ -61,8 +61,8 @@ DIR="$OS_ID/$OS_VERSION_ID"
 while true; do
   echo 
   echo 
-  read -p "Would you like to install the configuration? (y/n)? " config
-  case $config in
+  read -p "Would you like to install the configuration? (y/n)? " answer
+  case $answer in
   y | Y)
     ./$DIR/amp-cnf.sh
     break
