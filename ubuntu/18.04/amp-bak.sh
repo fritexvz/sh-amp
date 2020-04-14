@@ -61,3 +61,9 @@ printf "\n\nRestoring vsftpd's configuration settings ... \n"
 copy "/etc/vsftpd.conf"
 copy "/etc/vsftpd.user_list"
 copy "/etc/vsftpd.chroot_list"
+
+#
+# ufw
+printf "\n\nRestoring ufw's configuration settings ... \n"
+ufw --force disable
+ufw --force reset
