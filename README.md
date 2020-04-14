@@ -6,8 +6,8 @@ If you are installing scripts on cloud servers like aws, gcloud and azure, you n
 ```
 apache: 80/tcp, 443/tcp
 ssh: 22/tcp
-ftp: 21/tcp, 990/tcp, 12000:12100/tcp
-db: 3306/tcp, 5432/tcp
+ftp: 20:21/tcp, 990/tcp, 12000:12100/tcp
+mariadb: 3306/tcp
 memcached: 11211/tcp
 redis: 6379/tcp
 elasticsearch: 9200/tcp
