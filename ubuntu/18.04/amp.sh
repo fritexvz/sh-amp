@@ -23,6 +23,38 @@ function copy() {
   fi
 }
 
+function username_exists() {
+  if ! cut -d: -f1 /etc/passwd | egrep -q "^$1$"; then
+    echo "The user '$1' does not exist."
+    exists_username=""
+    while [[ -z "$exists_username" ]]; do
+      read -p "username: " exists_username
+      if ! cut -d: -f1 /etc/passwd | egrep -q "^$exists_username$"; then
+        echo "The user '$exists_username' does not exist."
+        exists_username=""
+      fi
+    done
+  else
+    exists_username="$1"
+  fi
+}
+
+function username_create() {
+  if cut -d: -f1 /etc/passwd | egrep -q "^$1$"; then
+    echo "The user '$1' already exists."
+    create_username=""
+    while [[ -z "$create_username" ]]; do
+      read -p "username: " create_username
+      if cut -d: -f1 /etc/passwd | egrep -q "^$create_username$"; then
+        echo "The user '$create_username' already exists."
+        create_username=""
+      fi
+    done
+  else
+    create_username="$1"
+  fi
+}
+
 #
 # os
 printf "\n\nUpdating and Upgrading System ... \n"
@@ -229,12 +261,9 @@ while true; do
   read -p "Create a new ftp user? (y/n)? " answer
   case $answer in
   y | Y)
-    while [[ -z "$FTP_USERNAME" ]]; do
-      read -p "username: " FTP_USERNAME
-      if cut -d: -f1 /etc/passwd | grep -q "$FTP_USERNAME"; then
-        echo "The user '$FTP_USERNAME' already exists."
-        FTP_USERNAME=""
-      fi
+    username=""
+    while [[ -z "$username" ]]; do
+      read -p "username: " username
     done
     break
     ;;
@@ -244,22 +273,30 @@ while true; do
   esac
 done
 
-if [ ! -z $FTP_USERNAME ]; then
-  adduser $FTP_USERNAME
-  if ! grep -q "$FTP_USERNAME" /etc/vsftpd.user_list; then
-    echo "$FTP_USERNAME" | tee -a /etc/vsftpd.user_list
+if [ ! -z $username ]; then
+  username_create "$username"
+  adduser $create_username
+  if ! egrep -q "^$create_username$" /etc/vsftpd.user_list; then
+    echo "$create_username" | tee -a /etc/vsftpd.user_list
+  else
+    echo $create_username " is already in user_list."
   fi
+  echo "New users have been added."
 fi
 
-if [ ! -z $FTP_USERNAME ]; then
+if [ ! -z $username ]; then
   while true; do
     echo
     read -p "Do you want to allow user's root access? (y/n)? " answer
     case $answer in
     y | Y)
-      if ! grep -q "$FTP_USERNAME" /etc/vsftpd.chroot_list; then
-        echo "$FTP_USERNAME" | tee -a /etc/vsftpd.chroot_list
+      username_exists "$username"
+      if ! egrep -q "^$exists_username$" /etc/vsftpd.chroot_list; then
+        echo "$exists_username" | tee -a /etc/vsftpd.chroot_list
+      else
+        echo $exists_username " is already in chroot_list."
       fi
+      echo "User root access is allowed."
       break
       ;;
     n | N)
@@ -269,4 +306,5 @@ if [ ! -z $FTP_USERNAME ]; then
   done
 fi
 
+printf "\n\nRestarting vsftpd ... \n"
 systemctl restart vsftpd

@@ -9,7 +9,12 @@
 6. added: The ftpusers file has been added to vsftpd's restore configuration settings.
 7. updated: The rsa file path has been updated.
 8. added: Settings were added after creating an ftp user.
-9. updated: The amp-user.sh has been updated.
+9. updated: The amp-usr.sh has been updated.
+10. fixed: ECONNREFUSED - Connection refused by server.
+11. disabled: Disable_ipv6 is disabled in vsftpd option.
+12. added: An empty value was added when declaring the first variable.
+13. updated: Securing Transmissions with SSL/TLS
+14. updated: The vsftp settings have been updated.
 
 # 0.0.16
 1. fixed: sed: -e expression #1, char 41: unterminated `s' command
