@@ -316,27 +316,19 @@ if [ -f /etc/vsftpd.conf ]; then
     -e "/listen\s{0,}?=/{ s/=.*/=YES/; s/^\#\s{0,}?//; }" \
     -e "/listen_ipv6\s{0,}?=/{ s/=.*/=YES/; s/^\#\s{0,}?//; }" \
     -e "/write_enable\s{0,}?=/{ s/=.*/=YES/; s/^\#\s{0,}?//; }" \
-    -e "/local_umask\s{0,}?=/{ s/^\#\s{0,}?//; }" \
+    -e "/local_umask\s{0,}?=/{ s/=.*/=002/; s/^\#\s{0,}?//; }" \
     -e "/xferlog_file\s{0,}?=/{ s/^\#\s{0,}?//; }" \
     -e "/chroot_local_user\s{0,}?=/{ s/^\#\s{0,}?//; }" \
     -e "/chroot_list_enable\s{0,}?=/{ s/^\#\s{0,}?//; }" \
     -e "/chroot_list_file\s{0,}?=/{ s/^\#\s{0,}?//; }" \
     -e "/connect_from_port_20\s{0,}?=/{ s/=.*/=YES/; s/^\#\s{0,}?//; }" \
-    -e "/allow_writeable_chroot\s{0,}?=/{ s/=.*/=YES/; s/^\#\s{0,}?//; }" \
-    -e "/force_dot_files\s{0,}?=/{ s/=.*/=YES/; s/^\#\s{0,}?//; }" \
-    -e "/pasv_enable\s{0,}?=/{ s/=.*/=YES/; s/^\#\s{0,}?//; }" \
-    -e "/pasv_min_port\s{0,}?=/{ s/=.*/=12000/; s/^\#\s{0,}?//; }" \
-    -e "/pasv_max_port\s{0,}?=/{ s/=.*/=12100/; s/^\#\s{0,}?//; }" \
     -e "/pasv_address\s{0,}?=/{ s/=.*/\=$IP_ADDR/; }" \
-    -e "/userlist_enable\s{0,}?=/{ s/=.*/=YES/; s/^\#\s{0,}?//; }" \
-    -e "/userlist_file\s{0,}?=/{ s/^\#\s{0,}?//; }" \
-    -e "/userlist_deny\s{0,}?=/{ s/=.*/=NO/; s/^\#\s{0,}?//; }" \
     /etc/vsftpd.conf
   # Securing Transmissions with SSL/TLS
   if [ -f /etc/ssl/private/vsftpd.pem ]; then
   sed -i -E \
-    -e "/rsa_cert_file\s{0,}?=/{ s/=.*/=\/etc\/ssl\/certs\/ssl-cert-snakeoil.pem/; s/^\#\s{0,}?//; }" \
-    -e "/rsa_private_key_file\s{0,}?=/{ s/=.*/=\/etc\/ssl\/private\/ssl-cert-snakeoil.key/; s/^\#\s{0,}?//; }" \
+    -e "/rsa_cert_file\s{0,}?=/{ s/=.*/=\/etc\/ssl\/private\/vsftpd.pem/; s/^\#\s{0,}?//; }" \
+    -e "/rsa_private_key_file\s{0,}?=/{ s/=.*/=\/etc\/ssl\/private\/vsftpd.pem/; s/^\#\s{0,}?//; }" \
     -e "/ssl_enable\s{0,}?=/{ s/=.*/=YES/; s/^\#\s{0,}?//; }" \
     /etc/vsftpd.conf
   fi
