@@ -328,6 +328,14 @@ if [ -f /etc/vsftpd.conf ]; then
     -e "/userlist_file\s{0,}?=/{ s/^\#\s{0,}?//; }" \
     -e "/userlist_deny\s{0,}?=/{ s/=.*/=NO/; s/^\#\s{0,}?//; }" \
     /etc/vsftpd.conf
+  # Securing Transmissions with SSL/TLS
+  if [ -f /etc/ssl/private/vsftpd.pem ]; then
+  sed -i -E \
+    -e "/rsa_cert_file\s{0,}?=/{ s/=.*/=\/etc\/ssl\/certs\/ssl-cert-snakeoil.pem/; s/^\#\s{0,}?//; }" \
+    -e "/rsa_private_key_file\s{0,}?=/{ s/=.*/=\/etc\/ssl\/private\/ssl-cert-snakeoil.key/; s/^\#\s{0,}?//; }" \
+    -e "/ssl_enable\s{0,}?=/{ s/=.*/=YES/; s/^\#\s{0,}?//; }" \
+    /etc/vsftpd.conf
+  fi
 fi
 
 printf "\n\nRestarting apache2 ... \n"
