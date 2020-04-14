@@ -18,22 +18,28 @@ imap: 143/tcp, 993/tcp
 
 ## Install   
 ```
-$ sudo su
-$ git clone https://github.com/w3src/sh-amp.git
-$ cd sh-amp
-$ chmod +x ./*.sh
-$ ./install.sh
+# sudo su
+# git clone https://github.com/w3src/sh-amp.git
+# cd sh-amp
+# chmod +x ./*.sh
+# ./install.sh
+```
+
+## Config   
+Only configuration settings are installed.
+```
+# ./config.sh
 ```
 
 ## Update   
 ```
-$ ./update.sh
+# ./update.sh
 ```
 
 ## Restore   
 The configuration settings return to the initial settings.   
 ```
-$ ./restore.sh
+# ./restore.sh
 ```
 
 ## List of installed php modules for wordpress and laravel   

@@ -2,7 +2,9 @@
 
 # 0.0.16
 1. fixed: sed: -e expression #1, char 41: unterminated `s' command
-
+2. fixed: The vsftpd restart command has been fixed.
+3. added: The config.sh file was added.
+4. modified: The comment has been modified.
 
 # 0.0.15
 1. fixed: syntax error near unexpected token `?i:log'
