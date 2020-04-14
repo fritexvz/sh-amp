@@ -17,6 +17,11 @@ fi
 
 set -e # Work even if somebody does "sh thisscript.sh".
 
+function copy() {
+  if [ -f $1 ]; then
+    cp $1{,.bak}
+  fi
+}
 
 #
 # os
@@ -32,7 +37,6 @@ apt -y autoremove
 printf "\n\nSetting up Timezone ... \n"
 dpkg-reconfigure tzdata
 
-
 #
 # hostname
 printf "\n\nUpdate hostname... \n"
@@ -45,23 +49,25 @@ if [ hostname != "$HOSTNAME" ]; then
   hostnamectl set-hostname "$HOSTNAME"
 fi
 
+printf "\n\nCreate a file to restore configuration settings of hostname ... \n"
+copy "/etc/hosts"
+copy "/etc/cloud/cloud.cfg"
+
 if [ -f /etc/hosts ]; then
   printf "\n\nSetting up hosts ... \n"
   if ! grep -q "127.0.1.1 $HOSTNAME" /etc/hosts; then
-    sed -i.bak "1 a\127.0.1.1 $HOSTNAME" /etc/hosts
+    sed -i "1 a\127.0.1.1 $HOSTNAME" /etc/hosts
   fi
 fi
 
 # This will cause the set+update hostname module to not operate (if true)
 if [ -f /etc/cloud/cloud.cfg ]; then
   printf "\n\nSetting up cloud.cfg ... \n"
-  sed -i.bak -E -e '/preserve_hostname\s{0,}?\:/{ s/\:.*/\: true/; }' /etc/cloud/cloud.cfg
+  sed -i -E -e '/preserve_hostname\s{0,}?\:/{ s/\:.*/\: true/; }' /etc/cloud/cloud.cfg
 fi
-
 
 #
 # apache2
-
 printf "\n\nInstalling apache2 ... \n"
 apt -y install apache2 ssl-cert certbot
 
@@ -71,13 +77,23 @@ a2enmod headers
 a2enmod ssl
 a2dismod -f autoindex
 
+if [ -f /etc/apache2/sites-available/default-ssl.conf ]; then
+  cp /etc/apache2/sites-available/default-ssl.conf /etc/apache2/sites-available/000-default-ssl.conf
+fi
+
+printf "\n\nCreate a file to restore configuration settings of apache2 ... \n"
+copy "/etc/apache2/conf-available/charset.conf"
+copy "/etc/apache2/conf-available/security.conf"
+copy "/etc/apache2/apache2.conf"
+copy "/etc/apache2/mods-available/mpm_prefork.conf"
+copy "/etc/apache2/sites-available/000-default.conf"
+copy "/etc/apache2/sites-available/000-default-ssl.conf"
+
 printf "\n\nRestarting apache2 ... \n"
 systemctl restart apache2
 
-
 #
 # firewall
-
 printf "\n\nOpening port ... \n"
 
 # Allow access to Apache on both port 80 and 443:
@@ -126,36 +142,27 @@ printf "\n\nEnabling port ... \n"
 ufw disable
 ufw enable
 
-
-#
-# vsftpd
-
-printf "\n\nInstalling vsftpd ... \n"
-apt -y install vsftpd
-
-# Restart vsftpd. And when Ubuntu restarts, it runs like this:
-printf "\n\nRestarting vsftpd ... \n"
-systemctl stop vsftpd.service
-systemctl start vsftpd.service
-systemctl enable vsftpd.service
-
-
 #
 # mariadb
-
 printf "\n\nInstalling mariadb ... \n"
 apt -y install mariadb-server mariadb-client
 
 printf "\n\nSetting up mysql_secure_installation ... \n"
 /usr/bin/mysql_secure_installation
 
+if [ ! -f /etc/my.cnf ]; then
+  echo "" >/etc/my.cnf
+fi
+
+printf "\n\nCreate a file to restore configuration settings of mariadb ... \n"
+copy "/etc/mysql/mariadb.conf.d/50-server.cnf"
+copy "/etc/my.cnf"
+
 printf "\n\nRestarting mariadb ... \n"
 service mysqld restart
 
-
 #
 # php
-
 printf "\n\nInstalling php modules ... \n"
 
 # Installing php extensions for lamp
@@ -175,15 +182,39 @@ apt -y install php-oauth
 # Search php modules
 #apt-cache search php- | grep ^php- | grep module
 
+# Detect php version
+PHP_VEROUT=$(php -v)
+PHP_VERSION=$(expr substr "$PHP_VEROUT" 5 3)
+
+printf "\n\nCreate a file to restore configuration settings of php ... \n"
+copy "/etc/apache2/mods-available/dir.conf"
+copy "/etc/apache2/mods-available/php$PHP_VERSION.conf"
+copy "/etc/php/$PHP_VERSION/apache2/php.ini"
+
 printf "\n\nRestarting apache2 ... \n"
 systemctl restart apache2
-
 
 #
 # sendmail
-
 printf "\n\nInstalling sendmail ... \n"
 apt -y install sendmail
 
+printf "\n\nCreate a file to restore configuration settings of sendmail ... \n"
+copy "/etc/mail/local-host-names"
+
 printf "\n\nRestarting apache2 ... \n"
 systemctl restart apache2
+
+#
+# vsftpd
+printf "\n\nInstalling vsftpd ... \n"
+apt -y install vsftpd
+
+printf "\n\nCreate a file to restore configuration settings of vsftpd ... \n"
+copy "/etc/vsftpd.conf"
+
+# Restart vsftpd. And when Ubuntu restarts, it runs like this:
+printf "\n\nRestarting vsftpd ... \n"
+systemctl stop vsftpd.service
+systemctl start vsftpd.service
+systemctl enable vsftpd.service

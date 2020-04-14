@@ -10,6 +10,10 @@
 7. updated: The README.md file has been updated.
 8. updated: The mpm_prefork.conf file has been updated.
 9. fixed: Fixed an issue where the mpm_prefork setting was not applied properly.
+10. added: The amp-bak.sh file was added.
+11. added: The restore.sh file was added.
+12. added: Code for restore settings was added.
+13. updated: The order in which messages appear during installation has changed.
 
 # 0.0.14
 1. updated: Added syntax to prevent duplicates when host names are added.

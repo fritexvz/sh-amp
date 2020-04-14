@@ -30,6 +30,12 @@ $ ./install.sh
 $ ./update.sh
 ```
 
+## Restore   
+The configuration settings return to the initial settings.   
+```
+$ ./restore.sh
+```
+
 ## List of installed php modules for wordpress and laravel   
 ```
 php-common
