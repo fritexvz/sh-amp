@@ -284,6 +284,8 @@ if ! grep -q 'W3SRC DYNAMIC CONFIG' /etc/vsftpd.conf; then
   cat >>/etc/vsftpd.conf <<EOF
 #
 # W3SRC DYNAMIC CONFIG: START
+# Chroot Jail
+# To prevent the FTP users to access any files outside of their home directories uncomment the chroot setting.
 # 500 OOPS: vsftpd: refusing to run with writable root inside chroot()
 allow_writeable_chroot=YES
 #
@@ -297,7 +299,8 @@ pasv_min_port=12000
 pasv_max_port=12100
 pasv_address=0.0.0.0/0
 #
-# Limit User Login
+# Limiting User Login
+# vsftpd will load a list of usernames, from the filename given by userlist_file
 userlist_enable=YES
 userlist_file=/etc/vsftpd.user_list
 userlist_deny=NO
