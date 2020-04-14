@@ -101,8 +101,8 @@ ufw allow in "Apache Full"
 # open ssh port 22
 ufw allow OpenSSH
 
-# open ftp: command
-ufw allow 21/tcp
+# open ftp: data and command port
+ufw allow 20:21/tcp
 
 # open ftp: require implicit FTP over TLS port
 ufw allow 990/tcp

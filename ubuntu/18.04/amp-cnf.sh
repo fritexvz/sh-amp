@@ -314,13 +314,14 @@ IP_ADDR="$(curl ifconfig.me)"
 if [ -f /etc/vsftpd.conf ]; then
   sed -i -E \
     -e "/listen\s{0,}?=/{ s/=.*/=YES/; s/^\#\s{0,}?//; }" \
-    -e "/listen_ipv6\s{0,}?=/{ s/=.*/=NO/; s/^\#\s{0,}?//; }" \
+    -e "/listen_ipv6\s{0,}?=/{ s/=.*/=YES/; s/^\#\s{0,}?//; }" \
     -e "/write_enable\s{0,}?=/{ s/=.*/=YES/; s/^\#\s{0,}?//; }" \
     -e "/local_umask\s{0,}?=/{ s/^\#\s{0,}?//; }" \
     -e "/xferlog_file\s{0,}?=/{ s/^\#\s{0,}?//; }" \
     -e "/chroot_local_user\s{0,}?=/{ s/^\#\s{0,}?//; }" \
     -e "/chroot_list_enable\s{0,}?=/{ s/^\#\s{0,}?//; }" \
     -e "/chroot_list_file\s{0,}?=/{ s/^\#\s{0,}?//; }" \
+    -e "/connect_from_port_20\s{0,}?=/{ s/=.*/=YES/; s/^\#\s{0,}?//; }" \
     -e "/allow_writeable_chroot\s{0,}?=/{ s/=.*/=YES/; s/^\#\s{0,}?//; }" \
     -e "/force_dot_files\s{0,}?=/{ s/=.*/=YES/; s/^\#\s{0,}?//; }" \
     -e "/pasv_enable\s{0,}?=/{ s/=.*/=YES/; s/^\#\s{0,}?//; }" \
