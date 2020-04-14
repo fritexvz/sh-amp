@@ -17,56 +17,81 @@ fi
 
 set -e # Work even if somebody does "sh thisscript.sh".
 
+function username_exists() {
+  if ! cut -d: -f1 /etc/passwd | fgrep -q "$username"; then
+    echo "The user '$username' does not exist."
+    while [[ -z "$exists_username" ]]; do
+      read -p "username: " exists_username
+      if ! cut -d: -f1 /etc/passwd | fgrep -q "$exists_username"; then
+        echo "The user '$exists_username' does not exist."
+        exists_username=""
+      fi
+    done
+    echo "$exists_username"
+  fi
+}
+
 # Selecting Step
 PS3="Choose the next step. (1-5): "
 select choice in "Create a new ftp user?" "Allow user's root access?" "Change user's password?" "Change user's home directory?" "Delete a exist user?"; do
   case $choice in
   "Create a new ftp user?")
-    USER_STEP="create"
+    step="create"
     break
     ;;
   "Allow user's root access?")
-    USER_STEP="chroot"
+    step="chroot"
     break
     ;;
   "Change user's password?")
-    USER_STEP="passwd"
+    step="passwd"
     break
     ;;
   "Change user's home directory?")
-    USER_STEP="usrmod"
+    step="usrmod"
     break
     ;;
   "Delete a exist user?")
-    USER_STEP="delete"
+    step="delete"
     break
     ;;
   esac
 done
 
-while [[ -z "$FTP_USERNAME" ]]; do
-  read -p "username: " FTP_USERNAME
-  if cut -d: -f1 /etc/passwd | fgrep -q "$FTP_USERNAME"; then
-    echo "The user '$FTP_USERNAME' already exists."
-    FTP_USERNAME=""
-  fi
+while [[ -z "$username" ]]; do
+  read -p "username: " username
 done
 
-if [ $USER_STEP == "create" ]; then
-  adduser $FTP_USERNAME
-  if ! fgrep -q "$FTP_USERNAME" /etc/vsftpd.user_list; then
-    echo "$FTP_USERNAME" | tee -a /etc/vsftpd.user_list
+if [ $step == "create" ]; then
+  if cut -d: -f1 /etc/passwd | fgrep -q "$username"; then
+    echo "The user '$username' already exists."
+    while [[ -z "$create_username" ]]; do
+      read -p "username: " create_username
+      if cut -d: -f1 /etc/passwd | fgrep -q "$create_username"; then
+        echo "The user '$create_username' already exists."
+        create_username=""
+      fi
+    done
+  fi
+  adduser $create_username
+  if ! fgrep -q "$create_username" /etc/vsftpd.user_list; then
+    echo "$create_username" | tee -a /etc/vsftpd.user_list
+  else 
+    echo "'$create_username' is already in user_list."
   fi
 fi
 
-if [ $USER_STEP == "chroot" ]; then
+if [ $step == "chroot" ]; then
+  exists_username=$(username_exist "$username")
   while true; do
     echo
     read -p "Do you want to allow user's root access? (y/n)? " answer
     case $answer in
     y | Y)
-      if ! fgrep -q "$FTP_USERNAME" /etc/vsftpd.chroot_list; then
-        echo "$FTP_USERNAME" | tee -a /etc/vsftpd.chroot_list
+      if ! fgrep -q "$exists_username" /etc/vsftpd.chroot_list; then
+        echo "$exists_username" | tee -a /etc/vsftpd.chroot_list
+      else 
+        echo "'$exists_username' is already in chroot_list."
       fi
       break
       ;;
@@ -77,13 +102,14 @@ if [ $USER_STEP == "chroot" ]; then
   done
 fi
 
-if [ $USER_STEP == "passwd" ]; then
+if [ $step == "passwd" ]; then
+  exists_username=$(username_exist "$username")
   while true; do
     echo
     read -p "Would you like to change user's password? (y/n)? " answer
     case $answer in
     y | Y)
-      passwd "$FTP_USERNAME"
+      passwd "$exists_username"
       break
       ;;
     n | N)
@@ -93,18 +119,35 @@ if [ $USER_STEP == "passwd" ]; then
   done
 fi
 
-if [ $USER_STEP == "usrmod" ]; then
+if [ $step == "usrmod" ]; then
+  exists_username=$(username_exist "$username")
   while true; do
     echo
     read -p "Would you like to change user's home directory? (y/n)? " answer
     case $answer in
     y | Y)
-      while [[ -z "$FTP_HOME" ]]; do
-        read -p "user's home directory: " FTP_HOME
+      while [[ -z "$userdir" ]]; do
+        read -p "user's home directory: " userdir
+        if [ ! -d $userdir ]; then
+          echo "Directory does not exist."
+          while true; do
+            read -p "Do you want to make a directory? (y/n)? " ans
+            case $ans in
+              y | Y)
+                mkdir -p $userdir
+                break 2
+                ;;
+              n | N)
+                userdir=""
+                break
+                ;;
+            esac
+          done
+        fi
       done
-      usermod -d "$FTP_HOME" "$FTP_USERNAME"
-      chown '$USER:$USER' "$FTP_HOME"
-      chown -R "$FTP_USERNAME" "$FTP_HOME"
+      usermod -d "$userdir" "$exists_username"
+      chown '$USER:$USER' "$userdir"
+      chown -R "$exists_username" "$userdir"
       break
       ;;
     n | N)
@@ -114,13 +157,14 @@ if [ $USER_STEP == "usrmod" ]; then
   done
 fi
 
-if [ $USER_STEP == "delete" ]; then
-  deluser --remove-home "$FTP_USERNAME"
-  if fgrep -q "$FTP_USERNAME" /etc/vsftpd.user_list; then
-    sed -i "/$FTP_USERNAME/d" /etc/vsftpd.user_list
+if [ $step == "delete" ]; then
+  exists_username=$(username_exist "$username")
+  deluser --remove-home "$exists_username"
+  if fgrep -q "$exists_username" /etc/vsftpd.user_list; then
+    sed -i "/$exists_username/d" /etc/vsftpd.user_list
   fi
-  if fgrep -q "$FTP_USERNAME" /etc/vsftpd.chroot_list; then
-    sed -i "/$FTP_USERNAME/d" /etc/vsftpd.chroot_list
+  if fgrep -q "$exists_username" /etc/vsftpd.chroot_list; then
+    sed -i "/$exists_username/d" /etc/vsftpd.chroot_list
   fi
 fi
 

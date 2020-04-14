@@ -13,6 +13,7 @@
 10. added: The amp-usr.sh file was added.
 11. added: Added a script to create ftp users.
 12. updated: The README.md file has been updated.
+13. fixed: Fixed infinite looping of usernames.
 
 # 0.0.15
 1. fixed: syntax error near unexpected token `?i:log'
