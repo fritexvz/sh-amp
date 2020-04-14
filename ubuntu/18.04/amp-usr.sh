@@ -74,11 +74,11 @@ fi
 if [ $step == "chroot" ]; then
   # check username
   if ! cut -d: -f1 /etc/passwd | egrep -q "^$username$"; then
-    printf "The user '$username' does not exist."
+    echo "The user '$username' does not exist."
     while [[ -z "$exists_username" ]]; do
       read -p "username: " exists_username
       if ! cut -d: -f1 /etc/passwd | egrep -q "^$exists_username$"; then
-        printf "The user '$exists_username' does not exist."
+        echo "The user '$exists_username' does not exist."
         exists_username=""
       fi
     done
@@ -108,11 +108,11 @@ fi
 if [ $step == "passwd" ]; then
   # check username
   if ! cut -d: -f1 /etc/passwd | egrep -q "^$username$"; then
-    printf "The user '$username' does not exist."
+    echo "The user '$username' does not exist."
     while [[ -z "$exists_username" ]]; do
       read -p "username: " exists_username
       if ! cut -d: -f1 /etc/passwd | egrep -q "^$exists_username$"; then
-        printf "The user '$exists_username' does not exist."
+        echo "The user '$exists_username' does not exist."
         exists_username=""
       fi
     done
@@ -138,11 +138,11 @@ fi
 if [ $step == "usrmod" ]; then
   # check username
   if ! cut -d: -f1 /etc/passwd | egrep -q "^$username$"; then
-    printf "The user '$username' does not exist."
+    echo "The user '$username' does not exist."
     while [[ -z "$exists_username" ]]; do
       read -p "username: " exists_username
       if ! cut -d: -f1 /etc/passwd | egrep -q "^$exists_username$"; then
-        printf "The user '$exists_username' does not exist."
+        echo "The user '$exists_username' does not exist."
         exists_username=""
       fi
     done
@@ -189,11 +189,11 @@ fi
 if [ $step == "delete" ]; then
   # check username
   if ! cut -d: -f1 /etc/passwd | egrep -q "^$username$"; then
-    printf "The user '$username' does not exist."
+    echo "The user '$username' does not exist."
     while [[ -z "$exists_username" ]]; do
       read -p "username: " exists_username
       if ! cut -d: -f1 /etc/passwd | egrep -q "^$exists_username$"; then
-        printf "The user '$exists_username' does not exist."
+        echo "The user '$exists_username' does not exist."
         exists_username=""
       fi
     done
