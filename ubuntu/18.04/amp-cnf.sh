@@ -318,7 +318,7 @@ IP_ADDR="$(curl ifconfig.me)"
 if [ -f /etc/vsftpd.conf ]; then
   sed -i -E \
     -e "/listen\s{0,}?=/{ s/=.*/=YES/; s/^\#\s{0,}?//; }" \
-    -e "/listen_ipv6\s{0,}?=/{ s/=.*/=YES/; s/^\#\s{0,}?//; }" \
+    -e "/listen_ipv6\s{0,}?=/{ s/=.*/=NO/; s/^\#\s{0,}?//; }" \
     -e "/write_enable\s{0,}?=/{ s/=.*/=YES/; s/^\#\s{0,}?//; }" \
     -e "/local_umask\s{0,}?=/{ s/=.*/=002/; s/^\#\s{0,}?//; }" \
     -e "/xferlog_file\s{0,}?=/{ s/^\#\s{0,}?//; }" \
