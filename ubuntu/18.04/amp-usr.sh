@@ -82,7 +82,7 @@ if [ $step == "create" ]; then
 fi
 
 if [ $step == "chroot" ]; then
-  exists_username=$(username_exist "$username")
+  exists_username=$(username_exists "$username")
   while true; do
     echo
     read -p "Do you want to allow user's root access? (y/n)? " answer
@@ -103,7 +103,7 @@ if [ $step == "chroot" ]; then
 fi
 
 if [ $step == "passwd" ]; then
-  exists_username=$(username_exist "$username")
+  exists_username=$(username_exists "$username")
   while true; do
     echo
     read -p "Would you like to change user's password? (y/n)? " answer
@@ -120,7 +120,7 @@ if [ $step == "passwd" ]; then
 fi
 
 if [ $step == "usrmod" ]; then
-  exists_username=$(username_exist "$username")
+  exists_username=$(username_exists "$username")
   while true; do
     echo
     read -p "Would you like to change user's home directory? (y/n)? " answer
@@ -158,7 +158,7 @@ if [ $step == "usrmod" ]; then
 fi
 
 if [ $step == "delete" ]; then
-  exists_username=$(username_exist "$username")
+  exists_username=$(username_exists "$username")
   deluser --remove-home "$exists_username"
   if fgrep -q "$exists_username" /etc/vsftpd.user_list; then
     sed -i "/$exists_username/d" /etc/vsftpd.user_list

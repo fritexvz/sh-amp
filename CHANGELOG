@@ -14,6 +14,7 @@
 11. added: Added a script to create ftp users.
 12. updated: The README.md file has been updated.
 13. fixed: Fixed infinite looping of usernames.
+14. changed: The wrongly declared function name has been changed.
 
 # 0.0.15
 1. fixed: syntax error near unexpected token `?i:log'
