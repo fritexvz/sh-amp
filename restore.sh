@@ -17,21 +17,39 @@ fi
 
 set -e # Work even if somebody does "sh thisscript.sh".
 
-# Selecting operating system
-echo "On what operating system do you want to install this script?"
-PS3="Please select your operating system. (1-2): "
-select os in "Ubuntu 18.04" "Centos 7"; do
-  case $os in
-  "Ubuntu 18.04")
-    OS_ID="ubuntu"
-    OS_VERSION_ID="18.04"
-    break
-    ;;
-  "Centos 7")
-    echo "Sorry. restore of amp is not supported on centos 7."
-    ;;
-  esac
-done
+#
+# lsb_release command is only work for Ubuntu platform but not in centos 
+# so you can get details from /etc/os-release file
+# following command will give you the both OS name and version-
+#
+# https://askubuntu.com/questions/459402/how-to-know-if-the-running-platform-is-ubuntu-or-centos-with-help-of-a-bash-scri
+os_name=$(cat /etc/os-release | awk -F '=' '/^NAME/{print $2}' | awk '{print $1}' | tr -d '"')
+
+if [ "$os_name" == "Ubuntu" ]; then
+  OS_ID="ubuntu"
+  OS_VERSION_ID="18.04"
+  # os_version=$(cat /etc/os-release | awk -F '=' '/^VERSION_ID/{print $2}' | awk '{print $1}' | tr -d '"')
+  # case $os_version in
+  # "14.04")
+  #   echo "os version is 14.04"
+  #   sudo apt-get update
+  #   ;;
+  # "16.04")
+  #   echo "os version is 16.04"
+  #   sudo apt-get update
+  #   ;;
+  # "18.04")
+  #   echo "os version is 18.04"
+  #   sudo apt update
+  # esac
+elif [ "$os_name" == "CentOS" ]; then
+  #echo "system is centos"
+  #sudo yum update
+  echo "Sorry. amp is not supported on $os_name."
+else
+  #echo "system is $os_name"
+  echo "Sorry. amp is not supported on $os_name."
+fi
 
 DIR="$OS_ID/$OS_VERSION_ID"
 
