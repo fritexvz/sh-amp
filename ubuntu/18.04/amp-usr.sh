@@ -159,4 +159,5 @@ if [ $step == "root" ]; then
   echo "Allowed access to the root account."
 fi
 
+printf "\n\nRestarting vsftpd ... \n"
 systemctl restart vsftpd

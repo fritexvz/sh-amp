@@ -15,6 +15,7 @@
 12. added: An empty value was added when declaring the first variable.
 13. updated: Securing Transmissions with SSL/TLS
 14. updated: The vsftp settings have been updated.
+8. added: The comment has been added.
 
 # 0.0.16
 1. fixed: sed: -e expression #1, char 41: unterminated `s' command
