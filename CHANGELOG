@@ -3,6 +3,9 @@
 # 0.0.18
 1. changed: The user home directory permission has been changed.
 2. updated: Removed unnecessary questions when allowing root account access.
+3. added: Shell access was disabled when creating a new ftp user.
+4. modified: The question has been modified.
+5. updated: Securing Transmissions with SSL/TLS has been updated.
 
 # 0.0.17
 1. added: Restoring ufw's configuration settings.

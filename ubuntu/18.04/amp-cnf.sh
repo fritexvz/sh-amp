@@ -345,9 +345,27 @@ if [ -f /etc/vsftpd.conf ]; then
     -e "/ssl_enable\s{0,}?=/{ s/=.*/=NO/; s/^\#\s{0,}?//; }" \
     -e "/pasv_address\s{0,}?=/{ s/=.*/\=$IP_ADDR/; }" \
     /etc/vsftpd.conf
+
   # Securing Transmissions with SSL/TLS
-  openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout /etc/ssl/private/vsftpd.pem -out /etc/ssl/private/vsftpd.pem
-  openssl rsa -in /etc/ssl/private/vsftpd.pem -out /etc/ssl/private/vsftpd.key
+  if [ ! -f /etc/ssl/private/vsftpd.pem ]; then
+    openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout /etc/ssl/private/vsftpd.pem -out /etc/ssl/private/vsftpd.pem
+    openssl rsa -in /etc/ssl/private/vsftpd.pem -out /etc/ssl/private/vsftpd.key
+  else
+    while [[ -z "$ansrsa" ]]; do
+      read -p "vsftpd.pem already exists. Would you like to overwrite it? (y/n) " ansrsa
+      case $ansusrmod in
+      y | Y)
+        openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout /etc/ssl/private/vsftpd.pem -out /etc/ssl/private/vsftpd.pem
+        openssl rsa -in /etc/ssl/private/vsftpd.pem -out /etc/ssl/private/vsftpd.key
+        break
+        ;;
+      n | N)
+        break
+        ;;
+      esac
+    done
+  fi
+
   if [ -f /etc/ssl/private/vsftpd.pem ]; then
   sed -i -E \
     -e "/rsa_cert_file\s{0,}?=/{ s/=.*/=\/etc\/ssl\/private\/vsftpd.pem/; s/^\#\s{0,}?//; }" \
