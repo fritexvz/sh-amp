@@ -258,7 +258,7 @@ printf "\n\nCreate a new ftp user ... \n"
 while true; do
   echo
   echo
-  read -p "Create a new ftp user? (y/n)? " answer
+  read -p "Create a new ftp user? (y/n) " answer
   case $answer in
   y | Y)
     username=""
@@ -287,7 +287,7 @@ fi
 if [ ! -z $username ]; then
   while true; do
     echo
-    read -p "Do you want to allow user's root access? (y/n)? " answer
+    read -p "Do you want to allow user's root access? (y/n) " answer
     case $answer in
     y | Y)
       username_exists "$username"

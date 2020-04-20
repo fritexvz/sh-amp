@@ -122,8 +122,8 @@ if [ $step == "usrmod" ]; then
     if [ ! -d $userdir ]; then
       echo "Directory does not exist."
       while true; do
-        read -p "Do you want to create a directory? (y/n)? " ans
-        case $ans in
+        read -p "Do you want to create a directory? (y/n) " ansusrmod
+        case $ansusrmod in
         y | Y)
           mkdir -p $userdir
           break 2
