@@ -80,10 +80,12 @@ select choice in "Create a new ftp user?" "Allow user root access?" "Change user
   esac
 done
 
-username=""
-while [[ -z "$username" ]]; do
-  read -p "username: " username
-done
+if [ $step != "root" ]; then
+  username=""
+  while [[ -z "$username" ]]; do
+    read -p "username: " username
+  done
+fi
 
 if [ $step == "create" ]; then
   username_create "$username"
