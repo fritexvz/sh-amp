@@ -2,6 +2,7 @@
 
 # 0.0.21
 1. added: Added syntax to deny access to the root account.
+2. added: Added a choice to exit.
 
 
 # 0.0.2

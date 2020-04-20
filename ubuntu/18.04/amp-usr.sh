@@ -51,7 +51,7 @@ function username_create() {
 
 # Selecting Step
 PS3="Choose the next step. (1-5): "
-select choice in "Create a new ftp user?" "Allow user root access?" "Change user password?" "Change user home directory?" "Delete an exist user?" "Allow access to the root account?" "Deny access to the root account?"; do
+select choice in "Create a new ftp user?" "Allow user root access?" "Change user password?" "Change user home directory?" "Delete an exist user?" "Allow access to the root account?" "Deny access to the root account?" "quit"; do
   case $choice in
   "Create a new ftp user?")
     step="createUserAccount"
@@ -80,6 +80,9 @@ select choice in "Create a new ftp user?" "Allow user root access?" "Change user
   "Deny access to the root account?")
     step="denyRootAccess"
     break
+    ;;
+  "quit")
+    exit
     ;;
   esac
 done
