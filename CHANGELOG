@@ -8,6 +8,7 @@
 5. updated: Securing Transmissions with SSL/TLS has been updated.
 6. added: Added output text.
 7. modified: Default permissions for shared files have been modified from 755 to 775.
+8. removed: Unnecessary command have been removed.
 
 # 0.0.2
 1. Minor version (0.0.1x) tags have been removed from version 0.0.2.
@@ -43,7 +44,7 @@
 4. modified: The comment has been modified.
 5. added: Added securing transmissions with SSL/TLS settings to vsftpd.
 6. updated: Added a script to track running platforms.
-7. deleted: Unnecessary variables have been deleted.
+7. removed: Unnecessary variables have been removed.
 8. changed: The default variable name has been changed.
 9. added: The user.sh file was added.
 10. added: The amp-usr.sh file was added.

@@ -97,6 +97,7 @@ fi
 if [ $step == "createUserAccount" ]; then
   username_create "$username"
   adduser $create_username
+  usermod -a -G www-data "$create_username"
   if ! egrep -q "^$create_username$" /etc/vsftpd.user_list; then
     echo "$create_username" | tee -a /etc/vsftpd.user_list
   else
@@ -145,8 +146,6 @@ if [ $step == "changeUserHomeDirectory" ]; then
       done
     fi
   done
-  usermod -d "$userdir" "$exists_username"
-  usermod -a -G www-data "$exists_username"
   chown -R www-data:www-data "$userdir"
   chmod -R 775 "$userdir"
   echo "The user home directory has been changed."
