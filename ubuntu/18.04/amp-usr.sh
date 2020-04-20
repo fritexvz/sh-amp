@@ -51,43 +51,47 @@ function username_create() {
 
 # Selecting Step
 PS3="Choose the next step. (1-5): "
-select choice in "Create a new ftp user?" "Allow user root access?" "Change user password?" "Change user home directory?" "Delete an exist user?" "Allow access to the root account?"; do
+select choice in "Create a new ftp user?" "Allow user root access?" "Change user password?" "Change user home directory?" "Delete an exist user?" "Allow access to the root account?" "Deny access to the root account?"; do
   case $choice in
   "Create a new ftp user?")
-    step="create"
+    step="createUserAccount"
     break
     ;;
   "Allow user root access?")
-    step="chroot"
+    step="allowUserRootAccess"
     break
     ;;
   "Change user password?")
-    step="passwd"
+    step="changeUserPassword"
     break
     ;;
   "Change user home directory?")
-    step="usrmod"
+    step="changeUserHomeDirectory"
     break
     ;;
   "Delete an exist user?")
-    step="delete"
+    step="deleteUserAccount"
     break
     ;;
   "Allow access to the root account?")
-    step="root"
+    step="allowRootAccess"
+    break
+    ;;
+  "Deny access to the root account?")
+    step="denyRootAccess"
     break
     ;;
   esac
 done
 
-if [ $step != "root" ]; then
+if [ $step != "allowRootAccess" ] || [ $step != "denyRootAccess" ]; then
   username=""
   while [[ -z "$username" ]]; do
     read -p "username: " username
   done
 fi
 
-if [ $step == "create" ]; then
+if [ $step == "createUserAccount" ]; then
   username_create "$username"
   adduser $create_username
   if ! egrep -q "^$create_username$" /etc/vsftpd.user_list; then
@@ -100,7 +104,7 @@ if [ $step == "create" ]; then
   echo "New users have been added."
 fi
 
-if [ $step == "chroot" ]; then
+if [ $step == "allowUserRootAccess" ]; then
   username_exists "$username"
   if ! egrep -q "^$exists_username$" /etc/vsftpd.chroot_list; then
     echo "$exists_username" | tee -a /etc/vsftpd.chroot_list
@@ -110,13 +114,13 @@ if [ $step == "chroot" ]; then
   echo "User root access is allowed."
 fi
 
-if [ $step == "passwd" ]; then
+if [ $step == "changeUserPassword" ]; then
   username_exists "$username"
   passwd "$exists_username"
   echo "User password has been changed."
 fi
 
-if [ $step == "usrmod" ]; then
+if [ $step == "changeUserHomeDirectory" ]; then
   username_exists "$username"
   userdir=""
   while [[ -z "$userdir" ]]; do
@@ -145,7 +149,7 @@ if [ $step == "usrmod" ]; then
   echo "The user home directory has been changed."
 fi
 
-if [ $step == "delete" ]; then
+if [ $step == "deleteUserAccount" ]; then
   username_exists "$username"
   deluser --remove-home "$exists_username"
   if egrep -q "^$exists_username$" /etc/vsftpd.user_list; then
@@ -157,11 +161,18 @@ if [ $step == "delete" ]; then
   echo "The existing user has been deleted."
 fi
 
-if [ $step == "root" ]; then
+if [ $step == "allowRootAccess" ]; then
   if egrep -q "^root$" /etc/ftpusers; then
     sed -i -E "/^root$/d" /etc/ftpusers
   fi
-  echo "Allowed access to the root account."
+  echo "Access to the root account is allowed."
+fi
+
+if [ $step == "denyRootAccess" ]; then
+  if ! egrep -q "^root$" /etc/ftpusers; then
+    echo "root" | sudo tee -a /etc/ftpusers
+  fi
+  echo "Access to the root account is denied."
 fi
 
 printf "\n\nRestarting vsftpd ... \n"

@@ -1,5 +1,9 @@
 # amp   
 
+# 0.0.21
+1. added: Added syntax to deny access to the root account.
+
+
 # 0.0.2
 1. Minor version (0.0.1x) tags have been removed from version 0.0.2.
 
