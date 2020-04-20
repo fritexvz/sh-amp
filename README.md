@@ -43,6 +43,15 @@ You can change the default options for ftp users.
 # ./user.sh
 ```
 
+## Restart   
+- apache2   
+- ufw   
+- vsftpd    
+- mariadb   
+```
+# ./restart.sh
+```
+
 ## Update   
 ```
 # ./update.sh

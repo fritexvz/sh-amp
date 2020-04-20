@@ -3,7 +3,9 @@
 # 0.0.21
 1. added: Added syntax to deny access to the root account.
 2. added: Added a choice to exit.
-
+3. fixed: GnuTLS error -15 in gnutls_record_recv: An unexpected TLS packet was received.
+4. added: The restart.sh file was added.
+5. updated: Securing Transmissions with SSL/TLS has been updated.
 
 # 0.0.2
 1. Minor version (0.0.1x) tags have been removed from version 0.0.2.
