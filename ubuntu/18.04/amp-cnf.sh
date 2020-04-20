@@ -310,18 +310,28 @@ userlist_deny=NO
 chmod_enable=YES
 file_open_mode=0755
 # 
-# deny anonymous access over SSL:
+# To allow anonymous users to use SSL
 #allow_anon_ssl=NO
+#
+# To force anonymous users to use SSL
+#force_anon_data_ssl=NO
+#force_anon_logins_ssl=NO
+#
+# To force local users to use SSL
 #force_local_data_ssl=YES
 #force_local_logins_ssl=YES
 #
-# server to use TLS:
+# Permit TLS v1 protocol connections. TLS v1 connections are preferred
 #ssl_tlsv1=YES
 #ssl_sslv2=NO
 #ssl_sslv3=NO
 #
-# We will need high encrypted cipher suites meaning that the key lengths will be 128 bits or more
+# Uncomment ssl_request_cert option if SSL/TLS connection is used by IBM's zOS ftp client
+# read man vsftpd.conf for further information
+#ssl_request_cert=NO
 #require_ssl_reuse=NO
+#
+# We will need high encrypted cipher suites meaning that the key lengths will be 128 bits or more
 #ssl_ciphers=HIGH
 #
 # W3SRC DYNAMIC CONFIG: END
@@ -347,40 +357,51 @@ if [ -f /etc/vsftpd.conf ]; then
     /etc/vsftpd.conf
 
   # Securing Transmissions with SSL/TLS
-  if [ ! -f /etc/ssl/private/vsftpd.pem ]; then
-    openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout /etc/ssl/private/vsftpd.pem -out /etc/ssl/private/vsftpd.pem
-    openssl rsa -in /etc/ssl/private/vsftpd.pem -out /etc/ssl/private/vsftpd.key
-  else
-    while [[ -z "$ansrsa" ]]; do
-      read -p "vsftpd.pem already exists. Would you like to overwrite it? (y/n) " ansrsa
-      case $ansusrmod in
-      y | Y)
-        openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout /etc/ssl/private/vsftpd.pem -out /etc/ssl/private/vsftpd.pem
-        openssl rsa -in /etc/ssl/private/vsftpd.pem -out /etc/ssl/private/vsftpd.key
-        break
-        ;;
-      n | N)
-        break
-        ;;
-      esac
-    done
-  fi
+  while [[ -z "$ansrsa" ]]; do
+    read -p "Would you like to use SSL? (y/n) " ansrsa
+    case $ansusrmod in
+    y | Y)
+      openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout /etc/ssl/private/vsftpd.pem -out /etc/ssl/private/vsftpd.pem
+      chmod 600 /etc/ssl/private/vsftpd.pem
 
-  if [ -f /etc/ssl/private/vsftpd.pem ]; then
-  sed -i -E \
-    -e "/rsa_cert_file\s{0,}?=/{ s/=.*/=\/etc\/ssl\/private\/vsftpd.pem/; s/^\#\s{0,}?//; }" \
-    -e "/rsa_private_key_file\s{0,}?=/{ s/=.*/=\/etc\/ssl\/private\/vsftpd.pem/; s/^\#\s{0,}?//; }" \
-    -e "/ssl_enable\s{0,}?=/{ s/=.*/=YES/; s/^\#\s{0,}?//; }" \
-    -e "/allow_anon_ssl\s{0,}?=/{ s/^\#\s{0,}?//; }" \
-    -e "/force_local_data_ssl\s{0,}?=/{ s/^\#\s{0,}?//; }" \
-    -e "/force_local_logins_ssl\s{0,}?=/{ s/^\#\s{0,}?//; }" \
-    -e "/ssl_tlsv1\s{0,}?=/{ s/^\#\s{0,}?//; }" \
-    -e "/ssl_sslv2\s{0,}?=/{ s/^\#\s{0,}?//; }" \
-    -e "/ssl_sslv3\s{0,}?=/{ s/^\#\s{0,}?//; }" \
-    -e "/require_ssl_reuse\s{0,}?=/{ s/^\#\s{0,}?//; }" \
-    -e "/ssl_ciphers\s{0,}?=/{ s/^\#\s{0,}?//; }" \
-    /etc/vsftpd.conf
-  fi
+      if [ -f /etc/vsftpd.conf ]; then
+        sed -i -E \
+          -e "/rsa_cert_file\s{0,}?=/{ s/=.*/=\/etc\/ssl\/private\/vsftpd.pem/; s/^\#\s{0,}?//; }" \
+          -e "/rsa_private_key_file\s{0,}?=/{ s/=.*/=\/etc\/ssl\/private\/vsftpd.pem/; s/^\#\s{0,}?//; }" \
+          -e "/ssl_enable\s{0,}?=/{ s/=.*/=YES/; s/^\#\s{0,}?//; }" \
+          -e "/allow_anon_ssl\s{0,}?=/{ s/^\#\s{0,}?//; }" \
+          -e "/force_local_data_ssl\s{0,}?=/{ s/^\#\s{0,}?//; }" \
+          -e "/force_local_logins_ssl\s{0,}?=/{ s/^\#\s{0,}?//; }" \
+          -e "/ssl_tlsv1\s{0,}?=/{ s/^\#\s{0,}?//; }" \
+          -e "/ssl_sslv2\s{0,}?=/{ s/^\#\s{0,}?//; }" \
+          -e "/ssl_sslv3\s{0,}?=/{ s/^\#\s{0,}?//; }" \
+          -e "/require_ssl_reuse\s{0,}?=/{ s/^\#\s{0,}?//; }" \
+          -e "/ssl_ciphers\s{0,}?=/{ s/^\#\s{0,}?//; }" \
+          /etc/vsftpd.conf
+      fi
+
+      break
+      ;;
+    n | N)
+
+      if [ -f /etc/vsftpd.conf ]; then
+        sed -i -E \
+          -e "/ssl_enable\s{0,}?=/{ s/=.*/=NO/; s/^\#\s{0,}?//; }" \
+          -e "/allow_anon_ssl\s{0,}?=/{ s/^/\#/; s/^\#+/\#/; }" \
+          -e "/force_local_data_ssl\s{0,}?=/{ s/^/\#/; s/^\#+/\#/; }" \
+          -e "/force_local_logins_ssl\s{0,}?=/{ s/^/\#/; s/^\#+/\#/; }" \
+          -e "/ssl_tlsv1\s{0,}?=/{ s/^/\#/; s/^\#+/\#/; }" \
+          -e "/ssl_sslv2\s{0,}?=/{ s/^/\#/; s/^\#+/\#/; }" \
+          -e "/ssl_sslv3\s{0,}?=/{ s/^/\#/; s/^\#+/\#/; }" \
+          -e "/require_ssl_reuse\s{0,}?=/{ s/^/\#/; s/^\#+/\#/; }" \
+          -e "/ssl_ciphers\s{0,}?=/{ s/^/\#/; s/^\#+/\#/; }" \
+          /etc/vsftpd.conf
+      fi
+
+      break
+      ;;
+    esac
+  done
 
 fi
 
