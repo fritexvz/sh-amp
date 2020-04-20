@@ -43,18 +43,22 @@ select choice in "apache2" "ufw" "vsftpd" "mariadb" "quit"; do
 done
 
 if [ $step == "apache2" ]; then
+  printf "\n\nRestarting apache2 ... \n"
   systemctl restart apache2
 fi
 
 if [ $step == "ufw" ]; then
+  printf "\n\nRestarting ufw ... \n"
   ufw disable
   ufw enable
 fi
 
 if [ $step == "vsftpd" ]; then
+  printf "\n\nRestarting vsftpd ... \n"
   systemctl restart vsftpd
 fi
 
 if [ $step == "mariadb" ]; then
+  printf "\n\nRestarting mariadb ... \n"
   service mysqld restart
 fi

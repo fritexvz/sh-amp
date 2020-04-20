@@ -6,6 +6,7 @@
 3. fixed: GnuTLS error -15 in gnutls_record_recv: An unexpected TLS packet was received.
 4. added: The restart.sh file was added.
 5. updated: Securing Transmissions with SSL/TLS has been updated.
+6. added: Added output text.
 
 # 0.0.2
 1. Minor version (0.0.1x) tags have been removed from version 0.0.2.
