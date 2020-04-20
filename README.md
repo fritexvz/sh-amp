@@ -38,6 +38,7 @@ You can change the default options for ftp users.
 - Change user's password?   
 - Change user's home directory?   
 - Delete a exist user?   
+- Allow access to the root account?   
 ```
 # ./user.sh
 ```

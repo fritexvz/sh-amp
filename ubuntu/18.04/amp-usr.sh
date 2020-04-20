@@ -137,8 +137,9 @@ if [ $step == "usrmod" ]; then
     fi
   done
   usermod -d "$userdir" "$exists_username"
-  chown -R nobody:nogroup "$userdir"
-  chmod -R 755 /var/www
+  usermod -a -G www-data "$exists_username"
+  chown -R www-data:www-data "$userdir"
+  chmod -R 775 "$userdir"
   echo "The user home directory has been changed."
 fi
 
