@@ -1,5 +1,8 @@
 # amp   
 
+# 0.0.2
+1. Minor version (0.0.1x) tags have been removed from version 0.0.2.
+
 # 0.0.18
 1. changed: The user home directory permission has been changed.
 2. updated: Removed unnecessary questions when allowing root account access.
