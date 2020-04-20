@@ -95,6 +95,8 @@ if [ $step == "create" ]; then
   else
     echo $create_username " is already in user_list."
   fi
+  # Disabling Shell Access
+  usermod $create_username -s /bin/ftponly
   echo "New users have been added."
 fi
 

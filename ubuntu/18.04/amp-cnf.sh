@@ -363,6 +363,19 @@ if [ -f /etc/vsftpd.conf ]; then
     -e "/ssl_ciphers\s{0,}?=/{ s/^\#\s{0,}?//; }" \
     /etc/vsftpd.conf
   fi
+
+fi
+
+printf "\n\nDisabling Shell Access ... \n"
+cat >/bin/ftponly <<EOT
+#!/bin/sh
+echo "This account is limited to FTP access only."
+EOT
+
+chmod a+x /bin/ftponly
+
+if ! egrep -q "^\/bin\/ftponly$" /etc/shells; then
+  echo "/bin/ftponly" | sudo tee -a /etc/shells
 fi
 
 printf "\n\nRestarting apache2 ... \n"
