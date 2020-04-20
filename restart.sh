@@ -17,48 +17,40 @@ fi
 
 set -e # Work even if somebody does "sh thisscript.sh".
 
-PS3="Choose the next step. (1-5): "
-select choice in "apache2" "ufw" "vsftpd" "mariadb" "quit"; do
-  case $choice in
-  "apache2")
-    step="apache2"
-    break
-    ;;
-  "ufw")
-    step="ufw"
-    break
-    ;;
-  "vsftpd")
-    step="vsftpd"
-    break
-    ;;
-  "mariadb")
-    step="mariadb"
-    break
-    ;;
-  "quit")
-    exit
-    ;;
-  esac
-done
+#
+# lsb_release command is only work for Ubuntu platform but not in centos 
+# so you can get details from /etc/os-release file
+# following command will give you the both OS name and version-
+#
+# https://askubuntu.com/questions/459402/how-to-know-if-the-running-platform-is-ubuntu-or-centos-with-help-of-a-bash-scri
+os_name=$(cat /etc/os-release | awk -F '=' '/^NAME/{print $2}' | awk '{print $1}' | tr -d '"')
 
-if [ $step == "apache2" ]; then
-  printf "\n\nRestarting apache2 ... \n"
-  systemctl restart apache2
+if [ "$os_name" == "Ubuntu" ]; then
+  OS_ID="ubuntu"
+  OS_VERSION_ID="18.04"
+  # os_version=$(cat /etc/os-release | awk -F '=' '/^VERSION_ID/{print $2}' | awk '{print $1}' | tr -d '"')
+  # case $os_version in
+  # "14.04")
+  #   echo "os version is 14.04"
+  #   sudo apt-get update
+  #   ;;
+  # "16.04")
+  #   echo "os version is 16.04"
+  #   sudo apt-get update
+  #   ;;
+  # "18.04")
+  #   echo "os version is 18.04"
+  #   sudo apt update
+  # esac
+elif [ "$os_name" == "CentOS" ]; then
+  #echo "system is centos"
+  #sudo yum update
+  echo "Sorry. amp is not supported on $os_name."
+else
+  #echo "system is $os_name"
+  echo "Sorry. amp is not supported on $os_name."
 fi
 
-if [ $step == "ufw" ]; then
-  printf "\n\nRestarting ufw ... \n"
-  ufw disable
-  ufw enable
-fi
+DIR="$OS_ID/$OS_VERSION_ID"
 
-if [ $step == "vsftpd" ]; then
-  printf "\n\nRestarting vsftpd ... \n"
-  systemctl restart vsftpd
-fi
-
-if [ $step == "mariadb" ]; then
-  printf "\n\nRestarting mariadb ... \n"
-  service mysqld restart
-fi
+./$DIR/amp-boot.sh

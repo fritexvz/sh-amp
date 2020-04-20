@@ -9,6 +9,7 @@
 6. added: Added output text.
 7. modified: Default permissions for shared files have been modified from 755 to 775.
 8. removed: Unnecessary command have been removed.
+9. added: The amp-boot.sh file was added.
 
 # 0.0.2
 1. Minor version (0.0.1x) tags have been removed from version 0.0.2.
