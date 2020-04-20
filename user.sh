@@ -53,4 +53,4 @@ fi
 
 DIR="$OS_ID/$OS_VERSION_ID"
 
-./$DIR/amp-usr.sh
+./$DIR/amp-user.sh
