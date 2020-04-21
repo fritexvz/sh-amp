@@ -6,8 +6,8 @@
 # Usage
 # git clone https://github.com/w3src/sh-amp.git
 # cd sh-amp
-# chmod +x ./ubuntu/18.04/amp-bak.sh
-# ./ubuntu/18.04/amp-bak.sh
+# chmod +x ./ubuntu/18.04/amp-restore.sh
+# ./ubuntu/18.04/amp-restore.sh
 
 # Check to see if script is being run as root
 if [ "$(whoami)" != 'root' ]; then
