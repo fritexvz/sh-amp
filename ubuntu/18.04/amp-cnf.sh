@@ -305,10 +305,6 @@ pasv_address=0.0.0.0/0
 userlist_enable=YES
 userlist_file=/etc/vsftpd.user_list
 userlist_deny=NO
-#
-# After creating an ftp user, all files/folders were uploading with 775 permissions.
-chmod_enable=YES
-file_open_mode=0775
 # 
 # To allow anonymous users to use SSL
 #allow_anon_ssl=NO

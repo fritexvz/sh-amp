@@ -139,7 +139,6 @@ if [ $step == "changeUserHomeDirectory" ]; then
           break 2
           ;;
         n | N)
-          userdir=""
           break
           ;;
         esac
