@@ -1,5 +1,17 @@
 # amp stack   
 
+# 0.0.23
+1. fixed: Fixed the heredoc not to overlap.
+2. updated: Updated code to check if ip is blocked before unblocking.
+3. updated: The fail2ban configuration has been updated.
+4. fixed: Fixed an error where when creating a new vhosting file, there were no more files or directories and could no longer proceed.
+5. added: Added optional syntax to overwrite virtual hosting directory if it already exists.
+6. fixed: Fixed sed can't read i: No such file or directory.
+7. added: Added the logs directory to the virtual host directory.
+8. changed: The default email for serveradmin has changed.
+9. updated: Updated to disable default virtual hosting.
+10. updated: The CHANGELOG has been updated.
+
 # 0.0.22
 1. added: The host.sh file was added.
 2. added: The amp-host.sh file was added.
