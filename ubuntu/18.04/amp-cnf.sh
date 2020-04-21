@@ -108,13 +108,13 @@ chmod -R 700 /home/*
 # MaxConnectionsPerChild: maximum number of requests a server process serves
 printf "\n\nSetting up mpm_prefork.conf ... \n"
 
-STARTSERVERS="5"
+STARTSERVERS="10"
 MAXREQUESTWORKERS="300"
 MAXCONNECTIONSPERCHILD="0"
 
 # StartServers
 while true; do
-  read -p "The default StartServers value is 5. Would you like to change? (y/n)? " answer
+  read -p "The default StartServers value is 10. Would you like to change? (y/n)? " answer
   case ${answer} in
   y | Y)
     STARTSERVERS=""
