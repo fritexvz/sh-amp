@@ -132,6 +132,17 @@ printf "\n\nRestarting apache2 ... \n"
 systemctl restart apache2
 
 #
+# sendmail
+printf "\n\nInstalling sendmail ... \n"
+apt -y install sendmail
+
+printf "\n\nCreate a file to restore configuration settings of sendmail ... \n"
+copy "/etc/mail/local-host-names"
+
+printf "\n\nRestarting apache2 ... \n"
+systemctl restart apache2
+
+#
 # firewall
 printf "\n\nOpening port ... \n"
 
@@ -182,6 +193,18 @@ ufw disable
 ufw enable
 
 #
+# fail2ban
+printf "\n\nInstalling fail2ben ... \n"
+apt -y install fail2ban whois
+
+printf "\n\nCreate a file to restore configuration settings of fail2ban ... \n"
+copy "/etc/fail2ban/fail2ban.conf"
+cp /etc/fail2ban/fail2ban.conf /etc/fail2ban/jail.local
+
+printf "\n\nRestarting fail2ban ... \n"
+systemctl restart fail2ban
+
+#
 # mariadb
 printf "\n\nInstalling mariadb ... \n"
 apt -y install mariadb-server mariadb-client
@@ -229,17 +252,6 @@ printf "\n\nCreate a file to restore configuration settings of php ... \n"
 copy "/etc/apache2/mods-available/dir.conf"
 copy "/etc/apache2/mods-available/php$PHP_VERSION.conf"
 copy "/etc/php/$PHP_VERSION/apache2/php.ini"
-
-printf "\n\nRestarting apache2 ... \n"
-systemctl restart apache2
-
-#
-# sendmail
-printf "\n\nInstalling sendmail ... \n"
-apt -y install sendmail
-
-printf "\n\nCreate a file to restore configuration settings of sendmail ... \n"
-copy "/etc/mail/local-host-names"
 
 printf "\n\nRestarting apache2 ... \n"
 systemctl restart apache2
