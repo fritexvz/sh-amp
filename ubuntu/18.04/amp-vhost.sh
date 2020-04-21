@@ -148,13 +148,11 @@ VHOSTCONFSCRIPT
   printf "\n\nReloading apache2 ... \n"
   systemctl reload apache2
 
-  if [ $step2 == "laravel" ]; then
-    
-  fi
+  # if [ $step2 == "laravel" ]; then
+  # fi
 
-  if [ $step2 == "wordpress" ]; then
-    
-  fi
+  # if [ $step2 == "wordpress" ]; then
+  # fi
 
 fi
 
