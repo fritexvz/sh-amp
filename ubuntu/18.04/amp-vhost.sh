@@ -69,6 +69,9 @@ printf "\n\nSetting up vhosting directory ... \n"
 if [ ! -d /var/www/$VHOSTNAME/html ]; then
   mkdir -p /var/www/$VHOSTNAME/html
 fi
+if [ ! -d /var/www/$VHOSTNAME/logs ]; then
+  mkdir -p /var/www/$VHOSTNAME/logs
+fi
 chown -R www-data:www-data /var/www/$VHOSTNAME
 chmod -R 775 /var/www/$VHOSTNAME
 
