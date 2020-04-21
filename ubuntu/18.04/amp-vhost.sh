@@ -95,17 +95,17 @@ cat >/etc/apache2/sites-available/$VHOSTNAME.conf <<EOF
 EOF
 
 if [ $step == "laravel" ]; then
-  sed i -E -e "/DocumentRoot/{ s#_temp/html#_temp/html/public#; }"
+  sed -i -E -e "/DocumentRoot/{ s#_temp/html#_temp/html/public#; }"
 fi
 
 dots=$(echo "$VHOSTNAME" | tr -cd . | wc -c)
 if [ $dots -gt 1 ]; then
   if egrep -q "/ServerAlias\s+www\._temp/" /etc/apache2/sites-available/$VHOSTNAME.conf; then
-    sed i -E -e "/ServerAlias\s+www\._temp/d" /etc/apache2/sites-available/$VHOSTNAME.conf
+    sed -i -E -e "/ServerAlias\s+www\._temp/d" /etc/apache2/sites-available/$VHOSTNAME.conf
   fi
 fi
 
-sed i -E -e "s/_temp/$VHOSTNAME/" /etc/apache2/sites-available/$VHOSTNAME.conf
+sed -i -E -e "s/_temp/$VHOSTNAME/" /etc/apache2/sites-available/$VHOSTNAME.conf
 
 echo "Adding $VHOSTNAME to the /etc/hosts file ... \n"
 PUBLIC_IP="$(curl ifconfig.me)"
