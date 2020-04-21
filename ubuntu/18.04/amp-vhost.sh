@@ -53,7 +53,15 @@ while [[ -z "$VHOSTNAME" ]]; do
   read -p "Enter ServerName without an alias. (ex) example.com : " VHOSTNAME
   if [ -d /var/www/$VHOSTNAME ]; then
     echo $VHOSTNAME " directory is already exists."
-    VHOSTNAME=""
+    read -p "Do you want to overwrite it? (y/n) " ansoverwrite
+    case $ansoverwrite in
+    y | Y)
+      break
+      ;;
+    n | N)
+      VHOSTNAME=""
+      ;;
+    esac
   fi
 done
 
