@@ -199,7 +199,10 @@ printf "\n\nInstalling fail2ben ... \n"
 apt -y install fail2ban whois
 
 printf "\n\nCreate a file to restore configuration settings of fail2ban ... \n"
-cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local 
+copy "/etc/fail2ban/jail.conf"
+if [ ! -f /etc/fail2ban/jail.local ]; then
+  echo "" >/etc/fail2ban/jail.local
+fi
 
 printf "\n\nRestarting fail2ban ... \n"
 systemctl restart fail2ban

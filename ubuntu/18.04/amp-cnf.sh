@@ -213,8 +213,85 @@ systemctl restart apache2
 #
 # fail2ban
 printf "\n\nSetting up fail2ban config ... \n"
-# TODO
-#sed -i -E -e "" /etc/fail2ban/jail.local
+if [ -f /etc/fail2ban/jail.local ]; then
+  cat >/etc/fail2ban/jail.local <<FAIL2BANSCRIPT
+[DEFAULT]
+
+#
+# MISCELLANEOUS OPTIONS
+#
+
+# "ignoreip" can be a list of IP addresses, CIDR masks or DNS hosts. Fail2ban
+# will not ban a host which matches an address in this list. Several addresses
+# can be defined using space (and/or comma) separator.
+#ignoreip = 127.0.0.1/8 ::1
+
+# External command that will take an tagged arguments to ignore, e.g. <ip>,
+# and return true if the IP is to be ignored. False otherwise.
+#
+# ignorecommand = /path/to/command <ip>
+ignorecommand =
+
+# "bantime" is the number of seconds that a host is banned.
+bantime  = 10m
+
+# A host is banned if it has generated "maxretry" during the last "findtime"
+# seconds.
+findtime  = 10m
+
+# "maxretry" is the number of failures before a host get banned.
+maxretry = 5
+
+# "enabled" enables the jails.
+#  By default all jails are disabled, and it should stay this way.
+#  Enable only relevant to your setup jails in your .local or jail.d/*.conf
+#
+# true:  jail will be enabled and log files will get monitored for changes
+# false: jail is not enabled
+enabled = false
+
+
+#
+# ACTIONS
+#
+
+# Some options used for actions
+
+# Destination email address used solely for the interpolations in
+# jail.{conf,local,d/*} configuration files.
+destemail = root@localhost
+
+# Sender email address used solely for some actions
+sender = root@<fq-hostname>
+
+# E-mail action. Since 0.8.1 Fail2Ban uses sendmail MTA for the
+# mailing. Change mta configuration parameter to mail if you want to
+# revert to conventional 'mail'.
+mta = sendmail
+
+# Default protocol
+protocol = tcp
+
+
+#
+# JAILS
+#
+
+#
+# SSH servers
+#
+
+[sshd]
+
+# To use more aggressive sshd modes set filter parameter "mode" in jail.local:
+# normal (default), ddos, extra or aggressive (combines all).
+# See "tests/files/logs/sshd" or "filter.d/sshd.conf" for usage example and details.
+#mode   = normal
+port    = ssh
+logpath = %(sshd_log)s
+backend = %(sshd_backend)s
+FAIL2BANSCRIPT
+fi
 
 printf "\n\nRestarting fail2ban ... \n"
 service fail2ban restart
