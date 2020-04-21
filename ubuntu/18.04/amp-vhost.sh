@@ -116,13 +116,12 @@ if ! grep -q "$PUBLIC_IP $VHOSTNAME" /etc/hosts; then
   sed -i "2 a\\$PUBLIC_IP $VHOSTNAME" /etc/hosts
 fi
 
-if egrep -q "000-default" apache2ctl -S; then
-  printf "\n\nDiabling default vhosting ... \n"
+if a2query -s | egrep -q "000-default\s+"; then
+  printf "\n\nDisabling default vhosting ... \n"
   a2dissite 000-default.conf
   systemctl reload apache2
-  systemctl status apache2
 fi
 
 printf "\n\nEnabling new vhosting ... \n"
 a2ensite $VHOSTNAME.conf
-service apache2 restart
+systemctl reload apache2
