@@ -11,6 +11,8 @@
 8. changed: The default email for serveradmin has changed.
 9. updated: Updated to disable default virtual hosting.
 10. updated: The CHANGELOG has been updated.
+11. updated: Updated sender and recipient email addresses to be editable.
+12. added: Added steps to remove virtual hosts.
 
 # 0.0.22
 1. added: The host.sh file was added.

@@ -24,22 +24,18 @@ fi
 
 set -e # Work even if somebody does "sh thisscript.sh".
 
-printf "\n\nSetting up vhosting ... \n"
+PUBLIC_IP="$(curl ifconfig.me)"
 
-# Selecting Step
-PS3="Choose the next step. (1-4): "
-select choice in "default" "laravel" "wordpress" "quit"; do
+# Selecting Step1
+PS3="Choose the next step. (1-3): "
+select choice in "install" "uninstall" "quit"; do
   case $choice in
-  "default")
-    step="default"
+  "install")
+    step1="install"
     break
     ;;
-  "laravel")
-    step="laravel"
-    break
-    ;;
-  "wordpress")
-    step="wordpress"
+  "uninstall")
+    step1="uninstall"
     break
     ;;
   "quit")
@@ -48,37 +44,62 @@ select choice in "default" "laravel" "wordpress" "quit"; do
   esac
 done
 
-VHOSTNAME=""
-while [[ -z "$VHOSTNAME" ]]; do
-  read -p "Enter ServerName without an alias. (ex) example.com : " VHOSTNAME
-  if [ -d /var/www/$VHOSTNAME ]; then
-    echo $VHOSTNAME " directory is already exists."
-    read -p "Do you want to overwrite it? (y/n) " ansoverwrite
-    case $ansoverwrite in
-    y | Y)
+if [ $step1 == "install" ]; then
+  printf "\n\nSetting up vhosting ... \n"
+
+  # Selecting Step2
+  PS3="Choose the next step. (1-4): "
+  select choice in "default" "laravel" "wordpress" "quit"; do
+    case $choice in
+    "default")
+      step2="default"
       break
       ;;
-    n | N)
-      VHOSTNAME=""
+    "laravel")
+      step2="laravel"
+      break
+      ;;
+    "wordpress")
+      step2="wordpress"
+      break
+      ;;
+    "quit")
+      exit
       ;;
     esac
+  done
+
+  create_vhostname=""
+  while [[ -z "$create_vhostname" ]]; do
+    read -p "Enter ServerName without an alias. (ex) example.com : " create_vhostname
+    if [ -d /var/www/$create_vhostname ]; then
+      echo $create_vhostname " already exists."
+      read -p "Do you want to overwrite it? (y/n) " ansoverwrite
+      case $ansoverwrite in
+      y | Y)
+        break
+        ;;
+      n | N)
+        create_vhostname=""
+        ;;
+      esac
+    fi
+  done
+
+  printf "\n\nSetting up vhosting directory ... \n"
+  if [ ! -d /var/www/$create_vhostname/html ]; then
+    mkdir -p /var/www/$create_vhostname/html
   fi
-done
+  if [ ! -d /var/www/$create_vhostname/logs ]; then
+    mkdir -p /var/www/$create_vhostname/logs
+  fi
+  chown -R www-data:www-data /var/www/$create_vhostname
+  chmod -R 775 /var/www/$create_vhostname
 
-printf "\n\nSetting up vhosting directory ... \n"
-if [ ! -d /var/www/$VHOSTNAME/html ]; then
-  mkdir -p /var/www/$VHOSTNAME/html
-fi
-if [ ! -d /var/www/$VHOSTNAME/logs ]; then
-  mkdir -p /var/www/$VHOSTNAME/logs
-fi
-chown -R www-data:www-data /var/www/$VHOSTNAME
-chmod -R 775 /var/www/$VHOSTNAME
-
-printf "\n\nCreating new vhosting files ... \n"
-cp /var/www/html/index.html /var/www/$VHOSTNAME/html/index.html
-cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/$VHOSTNAME.conf
-cat >/etc/apache2/sites-available/$VHOSTNAME.conf <<EOF
+  printf "\n\nCreating new vhosting files ... \n"
+  cp /var/www/html/index.html /var/www/$create_vhostname/html/index.html
+  cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/$create_vhostname.conf
+  cat >/etc/apache2/sites-available/$create_vhostname.conf <<VHOSTCONFSCRIPT
 <VirtualHost *:80>
     ServerAdmin sys@_temp
     ServerName _temp
@@ -95,33 +116,84 @@ cat >/etc/apache2/sites-available/$VHOSTNAME.conf <<EOF
     ErrorLog /var/www/_temp/logs/error.log
     CustomLog /var/www/_temp/logs/access.log combined
 </VirtualHost>
-EOF
+VHOSTCONFSCRIPT
 
-if [ $step == "laravel" ]; then
-  sed -i -E -e "/DocumentRoot/{ s#_temp/html#_temp/html/public#; }"
-fi
-
-dots=$(echo "$VHOSTNAME" | tr -cd . | wc -c)
-if [ $dots -gt 1 ]; then
-  if egrep -q "/ServerAlias\s+www\._temp/" /etc/apache2/sites-available/$VHOSTNAME.conf; then
-    sed -i -E -e "/ServerAlias\s+www\._temp/d" /etc/apache2/sites-available/$VHOSTNAME.conf
+  if [ $step2 == "laravel" ]; then
+    sed -i -E "/DocumentRoot/{ s#_temp/html#_temp/html/public#; }"
   fi
-fi
 
-sed -i -E -e "s/_temp/$VHOSTNAME/" /etc/apache2/sites-available/$VHOSTNAME.conf
+  dots=$(echo "$create_vhostname" | tr -cd . | wc -c)
+  if [ $dots -gt 1 ]; then
+    if egrep -q "/ServerAlias\s+www\._temp/" /etc/apache2/sites-available/$create_vhostname.conf; then
+      sed -i -E "/ServerAlias\s+www\._temp/d" /etc/apache2/sites-available/$create_vhostname.conf
+    fi
+  fi
 
-echo "Adding $VHOSTNAME to the /etc/hosts file ... \n"
-PUBLIC_IP="$(curl ifconfig.me)"
-if ! grep -q "$PUBLIC_IP $VHOSTNAME" /etc/hosts; then
-  sed -i "2 a\\$PUBLIC_IP $VHOSTNAME" /etc/hosts
-fi
+  sed -i -E "s/_temp/$create_vhostname/" /etc/apache2/sites-available/$create_vhostname.conf
 
-if a2query -s | egrep -q "000-default\s+"; then
+  printf "\n\nAdding $create_vhostname to the /etc/hosts file ... \n"
+  if ! egrep -q "^$PUBLIC_IP\s+$create_vhostname$" /etc/hosts; then
+    sed -i "2 a\\$PUBLIC_IP $create_vhostname" /etc/hosts
+  fi
+
   printf "\n\nDisabling default vhosting ... \n"
-  a2dissite 000-default.conf
+  if a2query -s | egrep -q "000-default\s+"; then
+    a2dissite 000-default.conf
+    systemctl reload apache2
+  fi
+
+  printf "\n\nEnabling new vhosting ... \n"
+  a2ensite $create_vhostname.conf
+
+  printf "\n\nReloading apache2 ... \n"
   systemctl reload apache2
+
+  if [ $step2 == "laravel" ]; then
+    
+  fi
+
+  if [ $step2 == "wordpress" ]; then
+    
+  fi
+
 fi
 
-printf "\n\nEnabling new vhosting ... \n"
-a2ensite $VHOSTNAME.conf
-systemctl reload apache2
+if [ $step1 == "uninstall" ]; then
+
+  remove_vhostname=""
+  while [[ -z "$remove_vhostname" ]]; do
+    read -p "Enter ServerName without an alias. (ex) example.com : " remove_vhostname
+    if [ ! -d /var/www/$remove_vhostname ]; then
+      echo $remove_vhostname " does not exists."
+      remove_vhostname=""
+    fi
+  done
+
+  read -p "Are you sure you want to remove it? (y/n) " ansremove
+  case $ansremove in
+  y | Y)
+
+    printf "\n\nDisabling $remove_vhostname vhosting ... \n"
+    a2dissite $remove_vhostname.conf
+
+    printf "\n\nRemoving $remove_vhostname to the /etc/hosts file ... \n"
+    if egrep -q "^$PUBLIC_IP\s+$remove_vhostname$" /etc/hosts; then
+      sed -i -E "/^$PUBLIC_IP\s+$remove_vhostname$/d" /etc/hosts
+    fi
+
+    printf "\n\nRemoving $remove_vhostname directory ... \n"
+    if [ -d /var/www/$remove_vhostname ]; then
+      rm -rf /var/www/$remove_vhostname
+    fi
+
+    printf "\n\nReloading apache2 ... \n"
+    systemctl reload apache2
+
+    break
+    ;;
+  n | N)
+    exit
+    ;;
+  esac
+
+fi
