@@ -24,6 +24,8 @@ fi
 
 set -e # Work even if somebody does "sh thisscript.sh".
 
+#
+# apache2
 printf "\n\nSetting up apache2 config ... \n"
 printf "\n\nSetting up charset.conf ... \n"
 if [ -f /etc/apache2/conf-available/charset.conf ]; then
@@ -50,8 +52,8 @@ if [ -f /etc/apache2/conf-available/security.conf ]; then
     -e "/ServerTokens\s+Prod/{ s/^\#\s{0,}?//; }" \
     -e "/ServerSignature\s+On/{ s/^/\#/; s/^\#+/\#/; }" \
     -e "/ServerSignature\s+Off/{ s/^\#\s{0,}?//; }" \
-    -e "/Header\s+set\s+X\-Content\-Type\-Options\s{0,}?\:/{ s/^\#\s{0,}?//; }" \
-    -e "/Header\s+set\s+X\-Frame\-Options\s{0,}?\:/{ s/^\#\s{0,}?//; }" \
+    -e "/Header\s+set\s+X-Content-Type-Options\s{0,}?\:/{ s/^\#\s{0,}?//; }" \
+    -e "/Header\s+set\s+X-Frame-Options\s{0,}?\:/{ s/^\#\s{0,}?//; }" \
     /etc/apache2/conf-available/security.conf
 fi
 
@@ -248,6 +250,8 @@ EOT
 printf "\n\nRestarting mariadb ... \n"
 service mysqld restart
 
+#
+# php
 printf "\n\nSetting up php config ... \n"
 
 # Detect php version
@@ -358,7 +362,7 @@ EOF
 fi
 
 # You can also use ifconfig.me, ifconfig.co and icanhazip.come for curl URLs.
-IP_ADDR="$(curl ifconfig.me)"
+PUBLIC_IP="$(curl ifconfig.me)"
 
 if [ -f /etc/vsftpd.conf ]; then
   sed -i -E \
@@ -372,7 +376,7 @@ if [ -f /etc/vsftpd.conf ]; then
     -e "/chroot_list_file\s{0,}?=/{ s/^\#\s{0,}?//; }" \
     -e "/connect_from_port_20\s{0,}?=/{ s/=.*/=YES/; s/^\#\s{0,}?//; }" \
     -e "/ssl_enable\s{0,}?=/{ s/=.*/=NO/; s/^\#\s{0,}?//; }" \
-    -e "/pasv_address\s{0,}?=/{ s/=.*/\=$IP_ADDR/; }" \
+    -e "/pasv_address\s{0,}?=/{ s/=.*/\=$PUBLIC_IP/; }" \
     /etc/vsftpd.conf
 
   # Securing Transmissions with SSL/TLS

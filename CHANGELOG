@@ -1,4 +1,21 @@
-# amp   
+# amp stack   
+
+# 0.0.22
+1. added: The host.sh file was added.
+2. added: The amp-host.sh file was added.
+3. changed: The file has been renamed from amp-usr.sh to amp-user.sh.
+4. changed: The file has been renamed from amp-boot.sh to amp-restart.sh.
+5. changed: The file has been renamed from amp-bak.sh to amp-restore.sh.
+6. changed: The file has been renamed from amp-host.sh to amp-vhost.sh.
+7. changed: A fail2ban configuration was added.
+8. removed: Unnecessary command have been removed.
+9. added: Added ability to check if git is installed.
+10. added: A fail2ban installation was added.
+11. added: The amp-fail2ban.sh file was added.
+12. added: The fail2ban.sh file was added.
+13. added: A fail2ban configuration was added.
+14. updated: Startup server default increased from 5 to 10.
+15. updated: The file has been updated.
 
 # 0.0.21
 1. added: Added syntax to deny access to the root account.

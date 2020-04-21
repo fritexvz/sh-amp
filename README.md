@@ -1,5 +1,5 @@
-# amp   
-Easy and fast installation of the latest version of the amp stack (apache2 + mariadb10 + php7 + vsftpd + sendmail).   
+# amp stack   
+Easy and fast installation of the latest version of the amp stack (apache2 + mariadb10 + php7 + fail2ban + vsftpd + sendmail + virtualhost).   
 
 ## Firewall   
 If you are installing scripts on cloud servers like aws, gcloud and azure, you need to open the following ports.   
@@ -26,7 +26,7 @@ imap: 143/tcp, 993/tcp
 ```
 
 ## Config   
-Only configuration settings are installed.
+Configuration settings are installed.   
 ```
 # ./config.sh
 ```
@@ -43,9 +43,25 @@ You can change the default options for ftp users.
 # ./user.sh
 ```
 
+## Virtualhost   
+```
+# ./vhost.sh
+```
+
+## Fail2ban   
+You can choose from the questions below.   
+- Restart fail2ban?   
+- Check the status?   
+- Unban the IP?   
+- Check the log?   
+```
+# ./fail2ban.sh
+```
+
 ## Restart   
 - apache2   
 - ufw   
+- fail2ban   
 - vsftpd    
 - mariadb   
 ```
