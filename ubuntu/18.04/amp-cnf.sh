@@ -24,6 +24,9 @@ fi
 
 set -e # Work even if somebody does "sh thisscript.sh".
 
+# You can also use ifconfig.me, ifconfig.co and icanhazip.come for curl URLs.
+PUBLIC_IP="$(curl ifconfig.me)"
+
 #
 # apache2
 printf "\n\nSetting up apache2 config ... \n"
@@ -212,6 +215,7 @@ systemctl restart apache2
 
 #
 # fail2ban
+#fail2ban-client --version | egrep "^Fail2Ban\s+.*$" | awk -F " " '{ print $2 }' | sed "s/v//"
 printf "\n\nSetting up fail2ban config ... \n"
 if [ -f /etc/fail2ban/jail.local ]; then
   cat >/etc/fail2ban/jail.local <<FAIL2BANSCRIPT
@@ -224,7 +228,7 @@ if [ -f /etc/fail2ban/jail.local ]; then
 # "ignoreip" can be a list of IP addresses, CIDR masks or DNS hosts. Fail2ban
 # will not ban a host which matches an address in this list. Several addresses
 # can be defined using space (and/or comma) separator.
-#ignoreip = 127.0.0.1/8 ::1
+ignoreip = 127.0.0.1/8 127.0.1.1
 
 # External command that will take an tagged arguments to ignore, e.g. <ip>,
 # and return true if the IP is to be ignored. False otherwise.
@@ -248,7 +252,7 @@ maxretry = 5
 #
 # true:  jail will be enabled and log files will get monitored for changes
 # false: jail is not enabled
-enabled = false
+enabled = true
 
 
 #
@@ -259,10 +263,10 @@ enabled = false
 
 # Destination email address used solely for the interpolations in
 # jail.{conf,local,d/*} configuration files.
-destemail = root@localhost
+destemail = sys@localhost
 
 # Sender email address used solely for some actions
-sender = root@<fq-hostname>
+sender = fail2ban@localhost
 
 # E-mail action. Since 0.8.1 Fail2Ban uses sendmail MTA for the
 # mailing. Change mta configuration parameter to mail if you want to
@@ -271,6 +275,11 @@ mta = sendmail
 
 # Default protocol
 protocol = tcp
+
+# Choose default action.  To change, just override value of 'action' with the
+# interpolation to the chosen action shortcut (e.g.  action_mw, action_mwl, etc) in jail.local
+# globally (section [DEFAULT]) or per specific section
+action = %(action_mwl)s
 
 
 #
@@ -292,6 +301,53 @@ logpath = %(sshd_log)s
 backend = %(sshd_backend)s
 FAIL2BANSCRIPT
 fi
+
+if ! grep -q "$PUBLIC_IP" /etc/fail2ban/jail.local; then
+  printf "\n\nPublic IP are added to the whitelist ... \n"
+  sed -i -E -e "s/(ignoreip\s+\=.*)/\1 $PUBLIC_IP/" /etc/fail2ban/jail.local
+fi
+
+echo "receiver: $(cat /etc/fail2ban/jail.local | egrep "destemail\s+\=" | awk -F "=" '{print $2}' | sed -E 's/^\s+//')"
+read -p "Would you like to change the recipient email? (y/n) " ansreceiver
+case $ansreceiver in
+y | Y)
+
+  RECEIVER=""
+  while [[ -z "$RECEIVER" ]]; do
+    read -p "receiver email : " RECEIVER
+  done
+
+  sed -i -E \
+    -e "/destemail\s{0,}?\=/{ s/\=.*/\= $RECEIVER/; }" \
+    /etc/fail2ban/jail.local
+
+  break
+  ;;
+n | N)
+  break
+  ;;
+esac
+
+echo "sender: $(cat /etc/fail2ban/jail.local | egrep "sender\s+\=" | awk -F "=" '{print $2}' | sed -E 's/^\s+//')"
+read -p "Would you like to change the sender email? (y/n) " anssender
+case $anssender in
+y | Y)
+
+  SENDER=""
+  while [[ -z "$SENDER" ]]; do
+    read -p "sender email : " SENDER
+  done
+
+  sed -i -E \
+    -e "/sender\s{0,}?\=/{ s/\=.*/\= $SENDER/; }" \
+    /etc/fail2ban/jail.local
+
+  break
+  ;;
+n | N)
+  break
+  ;;
+esac
 
 printf "\n\nRestarting fail2ban ... \n"
 service fail2ban restart
@@ -437,9 +493,6 @@ userlist_deny=NO
 # W3SRC DYNAMIC CONFIG: END
 VSFTPDCONFSCRIPT
 fi
-
-# You can also use ifconfig.me, ifconfig.co and icanhazip.come for curl URLs.
-PUBLIC_IP="$(curl ifconfig.me)"
 
 if [ -f /etc/vsftpd.conf ]; then
   sed -i -E \
