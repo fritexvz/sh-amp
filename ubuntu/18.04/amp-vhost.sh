@@ -58,8 +58,8 @@ while [[ -z "$VHOSTNAME" ]]; do
 done
 
 printf "\n\nSetting up vhosting directory ... \n"
-if [ ! -d /var/www/$VHOSTNAME ]; then
-  mkdir -p /var/www/$VHOSTNAME
+if [ ! -d /var/www/$VHOSTNAME/html ]; then
+  mkdir -p /var/www/$VHOSTNAME/html
 fi
 chown -R www-data:www-data /var/www/$VHOSTNAME
 chmod -R 775 /var/www/$VHOSTNAME
