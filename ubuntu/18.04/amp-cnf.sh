@@ -196,12 +196,35 @@ a2ensite 000-default-ssl.conf
 printf "\n\nReloading apache2 ... \n"
 systemctl reload apache2
 
+#
+# sendmail
+printf "\n\nSetting up sendmail config ... \n"
+printf "\n\nSetting up local-host-names ... \n"
+if [ -f /etc/mail/local-host-names ]; then
+  echo 'localhost' >/etc/mail/local-host-names
+fi
+
+printf "\n\nRestarting apache2 ... \n"
+systemctl restart sendmail
+systemctl restart apache2
+
+#
+# fail2ban
+printf "\n\nSetting up fail2ban config ... \n"
+# TODO
+#sed -i -E -e "" /etc/fail2ban/jail.local
+
+printf "\n\nRestarting fail2ban ... \n"
+service fail2ban restart
+
+#
+# mariadb
 printf "\n\nSetting up mariadb config ... \n"
 printf "\n\nSetting up 50-server.cnf ... \n"
 if [ -f /etc/mysql/mariadb.conf.d/50-server.cnf ]; then
   sed -i -E \
-    -e "/character\-set\-server\s{0,}?\=/{ s/\=.*/\= utf8mb4/; s/^\#\s{0,}?//; }" \
-    -e "/collation\-server\s{0,}?\=/{ s/\=.*/\= utf8mb4\_unicode\_ci/; s/^\#\s{0,}?//; }" \
+    -e "/character-set-server\s{0,}?\=/{ s/\=.*/\= utf8mb4/; s/^\#\s{0,}?//; }" \
+    -e "/collation-server\s{0,}?\=/{ s/\=.*/\= utf8mb4_unicode_ci/; s/^\#\s{0,}?//; }" \
     /etc/mysql/mariadb.conf.d/50-server.cnf
 fi
 
@@ -277,15 +300,8 @@ fi
 printf "\n\nRestarting apache2 ... \n"
 systemctl restart apache2
 
-printf "\n\nSetting up sendmail config ... \n"
-printf "\n\nSetting up local-host-names ... \n"
-if [ -f /etc/mail/local-host-names ]; then
-  echo 'localhost' >/etc/mail/local-host-names
-fi
-
-printf "\n\nRestarting apache2 ... \n"
-systemctl restart apache2
-
+#
+# vsftpd
 printf "\n\nSetting up vsftpd config ... \n"
 if ! grep -q 'W3SRC DYNAMIC CONFIG' /etc/vsftpd.conf; then
   cat >>/etc/vsftpd.conf <<EOF

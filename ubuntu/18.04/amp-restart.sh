@@ -24,8 +24,8 @@ fi
 
 set -e # Work even if somebody does "sh thisscript.sh".
 
-PS3="Choose the next step. (1-5): "
-select choice in "apache2" "ufw" "vsftpd" "mariadb" "quit"; do
+PS3="Choose the next step. (1-6): "
+select choice in "apache2" "ufw" "fail2ban" "vsftpd" "mariadb" "quit"; do
   case $choice in
   "apache2")
     step="apache2"
@@ -33,6 +33,10 @@ select choice in "apache2" "ufw" "vsftpd" "mariadb" "quit"; do
     ;;
   "ufw")
     step="ufw"
+    break
+    ;;
+  "fail2ban")
+    step="fail2ban"
     break
     ;;
   "vsftpd")
@@ -60,12 +64,17 @@ if [ $step == "ufw" ]; then
   ufw enable
 fi
 
+if [ $step == "fail2ban" ]; then
+  printf "\n\nRestarting fail2ban ... \n"
+  service fail2ban restart
+fi
+
 if [ $step == "vsftpd" ]; then
   printf "\n\nRestarting vsftpd ... \n"
   systemctl restart vsftpd
 fi
 
-if [ $step == "mariadb" ]; then
+if [ $step == "mariadb" "mariadb" ]; then
   printf "\n\nRestarting mariadb ... \n"
   service mysqld restart
 fi

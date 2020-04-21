@@ -41,6 +41,16 @@ copy "/etc/apache2/sites-available/000-default.conf"
 copy "/etc/apache2/sites-available/000-default-ssl.conf"
 
 #
+# sendmail
+printf "\n\nRestoring sendmail's configuration settings... \n"
+copy "/etc/mail/local-host-names"
+
+#
+# fail2ban
+printf "\n\nRestoring fail2ban's configuration settings... \n"
+cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local 
+
+#
 # mariadb
 printf "\n\nRestoring mariadb's configuration settings ... \n"
 copy "/etc/mysql/mariadb.conf.d/50-server.cnf"
@@ -56,11 +66,6 @@ printf "\n\nRestoring php's configuration settings ... \n"
 copy "/etc/apache2/mods-available/dir.conf"
 copy "/etc/apache2/mods-available/php$PHP_VERSION.conf"
 copy "/etc/php/$PHP_VERSION/apache2/php.ini"
-
-#
-# sendmail
-printf "\n\nRestoring sendmail's configuration settings... \n"
-copy "/etc/mail/local-host-names"
 
 #
 # vsftpd

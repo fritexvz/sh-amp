@@ -139,7 +139,8 @@ apt -y install sendmail
 printf "\n\nCreate a file to restore configuration settings of sendmail ... \n"
 copy "/etc/mail/local-host-names"
 
-printf "\n\nRestarting apache2 ... \n"
+printf "\n\nRestarting sendmail ... \n"
+systemctl restart sendmail
 systemctl restart apache2
 
 #
@@ -198,8 +199,7 @@ printf "\n\nInstalling fail2ben ... \n"
 apt -y install fail2ban whois
 
 printf "\n\nCreate a file to restore configuration settings of fail2ban ... \n"
-copy "/etc/fail2ban/fail2ban.conf"
-cp /etc/fail2ban/fail2ban.conf /etc/fail2ban/jail.local
+cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local 
 
 printf "\n\nRestarting fail2ban ... \n"
 systemctl restart fail2ban
