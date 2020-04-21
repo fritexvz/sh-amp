@@ -231,7 +231,7 @@ if [ -f /etc/mysql/mariadb.conf.d/50-server.cnf ]; then
 fi
 
 printf "\n\nSetting up my.cnf ... \n"
-cat >/etc/my.cnf <<EOT
+cat >/etc/my.cnf <<MYCNFSCRIPT
 [client]
 default-character-set = utf8mb4
 
@@ -245,7 +245,7 @@ default-character-set = utf8mb4
 character-set-client-handshake = FALSE
 character-set-server = utf8mb4
 collation-server = utf8mb4_unicode_ci
-EOT
+MYCNFSCRIPT
 
 printf "\n\nRestarting mariadb ... \n"
 service mysqld restart
@@ -308,7 +308,7 @@ systemctl restart apache2
 # vsftpd
 printf "\n\nSetting up vsftpd config ... \n"
 if ! grep -q 'W3SRC DYNAMIC CONFIG' /etc/vsftpd.conf; then
-  cat >>/etc/vsftpd.conf <<EOF
+  cat >>/etc/vsftpd.conf <<VSFTPDCONFSCRIPT
 #
 # W3SRC DYNAMIC CONFIG: START
 #
@@ -358,7 +358,7 @@ userlist_deny=NO
 #ssl_ciphers=HIGH
 #
 # W3SRC DYNAMIC CONFIG: END
-EOF
+VSFTPDCONFSCRIPT
 fi
 
 # You can also use ifconfig.me, ifconfig.co and icanhazip.come for curl URLs.
@@ -429,10 +429,10 @@ if [ -f /etc/vsftpd.conf ]; then
 fi
 
 printf "\n\nDisabling Shell Access ... \n"
-cat >/bin/ftponly <<EOT
+cat >/bin/ftponly <<FTPONLYSCRIPT
 #!/bin/sh
 echo "This account is limited to FTP access only."
-EOT
+FTPONLYSCRIPT
 
 chmod a+x /bin/ftponly
 
