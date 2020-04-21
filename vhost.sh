@@ -6,8 +6,8 @@
 # Usage
 # git clone https://github.com/w3src/sh-amp.git
 # cd sh-amp
-# chmod +x ./host.sh
-# ./host.sh
+# chmod +x ./vhost.sh
+# ./vhost.sh
 
 # Check to see if script is being run as root
 if [ "$(whoami)" != 'root' ]; then
@@ -60,4 +60,4 @@ fi
 
 DIR="$OS_ID/$OS_VERSION_ID"
 
-./$DIR/amp-host.sh
+./$DIR/amp-vhost.sh
