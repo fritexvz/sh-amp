@@ -60,4 +60,4 @@ fi
 
 DIR="$OS_ID/$OS_VERSION_ID"
 
-./$DIR/amp-boot.sh
+./$DIR/amp-restart.sh
