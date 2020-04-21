@@ -61,12 +61,12 @@ if [ $step == "unbanip" ]; then
   banip=""
   while [[ -z "$banip" ]]; do
     read -p "Unban IP : " banip
+    if iptables -L INPUT -v -n | grep -q "$banip"; then
+      echo "$banip is not blocked."
+      banip=""
+    fi
   done
-  if grep -q $banip /etc/vsftpd.conf; then
-    fail2ban-client set sshd unbanip $banip
-  else
-    echo "$banip is not blocked."
-  fi
+  fail2ban-client set sshd unbanip $banip
 fi
 
 if [ $step == "log" ]; then
