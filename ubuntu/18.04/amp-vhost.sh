@@ -187,7 +187,7 @@ if [ $step1 == "uninstall" ]; then
     printf "\n\nReloading apache2 ... \n"
     systemctl reload apache2
 
-    break
+    exit
     ;;
   n | N)
     exit
