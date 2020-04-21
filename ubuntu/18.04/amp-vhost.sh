@@ -80,7 +80,7 @@ cp /var/www/html/index.html /var/www/$VHOSTNAME/html/index.html
 cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/$VHOSTNAME.conf
 cat >/etc/apache2/sites-available/$VHOSTNAME.conf <<EOF
 <VirtualHost *:80>
-    ServerAdmin sysadmin@_temp
+    ServerAdmin sys@_temp
     ServerName _temp
     ServerAlias www._temp
     
