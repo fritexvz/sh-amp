@@ -15,6 +15,13 @@ if [ "$(whoami)" != 'root' ]; then
   exit
 fi
 
+# Check if git is installed
+if ! hash git 2>/dev/null; then
+  echo -e "Git is not installed! You will need it at some point anyways..."
+  echo -e "Exiting, install git first."
+  exit 0
+fi
+
 set -e # Work even if somebody does "sh thisscript.sh".
 
 git reset --hard HEAD
