@@ -9,6 +9,9 @@
 # chmod +x ./update.sh
 # ./update.sh
 
+# Work even if somebody does "sh thisscript.sh".
+set -e
+
 # Check to see if script is being run as root
 if [ "$(whoami)" != 'root' ]; then
   echo "You have no permission to run $0 as non-root user. Use sudo"
@@ -21,8 +24,6 @@ if ! hash git 2>/dev/null; then
   echo -e "Exiting, install git first."
   exit 0
 fi
-
-set -e # Work even if somebody does "sh thisscript.sh".
 
 git reset --hard HEAD
 git pull

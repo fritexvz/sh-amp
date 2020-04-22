@@ -9,6 +9,9 @@
 # chmod +x ./ubuntu/18.04/amp-restart.sh
 # ./ubuntu/18.04/amp-restart.sh
 
+# Work even if somebody does "sh thisscript.sh".
+set -e
+
 # Check to see if script is being run as root
 if [ "$(whoami)" != 'root' ]; then
   echo "You have no permission to run $0 as non-root user. Use sudo"
@@ -22,8 +25,8 @@ if ! hash git 2>/dev/null; then
   exit 0
 fi
 
-set -e # Work even if somebody does "sh thisscript.sh".
-
+#
+# Main Script
 PS3="Choose the next step. (1-6): "
 select choice in "apache2" "ufw" "fail2ban" "vsftpd" "mariadb" "quit"; do
   case $choice in

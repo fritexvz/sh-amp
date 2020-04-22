@@ -6,8 +6,11 @@
 # Usage
 # git clone https://github.com/w3src/sh-amp.git
 # cd sh-amp
-# chmod +x ./ubuntu/18.04/amp-usr.sh
-# ./ubuntu/18.04/amp-usr.sh
+# chmod +x ./ubuntu/18.04/amp-user.sh
+# ./ubuntu/18.04/amp-user.sh
+
+# Work even if somebody does "sh thisscript.sh".
+set -e
 
 # Check to see if script is being run as root
 if [ "$(whoami)" != 'root' ]; then
@@ -22,8 +25,8 @@ if ! hash git 2>/dev/null; then
   exit 0
 fi
 
-set -e # Work even if somebody does "sh thisscript.sh".
-
+#
+# Functions
 function username_exists() {
   if ! cut -d: -f1 /etc/passwd | egrep -q "^$1$"; then
     echo "The user '$1' does not exist."
@@ -56,7 +59,11 @@ function username_create() {
   fi
 }
 
-# Selecting Step
+#
+# Main Script
+
+#
+# Setup Wizard
 PS3="Choose the next step. (1-8): "
 select choice in "Create a new ftp user?" "Allow user root access?" "Change user password?" "Change user home directory?" "Delete an exist user?" "Allow access to the root account?" "Deny access to the root account?" "quit"; do
   case $choice in

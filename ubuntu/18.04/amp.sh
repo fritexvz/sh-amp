@@ -9,6 +9,9 @@
 # chmod +x ./ubuntu/18.04/amp.sh
 # ./ubuntu/18.04/amp.sh
 
+# Work even if somebody does "sh thisscript.sh".
+set -e
+
 # Check to see if script is being run as root
 if [ "$(whoami)" != 'root' ]; then
   echo "You have no permission to run $0 as non-root user. Use sudo"
@@ -22,8 +25,8 @@ if ! hash git 2>/dev/null; then
   exit 0
 fi
 
-set -e # Work even if somebody does "sh thisscript.sh".
-
+#
+# Functions
 function copy() {
   if [ -f $1 ]; then
     cp $1{,.bak}
@@ -61,6 +64,9 @@ function username_create() {
     create_username="$1"
   fi
 }
+
+#
+# Main Script
 
 #
 # os

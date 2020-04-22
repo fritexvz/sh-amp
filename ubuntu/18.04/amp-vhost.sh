@@ -9,6 +9,9 @@
 # chmod +x ./ubuntu/18.04/amp-vhost.sh
 # ./ubuntu/18.04/amp-vhost.sh
 
+# Work even if somebody does "sh thisscript.sh".
+set -e
+
 # Check to see if script is being run as root
 if [ "$(whoami)" != 'root' ]; then
   echo "You have no permission to run $0 as non-root user. Use sudo"
@@ -44,6 +47,8 @@ select choice in "install" "uninstall" "quit"; do
   esac
 done
 
+#
+# Install
 if [ $step1 == "install" ]; then
   printf "\n\nSetting up vhosting ... \n"
 
@@ -156,6 +161,8 @@ VHOSTCONFSCRIPT
 
 fi
 
+#
+# Uninstall
 if [ $step1 == "uninstall" ]; then
 
   remove_vhostname=""
