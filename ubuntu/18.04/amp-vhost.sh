@@ -38,6 +38,7 @@ fi
 
 #
 # Setup Wizard
+echo
 PS3="Choose the next step. (1-3): "
 select choice in "install" "uninstall" "quit"; do
   case $choice in
@@ -58,11 +59,9 @@ done
 #
 # Install
 if [ $step1 == "install" ]; then
-  printf "\n\nSetting up vhosting ... \n"
-
-  # Selecting Step2
+  echo
   PS3="Choose the next step. (1-4): "
-  select choice in "default" "laravel" "wordpress" "quit"; do
+  select choice in "default" "laravel" "wordpress" "laravel + wordpress" "quit"; do
     case $choice in
     "default")
       step2="default"
@@ -76,12 +75,19 @@ if [ $step1 == "install" ]; then
       step2="wordpress"
       break
       ;;
+    "laravel + wordpress")
+      step2="laravel + wordpress"
+      break
+      ;;
     "quit")
       exit
       ;;
     esac
   done
+fi
 
+if [ $step1 == "install" ]; then
+  echo
   create_vhostname=""
   while [[ -z "$create_vhostname" ]]; do
     read -p "Enter ServerName without an alias. (ex) example.com : " create_vhostname
@@ -98,7 +104,9 @@ if [ $step1 == "install" ]; then
       esac
     fi
   done
+fi
 
+if [ $step1 == "install" ]; then
   printf "\n\nSetting up vhosting directory ... \n"
   if [ ! -d /var/www/$create_vhostname/html ]; then
     mkdir -p /var/www/$create_vhostname/html
@@ -108,9 +116,10 @@ if [ $step1 == "install" ]; then
   fi
   chown -R www-data:www-data /var/www/$create_vhostname
   chmod -R 775 /var/www/$create_vhostname
+fi
 
+if [ $step1 == "install" ]; then
   printf "\n\nCreating new vhosting files ... \n"
-  cp /var/www/html/index.html /var/www/$create_vhostname/html/index.html
   cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/$create_vhostname.conf
   cat >/etc/apache2/sites-available/$create_vhostname.conf <<VHOSTCONFSCRIPT
 <VirtualHost *:80>
@@ -160,19 +169,63 @@ VHOSTCONFSCRIPT
 
   printf "\n\nReloading apache2 ... \n"
   systemctl reload apache2
+fi
 
-  # if [ $step2 == "laravel" ]; then
-  # fi
+#
+# Install default
+if [ $step1 == "install" ] && [ $step2 == "default" ]; then
+  printf "\n\nInstalling default ... \n"
+  cp /var/www/html/index.html /var/www/$create_vhostname/html/index.html
+fi
 
-  # if [ $step2 == "wordpress" ]; then
-  # fi
+#
+# Install laravel
+if [ $step1 == "install" ] && [ $step2 == "laravel" ]; then
+  printf "\n\nInstalling laravel ... \n"
+fi
 
+#
+# Install wordpress
+if [ $step1 == "install" ] && [ $step2 == "wordpress" ]; then
+  printf "\n\nInstalling wordpress ... \n"
+
+  DB_NAME="${create_vhostname%%\.*}db"
+  DB_PASS="$(openssl rand -base64 12)"
+
+  mysql -uroot <<MYSQL_SCRIPT
+CREATE DATABASE $DB_NAME;
+CREATE USER '$DB_NAME'@'localhost' IDENTIFIED BY '$DB_PASS';
+GRANT ALL PRIVILEGES ON $DB_NAME.* TO '$DB_NAME'@'localhost';
+FLUSH PRIVILEGES;
+MYSQL_SCRIPT
+
+  echo "MySQL user created."
+  echo "Username: $DB_NAME"
+  echo "Password: $DB_PASS"
+
+  cd /var/www/$create_vhostname/html
+
+  wget https://wordpress.org/latest.zip
+
+  unzip latest.zip
+
+  rm latest.zip
+
+  mv wordpress/* .
+
+  rmdir wordpress
+
+fi
+
+#
+# Install laravel and wordpress
+if [ $step1 == "install" ] && [ $step2 == "laravel + wordpress" ]; then
+  printf "\n\nInstalling laravel and wordpress ... \n"
 fi
 
 #
 # Uninstall
 if [ $step1 == "uninstall" ]; then
-
   remove_vhostname=""
   while [[ -z "$remove_vhostname" ]]; do
     read -p "Enter ServerName without an alias. (ex) example.com : " remove_vhostname
@@ -181,32 +234,34 @@ if [ $step1 == "uninstall" ]; then
       remove_vhostname=""
     fi
   done
+fi
 
-  read -p "Are you sure you want to remove it? (y/n) " ansremove
-  case $ansremove in
+if [ $step1 == "uninstall" ]; then
+  read -p "Are you sure you want to remove it? (y/n) " answer
+  case $answer in
   y | Y)
-
-    printf "\n\nDisabling $remove_vhostname vhosting ... \n"
-    a2dissite $remove_vhostname.conf
-
-    printf "\n\nRemoving $remove_vhostname to the /etc/hosts file ... \n"
-    if egrep -q "^$PUBLIC_IP\s+$remove_vhostname$" /etc/hosts; then
-      sed -i -E "/^$PUBLIC_IP\s+$remove_vhostname$/d" /etc/hosts
-    fi
-
-    printf "\n\nRemoving $remove_vhostname directory ... \n"
-    if [ -d /var/www/$remove_vhostname ]; then
-      rm -rf /var/www/$remove_vhostname
-    fi
-
-    printf "\n\nReloading apache2 ... \n"
-    systemctl reload apache2
-
-    exit
+    answer_remove="YES"
     ;;
   n | N)
-    exit
+    answer_remove="NO"
     ;;
   esac
+fi
 
+if [ $step1 == "uninstall" ] && [ $answer_remove == "YES" ]; then
+  printf "\n\nDisabling $remove_vhostname vhosting ... \n"
+  a2dissite $remove_vhostname.conf
+
+  printf "\n\nRemoving $remove_vhostname to the /etc/hosts file ... \n"
+  if egrep -q "^$PUBLIC_IP\s+$remove_vhostname$" /etc/hosts; then
+    sed -i -E "/^$PUBLIC_IP\s+$remove_vhostname$/d" /etc/hosts
+  fi
+
+  printf "\n\nRemoving $remove_vhostname directory ... \n"
+  if [ -d /var/www/$remove_vhostname ]; then
+    rm -rf /var/www/$remove_vhostname
+  fi
+
+  printf "\n\nReloading apache2 ... \n"
+  systemctl reload apache2
 fi

@@ -7,6 +7,9 @@
 4. modified: The comment has been modified.
 5. updated: Updated to restore fail2ban's configuration settings.
 6. added: Added setting to get variables from env.
+7. updated: Reduced the depth level of the if statement.
+8. added: Added a new blank line.
+9. added: Added wordpress install script.
 
 # 0.0.23
 1. fixed: Fixed the heredoc not to overlap.
