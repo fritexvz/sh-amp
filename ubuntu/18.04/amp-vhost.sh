@@ -25,11 +25,19 @@ if ! hash git 2>/dev/null; then
   exit 0
 fi
 
-set -e # Work even if somebody does "sh thisscript.sh".
+# Get the variable from env.
+PUBLIC_IP="$(cat env | egrep "PUBLIC_IP\s{0,}\=" | sed -E 's/\s+//g' | awk -F "=" '{print $2}')"
+if [ -z $PUBLIC_IP ]; then
+  # You can also use ifconfig.me, ifconfig.co and icanhazip.come for curl URLs.
+  PUBLIC_IP="$(curl ifconfig.me)"
+  sed -i -E -e "/PUBLIC_IP\s{0,}\=/{ s/\=.*/\= $PUBLIC_IP/; }" env
+fi
 
-PUBLIC_IP="$(curl ifconfig.me)"
+#
+# Main Script
 
-# Selecting Step1
+#
+# Setup Wizard
 PS3="Choose the next step. (1-3): "
 select choice in "install" "uninstall" "quit"; do
   case $choice in

@@ -1,5 +1,13 @@
 # amp stack   
 
+# 0.0.24
+1. fixed: Fixed syntax error near unexpected token `fi'.
+2. fixed: Fixed syntax error break.
+3. added: The env file was added.
+4. modified: The comment has been modified.
+5. updated: Updated to restore fail2ban's configuration settings.
+6. added: Added setting to get variables from env.
+
 # 0.0.23
 1. fixed: Fixed the heredoc not to overlap.
 2. updated: Updated code to check if ip is blocked before unblocking.

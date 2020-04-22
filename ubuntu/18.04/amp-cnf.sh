@@ -9,6 +9,9 @@
 # chmod +x ./ubuntu/18.04/amp-cnf.sh
 # ./ubuntu/18.04/amp-cnf.sh
 
+# Work even if somebody does "sh thisscript.sh".
+set -e
+
 # Check to see if script is being run as root
 if [ "$(whoami)" != 'root' ]; then
   echo "You have no permission to run $0 as non-root user. Use sudo"
@@ -22,10 +25,24 @@ if ! hash git 2>/dev/null; then
   exit 0
 fi
 
-set -e # Work even if somebody does "sh thisscript.sh".
+# Get the variable from env
+PUBLIC_IP="$(cat env | egrep "PUBLIC_IP\s{0,}\=" | sed -E 's/\s+//g' | awk -F "=" '{print $2}')"
+if [ -z $PUBLIC_IP ]; then
+  # You can also use ifconfig.me, ifconfig.co and icanhazip.come for curl URLs.
+  PUBLIC_IP="$(curl ifconfig.me)"
+  sed -i -E "/PUBLIC_IP\s{0,}\=/{ s/\=.*/\= $PUBLIC_IP/; }" env
+fi
 
-# You can also use ifconfig.me, ifconfig.co and icanhazip.come for curl URLs.
-PUBLIC_IP="$(curl ifconfig.me)"
+#
+# Functions
+function copy() {
+  if [ -f $1 ]; then
+    cp $1{,.bak}
+  fi
+}
+
+#
+# Main Script
 
 #
 # apache2
