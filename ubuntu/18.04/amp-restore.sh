@@ -55,7 +55,7 @@ copy "/etc/mail/local-host-names"
 #
 # fail2ban
 printf "\n\nRestoring fail2ban's configuration settings... \n"
-cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local 
+copy "/etc/fail2ban/jail.local"
 
 #
 # mariadb

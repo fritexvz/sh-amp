@@ -300,6 +300,9 @@ port    = ssh
 logpath = %(sshd_log)s
 backend = %(sshd_backend)s
 FAIL2BANSCRIPT
+
+  printf "\n\nCreate a file to restore configuration settings of fail2ban ... \n"
+  copy "/etc/fail2ban/jail.local"
 fi
 
 if ! grep -q "$PUBLIC_IP" /etc/fail2ban/jail.local; then
