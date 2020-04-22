@@ -283,25 +283,29 @@ systemctl start vsftpd.service
 systemctl enable vsftpd.service
 
 printf "\n\nCreate a new ftp user ... \n"
+echo
 while true; do
-  echo
-  echo
   read -p "Create a new ftp user? (y/n) " answer
   case $answer in
   y | Y)
-    username=""
-    while [[ -z "$username" ]]; do
-      read -p "username: " username
-    done
+    answer_user_create="YES"
     break
     ;;
   n | N)
+    answer_user_create="NO"
     break
     ;;
   esac
 done
 
-if [ ! -z $username ]; then
+if [ $answer_user_create == "YES" ]; then
+  username=""
+  while [[ -z "$username" ]]; do
+    read -p "username: " username
+  done
+fi
+
+if [ $answer_user_create == "YES" ]; then
   username_create "$username"
   adduser $create_username
   if ! egrep -q "^$create_username$" /etc/vsftpd.user_list; then
@@ -312,26 +316,31 @@ if [ ! -z $username ]; then
   echo "New users have been added."
 fi
 
-if [ ! -z $username ]; then
+if [ $answer_user_create == "YES" ]; then
+  echo
   while true; do
-    echo
     read -p "Do you want to allow user's root access? (y/n) " answer
     case $answer in
     y | Y)
-      username_exists "$username"
-      if ! egrep -q "^$exists_username$" /etc/vsftpd.chroot_list; then
-        echo "$exists_username" | tee -a /etc/vsftpd.chroot_list
-      else
-        echo $exists_username " is already in chroot_list."
-      fi
-      echo "User root access is allowed."
+      answer_root_access="YES"
       break
       ;;
     n | N)
+      answer_root_access="NO"
       break
       ;;
     esac
   done
+fi
+
+if [ $answer_user_create == "YES" ] && [ $answer_root_access == "YES" ]; then
+  username_exists "$username"
+  if ! egrep -q "^$exists_username$" /etc/vsftpd.chroot_list; then
+    echo "$exists_username" | tee -a /etc/vsftpd.chroot_list
+    echo "Root access of $exists_username is allowed."
+  else
+    echo $exists_username " is already in chroot_list."
+  fi
 fi
 
 printf "\n\nRestarting vsftpd ... \n"
