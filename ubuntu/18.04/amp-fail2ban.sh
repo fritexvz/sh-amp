@@ -30,6 +30,7 @@ fi
 
 #
 # Setup Wizard
+echo
 PS3="Choose the next step. (1-5): "
 select choice in "Restart fail2ban?" "Check the status?" "Unban the IP?" "Check the log?" "quit"; do
   case $choice in
