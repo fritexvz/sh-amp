@@ -15,7 +15,7 @@ set -e
 # Check to see if script is being run as root
 if [ "$(whoami)" != 'root' ]; then
   echo "You have no permission to run $0 as non-root user. Use sudo"
-  exit
+  exit 0
 fi
 
 # Check if git is installed

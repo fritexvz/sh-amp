@@ -15,7 +15,7 @@ set -e
 # Check to see if script is being run as root
 if [ "$(whoami)" != 'root' ]; then
   echo "You have no permission to run $0 as non-root user. Use sudo"
-  exit
+  exit 0
 fi
 
 # Check if git is installed
@@ -26,39 +26,40 @@ if ! hash git 2>/dev/null; then
 fi
 
 #
-# lsb_release command is only work for Ubuntu platform but not in centos 
+# lsb_release command is only work for Ubuntu platform but not in centos
 # so you can get details from /etc/os-release file
 # following command will give you the both OS name and version-
 #
 # https://askubuntu.com/questions/459402/how-to-know-if-the-running-platform-is-ubuntu-or-centos-with-help-of-a-bash-scri
-os_name=$(cat /etc/os-release | awk -F '=' '/^NAME/{print $2}' | awk '{print $1}' | tr -d '"')
+OS_NAME=$(cat /etc/os-release | awk -F '=' '/^NAME/{print $2}' | awk '{print $1}' | tr -d '"')
 
-if [ "$os_name" == "Ubuntu" ]; then
+if [ "${OS_NAME}" == "Ubuntu" ]; then
   OS_ID="ubuntu"
   OS_VERSION_ID="18.04"
-  # os_version=$(cat /etc/os-release | awk -F '=' '/^VERSION_ID/{print $2}' | awk '{print $1}' | tr -d '"')
-  # case $os_version in
-  # "14.04")
-  #   echo "os version is 14.04"
-  #   sudo apt-get update
-  #   ;;
-  # "16.04")
-  #   echo "os version is 16.04"
-  #   sudo apt-get update
-  #   ;;
-  # "18.04")
-  #   echo "os version is 18.04"
-  #   sudo apt update
+  OS_PATH="${OS_ID}/${OS_VERSION_ID}"
+  # OS_VERSION_ID=$(cat /etc/os-release | awk -F '=' '/^VERSION_ID/{print $2}' | awk '{print $1}' | tr -d '"')
+  # case ${OS_VERSION_ID} in
+  # "14.04") sudo apt-get update;;
+  # "16.04") sudo apt-get update;;
+  # "18.04") sudo apt update;;
+  # "20.04") sudo apt update;;
   # esac
-elif [ "$os_name" == "CentOS" ]; then
-  #echo "system is centos"
-  #sudo yum update
-  echo "Sorry. amp is not supported on $os_name."
+elif [ "${OS_NAME}" == "CentOS" ]; then
+  echo "Sorry. Amp Stack is not supported on CentOS."
+  exit 0
 else
-  #echo "system is $os_name"
-  echo "Sorry. amp is not supported on $os_name."
+  echo "Sorry. Amp Stack is not supported on ${OS_NAME}."
+  exit 0
 fi
 
-DIR="$OS_ID/$OS_VERSION_ID"
-
-./$DIR/amp-cnf.sh
+# Run the package installation.
+PACKAGES=('apache2' 'sendmail' 'fail2ban' 'vsftpd' 'mariadb' 'php')
+FILENAME="$(basename $0)"
+for ((i=0; i<${#PACKAGES[@]}; i++)); do
+  FILEPATH="/${OS_PATH}/${PACKAGES[$i]}/${FILENAME}"
+  if [ -f ".${FILEPATH}" ]; then
+    bash ".${FILEPATH}" --ENVPATH="$(cd "$(dirname "")" && pwd)/env" --ABSPATH="$(cd "$(dirname "")" && pwd)${FILEPATH}"
+  else
+    echo "There is no ${PACKAGES[$i]} ${FILENAME%%.*} file."
+  fi
+done

@@ -6,8 +6,8 @@
 # Usage
 # git clone https://github.com/w3src/sh-amp.git
 # cd sh-amp
-# chmod +x ./install.sh
-# ./install.sh
+# chmod +x ./uninstall.sh
+# ./uninstall.sh
 
 # Work even if somebody does "sh thisscript.sh".
 set -e
@@ -25,11 +25,8 @@ if ! hash git 2>/dev/null; then
   exit 0
 fi
 
-# Recursive chmod to make all .sh files in the directory executable.
-find ./ -type f -name "*.sh" -exec chmod +x {} +
-
 #
-# lsb_release command is only work for Ubuntu platform but not in centos 
+# lsb_release command is only work for Ubuntu platform but not in centos
 # so you can get details from /etc/os-release file
 # following command will give you the both OS name and version-
 #
@@ -55,26 +52,46 @@ else
   exit 0
 fi
 
-# operating system
-OSFILE="/${OS_PATH}/etc/os.sh"
-if [ -f ."${OSFILE}" ]; then
-  bash ."${OSFILE}"
-fi
+# Get a list of directories.
+dirPath="./${OS_PATH}/*/"
+dirArgs=()
+dirExcl=('etc' 'vhost')
 
-# hostname
-HOSTFILE="/${OS_PATH}/etc/hosts.sh"
-if [ -f ".${HOSTFILE}" ]; then
-  bash ".${HOSTFILE}" --ENVPATH="$(cd "$(dirname "")" && pwd)/env" --ABSPATH="$(cd "$(dirname "")" && pwd)${HOSTFILE}"
-fi
-
-# Run the package installation.
-PACKAGES=('apache2' 'sendmail' 'ufw' 'fail2ban' 'vsftpd' 'mariadb' 'php')
-FILENAME="$(basename $0)"
-for ((i=0; i<${#PACKAGES[@]}; i++)); do
-  FILEPATH="/${OS_PATH}/${PACKAGES[$i]}/${FILENAME}"
-  if [ -f ".${FILEPATH}" ]; then
-    bash ".${FILEPATH}" --ENVPATH="$(cd "$(dirname "")" && pwd)/env" --ABSPATH="$(cd "$(dirname "")" && pwd)${FILEPATH}"
-  else
-    echo "There is no ${PACKAGES[$i]} ${FILENAME%%.*} file."
+IFS=$'\n'
+for i in $(ls -d ${dirPath}); do
+  i=${i%%/}
+  i="$(basename "$i")"
+  in_array=""
+  if [ ! -z "${dirExcl}" ]; then
+    for ((j=0; j<${#dirExcl[@]}; j++)); do
+      if [ "${dirExcl[$j]}" == "$i" ]; then
+        in_array="Yes"
+      fi
+    done
+  fi
+  if [ -z "${in_array}" ]; then
+    dirArgs+=("\"$i\"")
   fi
 done
+
+PS3="Select the package to be removed. (1-${#dirArgs[@]}) "
+select choice in ${dirArgs[@]} "quit"; do
+  case "${choice}" in
+  "quit")
+    exit 0
+    ;;
+  *)
+    PACKAGE_ID="${choice}"
+    break
+    ;;
+  esac
+done
+
+# Run the command wizard.
+FILENAME="$(basename $0)"
+FILEPATH="/${OS_PATH}/${PACKAGE_ID}/${FILENAME}"
+if [ -f ".${FILEPATH}" ]; then
+  bash ".${FILEPATH}" --ENVPATH="$(cd "$(dirname "")" && pwd)/env" --ABSPATH="$(cd "$(dirname "")" && pwd)${FILEPATH}"
+else
+  echo "There is no ${PACKAGE_ID} ${FILENAME%%.*} file."
+fi

@@ -1,4 +1,8 @@
-# amp stack   
+# Amp Stack   
+
+# 0.0.3
+1. changed: The directory structure has been changed.
+2. updated: Grouped by function for easy code modification.
 
 # 0.0.24
 1. fixed: Fixed syntax error near unexpected token `fi'.
