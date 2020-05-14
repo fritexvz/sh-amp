@@ -42,15 +42,15 @@ echo "Start installing ufw."
 
 apt -y install ufw
 
-# Add a variable to the env file.
-addPkgCnf -rs="\[UFW\]" -fs="=" -o="<<HERE
-UFW_VERSION = $(getUfwVer)
-<<HERE"
-
 # Reload the service.
 if [ ! -z "$(isApache2)" ]; then
   systemctl reload apache2
 fi
+
+# Add a variable to the env file.
+addPkgCnf -rs="\[UFW\]" -fs="=" -o="<<HERE
+UFW_VERSION = $(getUfwVer)
+<<HERE"
 
 echo
 echo "Ufw is completely installed."

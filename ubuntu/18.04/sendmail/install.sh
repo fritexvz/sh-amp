@@ -47,13 +47,13 @@ if [ ! -z "$(isApache2)" ]; then
   systemctl restart apache2
 fi
 
+# Create a backup file.
+cp -v /etc/mail/local-host-names{,.bak}
+
 # Add a variable to the env file.
 addPkgCnf -rs="\[SENDMAIL\]" -fs="=" -o="<<HERE
 SENDMAIL_VERSION = $(getSendmailVer)
 <<HERE"
-
-# Create a backup file.
-cp -v /etc/mail/local-host-names{,.bak}
 
 echo
 echo "Sendmail is completely installed."

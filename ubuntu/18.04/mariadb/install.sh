@@ -45,23 +45,24 @@ apt -y install mariadb-server mariadb-client
 # Enables you to improve the security of your MariaDB installation.
 /usr/bin/mysql_secure_installation
 
-if [ ! -f /etc/my.cnf ]; then
-  echo "" >/etc/my.cnf
-fi
-
 # Restart the service.
 if [ ! -z "$(isApache2)" ]; then
   systemctl restart apache2
 fi
 
-# Add a variable to the env file.
-addPkgCnf -rs="\[MARIADB\]" -fs="=" -o="<<HERE
-APACHE2_VERSION = $(getMariadbVer)
-<<HERE"
+# Create a blank file.
+if [ ! -f /etc/my.cnf ]; then
+  echo "" >/etc/my.cnf
+fi
 
 # Create a backup file.
 cp -v /etc/mysql/mariadb.conf.d/50-server.cnf{,.bak}
 cp -v /etc/my.cnf{,.bak}
+
+# Add a variable to the env file.
+addPkgCnf -rs="\[MARIADB\]" -fs="=" -o="<<HERE
+MARIADB_VERSION = $(getMariadbVer)
+<<HERE"
 
 echo
 echo "Mariadb is completely installed."

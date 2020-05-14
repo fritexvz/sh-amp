@@ -56,11 +56,6 @@ fi
 # Reload the service.
 systemctl reload apache2
 
-# Add a variable to the env file.
-addPkgCnf -rs="\[APACHE2\]" -fs="=" -o="<<HERE
-APACHE2_VERSION = $(getApache2Ver)
-<<HERE"
-
 # Create a backup file.
 cp -v /etc/apache2/conf-available/charset.conf{,.bak}
 cp -v /etc/apache2/conf-available/security.conf{,.bak}
@@ -68,6 +63,11 @@ cp -v /etc/apache2/apache2.conf{,.bak}
 cp -v /etc/apache2/mods-available/mpm_prefork.conf{,.bak}
 cp -v /etc/apache2/sites-available/000-default.conf{,.bak}
 cp -v /etc/apache2/sites-available/000-default-ssl.conf{,.bak}
+
+# Add a variable to the env file.
+addPkgCnf -rs="\[APACHE2\]" -fs="=" -o="<<HERE
+APACHE2_VERSION = $(getApache2Ver)
+<<HERE"
 
 echo
 echo "Apache2 is completely installed."

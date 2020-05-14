@@ -22,13 +22,13 @@ OS_PATH=""
 for arg in "${@}"; do
   case "${arg}" in
   --ENVPATH=*)
-    ENVPATH="$(echo "${arg}" | sed -E 's/(--ENVPATH=)//')"
-    ;;
+  ENVPATH="$(echo "${arg}" | sed -E 's/(--ENVPATH=)//')"
+  ;;
   --ABSPATH=*)
-    ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
-    DIRNAME="$(dirname "${ABSPATH}")"
-    OS_PATH="$(dirname "${DIRNAME}")"
-    ;;
+  ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
+  DIRNAME="$(dirname "${ABSPATH}")"
+  OS_PATH="$(dirname "${DIRNAME}")"
+  ;;
   esac
 done
 
@@ -47,28 +47,24 @@ systemctl stop vsftpd.service
 systemctl start vsftpd.service
 systemctl enable vsftpd.service
 
-# Add a variable to the env file.
-addPkgCnf -rs="\[VSFTPD\]" -fs="=" -o="<<HERE
-VSFTPD_VERSION = $(getVsftpdVer)
-<<HERE"
+# Create a blank file.
+if [ ! -f /etc/vsftpd.user_list ]; then
+  echo "" >/etc/vsftpd.user_list
+fi
+if [ ! -f /etc/vsftpd.chroot_list ]; then
+  echo "" >/etc/vsftpd.chroot_list
+fi
 
 # Create a backup file.
 cp -v /etc/vsftpd.conf{,.bak}
 cp -v /etc/ftpusers{,.bak}
+cp -v /etc/vsftpd.user_list{,.bak}
+cp -v /etc/vsftpd.chroot_list{,.bak}
 
-f1="/etc/vsftpd.user_list"
-if [ ! -f "${f1}" ]; then
-  echo "" >"${f1}"
-fi
-cp -v "${f1}"{,.bak}
-
-f2="/etc/vsftpd.chroot_list"
-if [ ! -f "${f2}" ]; then
-  echo "" >"${f2}"
-fi
-cp -v "${f2}"{,.bak}
-
-
+# Add a variable to the env file.
+addPkgCnf -rs="\[VSFTPD\]" -fs="=" -o="<<HERE
+VSFTPD_VERSION = $(getVsftpdVer)
+<<HERE"
 
 echo
 echo "Vsftpd is completely installed."

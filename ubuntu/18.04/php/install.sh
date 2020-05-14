@@ -65,15 +65,15 @@ fi
 # Import variables from the env file.
 PHP_VERSION="$(getPhpVer)"
 
-# Add a variable to the env file.
-addPkgCnf -rs="\[PHP\]" -fs="=" -o="<<HERE
-PHP_VERSION = ${PHP_VERSION}
-<<HERE"
-
 # Create a backup file.
 cp -v "/etc/apache2/mods-available/dir.conf"{,.bak}
 cp -v "/etc/apache2/mods-available/php${PHP_VERSION}.conf"{,.bak}
 cp -v "/etc/php/${PHP_VERSION}/apache2/php.ini"{,.bak}
+
+# Add a variable to the env file.
+addPkgCnf -rs="\[PHP\]" -fs="=" -o="<<HERE
+PHP_VERSION = ${PHP_VERSION}
+<<HERE"
 
 echo
 echo "PHP is completely installed."

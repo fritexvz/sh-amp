@@ -50,13 +50,15 @@ if [ hostname != "${HOST_NAME}" ]; then
   hostnamectl set-hostname "${HOST_NAME}"
 fi
 
+# Create a backup file.
+cp -v /etc/hosts{,.bak}
+cp -v /etc/cloud/cloud.cfg{,.bak}
+
 # hosts
 f1="/etc/hosts"
 if [ -f ".${f1}" ]; then
-  cp -v "${f1}"{,.bak}
-  cp ".${f1}" "${f1}"
+  cp -v ".${f1}" "${f1}"
 else
-  cp -v "${f1}"{,.bak}
   if [ -z "$(cat "${f1}" | grep "127.0.1.1 ${HOST_NAME}")" ]; then
     sed -i -e "1 a\127.0.1.1 ${HOST_NAME}" "${f1}"
   fi
@@ -65,10 +67,8 @@ fi
 # This will cause the set+update hostname module to not operate (if true)
 f2="/etc/cloud/cloud.cfg"
 if [ -f ".${f2}" ]; then
-  cp -v "${f2}"{,.bak}
-  cp ".${f2}" "${f2}"
+  cp -v ".${f2}" "${f2}"
 else
-  cp -v "${f2}"{,.bak}
   sed -i -E -e '/preserve_hostname\s{0,}\:/{ s/\:.*/\: true/; }' "${f2}"
 fi
 
