@@ -33,7 +33,7 @@ done
 # Include the file.
 source "${OS_PATH}/utils.sh"
 source "${OS_PATH}/functions.sh"
-source "./functions.sh"
+source "functions.sh"
 
 echo
 echo "Set the host name."
