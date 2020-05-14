@@ -60,7 +60,7 @@ else
 fi
 
 # Run the package installation.
-PACKAGES=('hosts' 'apache2' 'sendmail' 'ufw' 'fail2ban' 'vsftpd' 'mariadb' 'php')
+PACKAGES=('etc' 'apache2' 'sendmail' 'ufw' 'fail2ban' 'vsftpd' 'mariadb' 'php')
 FILENAME="$(basename $0)"
 for ((i=0; i<${#PACKAGES[@]}; i++)); do
   FILEPATH="/${OS_PATH}/${PACKAGES[$i]}/${FILENAME}"
