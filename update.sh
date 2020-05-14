@@ -59,46 +59,14 @@ else
   exit 0
 fi
 
-# Get a list of directories.
-dirPath="./${OS_PATH}/*/"
-dirArgs=()
-dirExcl=('vhost')
-
-IFS=$'\n'
-for i in $(ls -d ${dirPath}); do
-  i=${i%%/}
-  i="$(basename "$i")"
-  in_array=""
-  if [ ! -z "${dirExcl}" ]; then
-    for ((j=0; j<${#dirExcl[@]}; j++)); do
-      if [ "${dirExcl[$j]}" == "$i" ]; then
-        in_array="Yes"
-      fi
-    done
-  fi
-  if [ -z "${in_array}" ]; then
-    dirArgs+=("\"$i\"")
-  fi
-done
-
-PS3="Select the package to be removed. (1-${#dirArgs[@]}) "
-select choice in ${dirArgs[@]} "quit"; do
-  case "${choice}" in
-  "quit")
-    exit 0
-    ;;
-  *)
-    PACKAGE_ID="${choice}"
-    break
-    ;;
-  esac
-done
-
-# Run the command wizard.
+# Run the package installation.
+PACKAGES=('hosts' 'apache2' 'sendmail' 'ufw' 'fail2ban' 'vsftpd' 'mariadb' 'php')
 FILENAME="$(basename $0)"
-FILEPATH="/${OS_PATH}/${PACKAGE_ID}/${FILENAME}"
-if [ -f ".${FILEPATH}" ]; then
-  bash ".${FILEPATH}" --ENVPATH="$(cd "$(dirname "")" && pwd)/env" --ABSPATH="$(cd "$(dirname "")" && pwd)${FILEPATH}"
-else
-  echo "There is no ${PACKAGE_ID} ${FILENAME%%.*} file."
-fi
+for ((i=0; i<${#PACKAGES[@]}; i++)); do
+  FILEPATH="/${OS_PATH}/${PACKAGES[$i]}/${FILENAME}"
+  if [ -f ".${FILEPATH}" ]; then
+    bash ".${FILEPATH}" --ENVPATH="$(cd "$(dirname "")" && pwd)/env" --ABSPATH="$(cd "$(dirname "")" && pwd)${FILEPATH}"
+  else
+    echo "There is no ${PACKAGES[$i]} ${FILENAME%%.*} file."
+  fi
+done
