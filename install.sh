@@ -34,7 +34,7 @@ find ./ -type f -name "*.sh" -exec chmod +x {} +
 # following command will give you the both OS name and version-
 #
 # https://askubuntu.com/questions/459402/how-to-know-if-the-running-platform-is-ubuntu-or-centos-with-help-of-a-bash-scri
-OS_NAME=$(cat /etc/os-release | awk -F '=' '/^NAME/{print $2}' | awk '{print $1}' | tr -d '"')
+OS_NAME=$(cat /etc/os-release | awk -F '=' '/^NAME=/{print $2}' | awk '{print $1}' | tr -d '"')
 
 if [ "${OS_NAME}" == "Ubuntu" ]; then
   OS_ID="ubuntu"

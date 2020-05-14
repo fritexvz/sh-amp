@@ -6,33 +6,45 @@
 # https://askubuntu.com/questions/459402/how-to-know-if-the-running-platform-is-ubuntu-or-centos-with-help-of-a-bash-scri
 
 # Get the operating system name.
-function getOs() {
-  echo "$(cat /etc/os-release | awk -F '=' '/^NAME/{print $2}' | awk '{print $1}' | tr -d '"')"
+function getOsName() {
+  echo "$(cat /etc/os-release | awk -F '=' '/^NAME=/{print $2}' | awk '{print $1}' | tr -d '"')"
+}
+
+# Get the operating system name.
+function getOsId() {
+  echo "$(cat /etc/os-release | awk -F '=' '/^ID=/{print $2}' | awk '{print $1}' | tr -d '"')"
+}
+
+# Obtain operating system version id information.
+# ex) 18.04
+function getOsVerId() {
+  echo "$(cat /etc/os-release | awk -F '=' '/^VERSION_ID=/{print $2}' | awk '{print $1}' | tr -d '"')"
 }
 
 # Obtain operating system version information.
+# ex) 18.04.4
 function getOsVer() {
-  echo "$(cat /etc/os-release | awk -F '=' '/^VERSION_ID/{print $2}' | awk '{print $1}' | tr -d '"')"
+  echo "$(cat /etc/os-release | awk -F '=' '/^VERSION=/{print $2}' | awk '{print $1}' | tr -d '"')"
 }
 
-# Detect if the system is Ubuntu.
+# Detect if the system is ubuntu.
 function isUbuntu() {
-  if [ "$(getOs)" == "Ubuntu" ]; then echo "operating system is Ubuntu"; fi
+  if [ "$(getOsId)" == "ubuntu" ]; then echo "operating system is Ubuntu"; fi
 }
 
-# Detect if the centos is Ubuntu.
+# Detect if the system is centos.
 function isCentos() {
-  if [ "$(getOs)" == "CentOS" ]; then echo "operating system is CentOS"; fi
+  if [ "$(getOsId)" == "centos" ]; then echo "operating system is CentOS"; fi
 }
 
 # Get ubuntu operating system version information.
 function getUbuntuVer() {
-  echo "$(getOsVer)"
+  echo "$(getOsVerId)"
 }
 
 # Get centos operating system version information.
 function getCentosVer() {
-  echo "$(getOsVer)"
+  echo "$(getOsVerId)"
 }
 
 # Detect if a package is installed.
@@ -96,19 +108,14 @@ function isSendmail() {
   if [ ! -z "$(isPkg "${funcname}")" ]; then echo "The ${funcname} package is installed."; fi
 }
 
-# Get package version information.
-function getPkgVer() {
-  echo ""
-}
-
 # Get the apache2 package version information.
 function getApache2Ver() {
-  echo ""
+  echo "$(apache2 -v | awk '/Server version/{print $3}' | awk -F "/" '{print $2}')"
 }
 
 # Get the mariadb package version information.
 function getMariadbVer() {
-  echo ""
+  echo "$(mariadb -V | awk '{print $5}' | awk -F "-" '{print $1}')"
 }
 
 # Get the php package version information.
@@ -122,7 +129,7 @@ function getPhpVer() {
 
 # Get the ufw package version information.
 function getUfwVer() {
-  echo ""
+  echo "$(dpkg-query -l | grep "ufw" 2>/dev/null | awk '{print $3}' | awk -F "-" '/0ubuntu0/{print $1}' | tail -1)"
 }
 
 # Get the fail2ban package version information.
@@ -132,12 +139,12 @@ function getFail2banVer() {
 
 # Get the vsftpd package version information.
 function getVsftpdVer() {
-  echo ""
+  echo "$(dpkg-query -l | grep "vsftpd" 2>/dev/null | awk '{print $3}' | awk -F "-" '{print $1}' | tail -1)"
 }
 
 # Get the sendmail package version information.
 function getSendmailVer() {
-  echo ""
+  echo "$(dpkg-query -l | grep "sendmail" 2>/dev/null | awk '{print $3}' | awk -F "-" '{print $1}' | tail -1)"
 }
 
 # Truncate the first and last spaces.
