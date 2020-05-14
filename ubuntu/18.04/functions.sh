@@ -126,6 +126,7 @@ function addPkgCnf() {
   local OUTPUT=""
   local SEARCH=""
   local MATCH="tail"
+  local LINENUM=""
 
   for arg in "${@}"; do
     case "${arg}" in
@@ -174,13 +175,19 @@ function addPkgCnf() {
       if [ ! -z "${FIELD_SEPERATOR}" ]; then
 
         if [ "${MATCH}" == "tail" ]; then
-          sed -E -i -e "$(cat "${FILE}" | sed -E -n -e "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
+          LINENUM="$(cat "${FILE}" | sed -E -n -e "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
             /^[#; ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/=;
-          }" | tail -1) c\\$(escapeQuote "${line}")" "${FILE}"
+          }" | tail -1)"
+          if [ ! -z "${LINENUM}" ] || [ "${LINENUM}" != "0" ]; then
+            sed -E -i -e "${LINENUM} c\\$(escapeQuote "${line}")" "${FILE}"
+          fi
         elif [ "${MATCH}" == "head" ]; then
-          sed -E -i -e "$(cat "${FILE}" | sed -E -n -e "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
+          LINENUM="$(cat "${FILE}" | sed -E -n -e "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
             /^[#; ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/=;
-          }" | tail -1) c\\$(escapeQuote "${line}")" "${FILE}"
+          }" | tail -1)"
+          if [ ! -z "${LINENUM}" ] || [ "${LINENUM}" != "0" ]; then
+            sed -E -i -e "${LINENUM} c\\$(escapeQuote "${line}")" "${FILE}"
+          fi
         else
           sed -E -i -e "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
             /^[#; ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/{
@@ -192,13 +199,19 @@ function addPkgCnf() {
       else
 
         if [ "${MATCH}" == "tail" ]; then
-          sed -E -i -e "$(cat "${FILE}" | sed -E -n -e "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
+          LINENUM="$(cat "${FILE}" | sed -E -n -e "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
             /^[#; ]{0,}${SEARCH}\s{1,}/=;
-          }" | tail -1) c\\$(escapeQuote "${line}")" "${FILE}"
+          }" | tail -1)"
+          if [ ! -z "${LINENUM}" ] || [ "${LINENUM}" != "0" ]; then
+            sed -E -i -e "${LINENUM} c\\$(escapeQuote "${line}")" "${FILE}"
+          fi
         elif [ "${MATCH}" == "head" ]; then
-          sed -E -i -e "$(cat "${FILE}" | sed -E -n -e "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
+          LINENUM="$(cat "${FILE}" | sed -E -n -e "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
             /^[#; ]{0,}${SEARCH}\s{1,}/=;
-          }" | head -1) c\\$(escapeQuote "${line}")" "${FILE}"
+          }" | head -1)"
+          if [ ! -z "${LINENUM}" ] || [ "${LINENUM}" != "0" ]; then
+            sed -E -i -e "${LINENUM} c\\$(escapeQuote "${line}")" "${FILE}"
+          fi
         else
           sed -E -i -e "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
             /^[#; ]{0,}${SEARCH}\s{1,}/{
@@ -212,9 +225,15 @@ function addPkgCnf() {
       if [ ! -z "${FIELD_SEPERATOR}" ]; then
 
         if [ "${MATCH}" == "tail" ]; then
-          sed -i -E -e "$(cat "${FILE}" | sed -E -n -e "/^[#; ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/=;" | tail -1) c\\$(escapeQuote "${line}")" "${FILE}"
+          LINENUM="$(cat "${FILE}" | sed -E -n -e "/^[#; ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/=;" | tail -1)"
+          if [ ! -z "${LINENUM}" ] || [ "${LINENUM}" != "0" ]; then
+            sed -E -i -e "${LINENUM} c\\$(escapeQuote "${line}")" "${FILE}"
+          fi
         elif [ "${MATCH}" == "head" ]; then
-          sed -i -E -e "$(cat "${FILE}" | sed -E -n -e "/^[#; ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/=;" | head -1) c\\$(escapeQuote "${line}")" "${FILE}"
+          LINENUM="$(cat "${FILE}" | sed -E -n -e "/^[#; ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/=;" | head -1)"
+          if [ ! -z "${LINENUM}" ] || [ "${LINENUM}" != "0" ]; then
+            sed -E -i -e "${LINENUM} c\\$(escapeQuote "${line}")" "${FILE}"
+          fi
         else
           sed -i -E -e "/^[#; ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/{
             c\\$(escapeQuote "${line}")
@@ -224,9 +243,15 @@ function addPkgCnf() {
       else
 
         if [ "${MATCH}" == "tail" ]; then
-          sed -i -E -e "$(cat "${FILE}" | sed -E -n -e "/^[#; ]{0,}${SEARCH}\s{1,}/=;" | tail -1) c\\$(escapeQuote "${line}")" "${FILE}"
+          LINENUM="$(cat "${FILE}" | sed -E -n -e "/^[#; ]{0,}${SEARCH}\s{1,}/=;" | tail -1)"
+          if [ ! -z "${LINENUM}" ] || [ "${LINENUM}" != "0" ]; then
+            sed -E -i -e "${LINENUM} c\\$(escapeQuote "${line}")" "${FILE}"
+          fi
         elif [ "${MATCH}" == "head" ]; then
-          sed -i -E -e "$(cat "${FILE}" | sed -E -n -e "/^[#; ]{0,}${SEARCH}\s{1,}/=;" | head -1) c\\$(escapeQuote "${line}")" "${FILE}"
+          LINENUM="$(cat "${FILE}" | sed -E -n -e "/^[#; ]{0,}${SEARCH}\s{1,}/=;" | head -1)"
+          if [ ! -z "${LINENUM}" ] || [ "${LINENUM}" != "0" ]; then
+            sed -E -i -e "${LINENUM} c\\$(escapeQuote "${line}")" "${FILE}"
+          fi
         else
           sed -i -E -e "/^[#; ]{0,}${SEARCH}\s{1,}/{
             c\\$(escapeQuote "${line}")

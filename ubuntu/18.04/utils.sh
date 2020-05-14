@@ -61,7 +61,6 @@ function isPhp() {
   local funcname=""
   funcname="${FUNCNAME[0]/is}"
   funcname="${funcname,,}"
-
   if [ ! -z "$(isPkg "${funcname}")" ]; then echo "The ${funcname} package is installed."; fi
 }
 
@@ -118,7 +117,7 @@ function getPhpVer() {
   # PHP_MAJOR_VERSION.PHP_MINOR_VERSION.PHP_RELEASE_VERSION
   ver=$(php -v | awk '/^PHP/{print $2}' | awk -F "-" '{print $1}')
   # Removed release version from PHP version.
-  echo "${ver%\.*}"
+  echo "${ver%.*}"
 }
 
 # Get the ufw package version information.
