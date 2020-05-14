@@ -55,8 +55,20 @@ VSFTPD_VERSION = $(getVsftpdVer)
 # Create a backup file.
 cp -v /etc/vsftpd.conf{,.bak}
 cp -v /etc/ftpusers{,.bak}
-cp -v /etc/vsftpd.user_list{,.bak}
-cp -v /etc/vsftpd.chroot_list{,.bak}
+
+f1="/etc/vsftpd.user_list"
+if [ ! -f "${f1}" ]; then
+  echo "" >"${f1}"
+fi
+cp -v "${f1}"{,.bak}
+
+f2="/etc/vsftpd.chroot_list"
+if [ ! -f "${f2}" ]; then
+  echo "" >"${f2}"
+fi
+cp -v "${f2}"{,.bak}
+
+
 
 echo
 echo "Vsftpd is completely installed."

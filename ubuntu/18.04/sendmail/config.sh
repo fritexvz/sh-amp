@@ -47,7 +47,7 @@ f1="/etc/mail/local-host-names"
 if [ -f ".${f1}" ]; then
   cp ".${f1}" "${f1}"
 else
-  echo 'localhost' >"${f1}"
+  echo "localhost" >"${f1}"
 fi
 
 # Restart the service.
