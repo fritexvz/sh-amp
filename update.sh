@@ -25,6 +25,7 @@ if ! hash git 2>/dev/null; then
   exit 0
 fi
 
+# Update the latest release version.
 git reset --hard HEAD
 git pull
 
@@ -61,7 +62,7 @@ fi
 # Get a list of directories.
 dirPath="./${OS_PATH}/*/"
 dirArgs=()
-dirExcl=('etc' 'vhost')
+dirExcl=('vhost')
 
 IFS=$'\n'
 for i in $(ls -d ${dirPath}); do
