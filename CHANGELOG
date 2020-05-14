@@ -6,6 +6,7 @@
 3. added: Module version information has been added to the env file.
 4. fixed: Fixed incorrect Apache 2 configuration settings.
 5. added: Files for module updates were added.
+6. added: Fixed an issue where the static public IP was empty.
 
 # 0.0.3
 1. changed: The directory structure has been changed.
