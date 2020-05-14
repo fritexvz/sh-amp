@@ -37,9 +37,6 @@ source "${OS_PATH}/utils.sh"
 source "${OS_PATH}/functions.sh"
 source "${DIRNAME}/functions.sh"
 
-# Make sure the package is installed.
-pkgAudit "hosts"
-
 echo
 echo "The hosts package starts to be updated."
 
