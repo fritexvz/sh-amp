@@ -17,6 +17,7 @@ ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
+PKGNAME=""
 
 # Set the arguments of the file.
 for arg in "${@}"; do
@@ -28,6 +29,7 @@ for arg in "${@}"; do
     ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
     DIRNAME="$(dirname "${ABSPATH}")"
     OS_PATH="$(dirname "${DIRNAME}")"
+    PKGNAME="$(basename "${DIRNAME,,}")"
     ;;
   esac
 done
@@ -38,7 +40,7 @@ source "${OS_PATH}/functions.sh"
 source "${DIRNAME}/functions.sh"
 
 echo
-echo "Start installing fail2ban."
+echo "Start installing ${PKGNAME}."
 
 apt -y install fail2ban whois
 
@@ -57,4 +59,4 @@ FAIL2BAN_VERSION = $(getFail2banVer)
 <<HERE"
 
 echo
-echo "Fail2ban is completely installed."
+echo "${PKGNAME^} is completely installed."

@@ -17,6 +17,7 @@ ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
+PKGNAME=""
 
 # Set the arguments of the file.
 for arg in "${@}"; do
@@ -28,6 +29,7 @@ for arg in "${@}"; do
     ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
     DIRNAME="$(dirname "${ABSPATH}")"
     OS_PATH="$(dirname "${DIRNAME}")"
+    PKGNAME="$(basename "${DIRNAME,,}")"
     ;;
   esac
 done
@@ -38,7 +40,7 @@ source "${OS_PATH}/functions.sh"
 source "${DIRNAME}/functions.sh"
 
 echo
-echo "Start installing PHP."
+echo "Start installing ${PKGNAME^^}."
 
 # Installing php extensions for amp.
 apt -y install php php-common libapache2-mod-php php-mysql
@@ -76,4 +78,4 @@ PHP_VERSION = ${PHP_VERSION}
 <<HERE"
 
 echo
-echo "PHP is completely installed."
+echo "${PKGNAME^^} is completely installed."

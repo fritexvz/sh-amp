@@ -17,6 +17,7 @@ ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
+PKGNAME=""
 
 # Set the arguments of the file.
 for arg in "${@}"; do
@@ -28,6 +29,7 @@ for arg in "${@}"; do
     ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
     DIRNAME="$(dirname "${ABSPATH}")"
     OS_PATH="$(dirname "${DIRNAME}")"
+    PKGNAME="$(basename "${DIRNAME,,}")"
     ;;
   esac
 done
@@ -38,10 +40,10 @@ source "${OS_PATH}/functions.sh"
 source "${DIRNAME}/functions.sh"
 
 # Make sure the package is installed.
-pkgAudit "ufw"
+pkgAudit "${PKGNAME}"
 
 echo
-echo "Start setting up ufw configuration."
+echo "Start setting up ${PKGNAME} configuration."
 
 # Allow access to Apache on both port 80 and 443
 ufw allow in "Apache Full"
@@ -89,4 +91,4 @@ ufw disable
 ufw enable
 
 echo
-echo "Ufw configuration is complete."
+echo "${PKGNAME^} configuration is complete."

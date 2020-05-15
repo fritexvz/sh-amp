@@ -17,6 +17,7 @@ ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
+PKGNAME=""
 
 # Set the arguments of the file.
 for arg in "${@}"; do
@@ -28,6 +29,7 @@ for arg in "${@}"; do
     ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
     DIRNAME="$(dirname "${ABSPATH}")"
     OS_PATH="$(dirname "${DIRNAME}")"
+    PKGNAME="$(basename "${DIRNAME,,}")"
     ;;
   esac
 done
@@ -38,7 +40,7 @@ source "${OS_PATH}/functions.sh"
 source "${DIRNAME}/functions.sh"
 
 echo
-echo "Reset the vsftpd configuration."
+echo "Reset the ${PKGNAME} configuration."
 
 # Reset the file.
 cp -v /etc/vsftpd.conf.bak /etc/vsftpd.conf
@@ -49,4 +51,4 @@ cp -v /etc/vsftpd.chroot_list.bak /etc/vsftpd.chroot_list
 systemctl restart vsftpd
 
 echo
-echo "The vsftpd configuration has been reset."
+echo "The ${PKGNAME} configuration has been reset."

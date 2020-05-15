@@ -17,6 +17,7 @@ ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
+PKGNAME=""
 
 # Set the arguments of the file.
 for arg in "${@}"; do
@@ -28,6 +29,7 @@ for arg in "${@}"; do
     ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
     DIRNAME="$(dirname "${ABSPATH}")"
     OS_PATH="$(dirname "${DIRNAME}")"
+    PKGNAME="$(basename "${DIRNAME,,}")"
     ;;
   esac
 done
@@ -38,10 +40,10 @@ source "${OS_PATH}/functions.sh"
 source "${DIRNAME}/functions.sh"
 
 # Make sure the package is installed.
-pkgAudit "fail2ban"
+pkgAudit "${PKGNAME}"
 
 echo
-echo "The fail2ban package starts to be updated."
+echo "The ${PKGNAME} package starts to be updated."
 
 # Add a variable to the env file.
 addPkgCnf -rs="\[FAIL2BAN\]" -fs="=" -o="<<HERE
@@ -49,4 +51,4 @@ FAIL2BAN_VERSION = $(getFail2banVer)
 <<HERE"
 
 echo
-echo "The fail2ban package has been completely updated."
+echo "The ${PKGNAME} package has been completely updated."

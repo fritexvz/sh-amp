@@ -17,6 +17,7 @@ ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
+PKGNAME=""
 
 # Set the arguments of the file.
 for arg in "${@}"; do
@@ -28,6 +29,7 @@ for arg in "${@}"; do
     ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
     DIRNAME="$(dirname "${ABSPATH}")"
     OS_PATH="$(dirname "${DIRNAME}")"
+    PKGNAME="$(basename "${DIRNAME,,}")"
     ;;
   esac
 done
@@ -38,10 +40,10 @@ source "${OS_PATH}/functions.sh"
 source "${DIRNAME}/functions.sh"
 
 # Make sure the package is installed.
-pkgAudit "apache2"
+pkgAudit "${PKGNAME}"
 
 echo
-echo "Start setting up apache2 configuration."
+echo "Start setting up ${PKGNAME} configuration."
 
 f_charset="/etc/apache2/conf-available/charset.conf"
 
@@ -178,9 +180,8 @@ if [ "${APACHE2_HTTPS^^}" == "ON" ]; then
   a2ensite "$(basename "${f_443}")"
 fi
 
-
 # Reload the service.
 systemctl restart apache2
 
 echo
-echo "Apache2 configuration is complete."
+echo "${PKGNAME^} configuration is complete."

@@ -17,6 +17,7 @@ ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
+PKGNAME=""
 
 # Set the arguments of the file.
 for arg in "${@}"; do
@@ -28,6 +29,7 @@ for arg in "${@}"; do
     ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
     DIRNAME="$(dirname "${ABSPATH}")"
     OS_PATH="$(dirname "${DIRNAME}")"
+    PKGNAME="$(basename "${DIRNAME,,}")"
     ;;
   esac
 done
@@ -38,7 +40,7 @@ source "${OS_PATH}/functions.sh"
 source "${DIRNAME}/functions.sh"
 
 # Make sure the package is installed.
-pkgAudit "vsftpd"
+pkgAudit "${PKGNAME}"
 
 # Run the command wizard.
 FAQS=(
@@ -54,131 +56,150 @@ FAQS=(
 
 echo
 IFS=$'\n'
-PS3="Choose the next step. (1-${#FAQS[@]}): "
+PS3="Please select one of the options. (1-${#FAQS[@]}): "
 select FAQ in ${FAQS[@]}; do
   case "${FAQ}" in
   "${FAQS[0]}")
-    step="createUserAccount"
-    break
+    # "Create a new ftp user?"
+    username=""
+    while [ -z "${username}" ]; do
+      read -p "username: " username
+    done
+
+    username_create "${username}"
+    adduser "${create_username}"
+    usermod -a -G www-data "${create_username}"
+    if [ -z "$(cat "/etc/vsftpd.user_list" | egrep "^${create_username}$")" ]; then
+      echo "${create_username}" | tee -a /etc/vsftpd.user_list
+    else
+      echo "${create_username} is already in user_list."
+    fi
+
+    # Disabling Shell Access
+    usermod "${create_username}" -s /bin/ftponly
+
+    # Restart the service.
+    systemctl restart vsftpd
+
+    echo "New users have been added."
     ;;
   "${FAQS[1]}")
-    step="allowUserRootAccess"
-    break
+    # "Do you want users to access root?"
+    username=""
+    while [ -z "${username}" ]; do
+      read -p "username: " username
+    done
+
+    username_exists "${username}"
+    if [ -z "$(cat "/etc/vsftpd.chroot_list" | egrep "^${exists_username}$")" ]; then
+      echo "${exists_username}" | tee -a /etc/vsftpd.chroot_list
+    else
+      echo "${exists_username} is already in chroot_list."
+    fi
+
+    # Restart the service.
+    systemctl restart vsftpd
+
+    echo "User root access is allowed."
     ;;
   "${FAQS[2]}")
-    step="changeUserPassword"
-    break
+    # "Would you like to change the user password?"
+    username=""
+    while [ -z "${username}" ]; do
+      read -p "username: " username
+    done
+
+    username_exists "${username}"
+    passwd "${exists_username}"
+
+    # Restart the service.
+    systemctl restart vsftpd
+
+    echo "User password has been changed."
     ;;
   "${FAQS[3]}")
-    step="changeUserHomeDirectory"
-    break
+    # "Change user's home directory?"
+    username=""
+    while [ -z "${username}" ]; do
+      read -p "username: " username
+    done
+
+    username_exists "${username}"
+    userdir=""
+    while [ -z "${userdir}" ]; do
+      read -p "user's home directory: " userdir
+      if [ ! -d "${userdir}" ]; then
+        echo "Directory does not exist."
+        while true; do
+          read -p "Do you want to create a directory? (y/n) " ansusrmod
+          case "${ansusrmod}" in
+          y | Y)
+            mkdir -p "${userdir}"
+            break 2
+            ;;
+          n | N)
+            break
+            ;;
+          esac
+        done
+      fi
+    done
+    chown -R www-data:www-data "${userdir}"
+    chmod -R 775 "${userdir}"
+
+    # Restart the service.
+    systemctl restart vsftpd
+
+    echo "The user home directory has been changed."
     ;;
   "${FAQS[4]}")
-    step="deleteUserAccount"
-    break
+    # "Are you sure you want to delete the existing user?"
+    username=""
+    while [ -z "${username}" ]; do
+      read -p "username: " username
+    done
+
+    username_exists "${username}"
+    deluser --remove-home "${exists_username}"
+    if [ ! -z "$(cat "/etc/vsftpd.user_list" | egrep "^${exists_username}$")" ]; then
+      sed -i -E "/^${exists_username}$/d" /etc/vsftpd.user_list
+    fi
+    if [ ! -z "$(cat "/etc/vsftpd.chroot_list" | egrep "^${exists_username}$")" ]; then
+      sed -i -E "/^${exists_username}$/d" /etc/vsftpd.chroot_list
+    fi
+
+    # Restart the service.
+    systemctl restart vsftpd
+
+    echo "The existing user has been deleted."
     ;;
   "${FAQS[5]}")
-    step="allowRootAccount"
-    break
+    # "Do you want to allow root account?"
+
+    if [ ! -z "$(cat "/etc/ftpusers" | egrep "^root$")" ]; then
+      sed -i -E "/^root$/d" /etc/ftpusers
+    fi
+
+    # Restart the service.
+    systemctl restart vsftpd
+
+    echo "Access to the root account is allowed."
     ;;
   "${FAQS[6]}")
-    step="denyRootAccount"
-    break
+    # "Do you want to reject the root account?"
+
+    if [ -z "$(cat "/etc/ftpusers" | egrep "^root$")" ]; then
+      echo "root" | sudo tee -a /etc/ftpusers
+    fi
+
+    # Restart the service.
+    systemctl restart vsftpd
+    
+    echo "Access to the root account is denied."
     ;;
   "${FAQS[7]}")
+    # "quit"
     exit 0
     ;;
   esac
 done
-
-if [ "${step}" != "allowRootAccount" ] || [ "${step}" != "denyRootAccount" ]; then
-  username=""
-  while [ -z "${username}" ]; do
-    read -p "username: " username
-  done
-fi
-
-if [ "${step}" == "createUserAccount" ]; then
-  username_create "${username}"
-  adduser "${create_username}"
-  usermod -a -G www-data "${create_username}"
-  if [ -z "$(cat "/etc/vsftpd.user_list" | egrep "^${create_username}$")" ]; then
-    echo "${create_username}" | tee -a /etc/vsftpd.user_list
-  else
-    echo "${create_username} is already in user_list."
-  fi
-  # Disabling Shell Access
-  usermod "${create_username}" -s /bin/ftponly
-  echo "New users have been added."
-fi
-
-if [ "${step}" == "allowUserRootAccess" ]; then
-  username_exists "${username}"
-  if [ -z "$(cat "/etc/vsftpd.chroot_list" | egrep "^${exists_username}$")" ]; then
-    echo "${exists_username}" | tee -a /etc/vsftpd.chroot_list
-  else
-    echo "${exists_username} is already in chroot_list."
-  fi
-  echo "User root access is allowed."
-fi
-
-if [ "${step}" == "changeUserPassword" ]; then
-  username_exists "${username}"
-  passwd "${exists_username}"
-  echo "User password has been changed."
-fi
-
-if [ "${step}" == "changeUserHomeDirectory" ]; then
-  username_exists "${username}"
-  userdir=""
-  while [ -z "${userdir}" ]; do
-    read -p "user's home directory: " userdir
-    if [ ! -d "${userdir}" ]; then
-      echo "Directory does not exist."
-      while true; do
-        read -p "Do you want to create a directory? (y/n) " ansusrmod
-        case "${ansusrmod}" in
-        y | Y)
-          mkdir -p "${userdir}"
-          break 2
-          ;;
-        n | N)
-          break
-          ;;
-        esac
-      done
-    fi
-  done
-  chown -R www-data:www-data "${userdir}"
-  chmod -R 775 "${userdir}"
-  echo "The user home directory has been changed."
-fi
-
-if [ "${step}" == "deleteUserAccount" ]; then
-  username_exists "${username}"
-  deluser --remove-home "${exists_username}"
-  if [ ! -z "$(cat "/etc/vsftpd.user_list" | egrep "^${exists_username}$")" ]; then
-    sed -i -E "/^${exists_username}$/d" /etc/vsftpd.user_list
-  fi
-  if [ ! -z "$(cat "/etc/vsftpd.chroot_list" | egrep "^${exists_username}$")" ]; then
-    sed -i -E "/^${exists_username}$/d" /etc/vsftpd.chroot_list
-  fi
-  echo "The existing user has been deleted."
-fi
-
-if [ "${step}" == "allowRootAccount" ]; then
-  if [ ! -z "$(cat "/etc/ftpusers" | egrep "^root$")" ]; then
-    sed -i -E "/^root$/d" /etc/ftpusers
-  fi
-  echo "Access to the root account is allowed."
-fi
-
-if [ "${step}" == "denyRootAccount" ]; then
-  if [ -z "$(cat "/etc/ftpusers" | egrep "^root$")" ]; then
-    echo "root" | sudo tee -a /etc/ftpusers
-  fi
-  echo "Access to the root account is denied."
-fi
-
-# Restart the service.
-systemctl restart vsftpd

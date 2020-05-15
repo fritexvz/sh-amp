@@ -17,6 +17,7 @@ ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
+PKGNAME=""
 
 # Set the arguments of the file.
 for arg in "${@}"; do
@@ -28,6 +29,7 @@ for arg in "${@}"; do
     ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
     DIRNAME="$(dirname "${ABSPATH}")"
     OS_PATH="$(dirname "${DIRNAME}")"
+    PKGNAME="$(basename "${DIRNAME,,}")"
     ;;
   esac
 done
@@ -38,10 +40,10 @@ source "${OS_PATH}/functions.sh"
 source "${DIRNAME}/functions.sh"
 
 # Make sure the package is installed.
-pkgAudit "mariadb"
+pkgAudit "${PKGNAME}"
 
 echo
-echo "Start setting up mariadb configuration."
+echo "Start setting up ${PKGNAME} configuration."
 
 f1="/etc/my.cnf"
 if [ -f ".${f1}" ]; then
@@ -56,4 +58,4 @@ fi
 service mysqld restart
 
 echo
-echo "Mariadb configuration is complete."
+echo "${PKGNAME^} configuration is complete."

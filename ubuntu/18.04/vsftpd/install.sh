@@ -17,18 +17,20 @@ ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
+PKGNAME=""
 
 # Set the arguments of the file.
 for arg in "${@}"; do
   case "${arg}" in
   --ENVPATH=*)
-  ENVPATH="$(echo "${arg}" | sed -E 's/(--ENVPATH=)//')"
-  ;;
+    ENVPATH="$(echo "${arg}" | sed -E 's/(--ENVPATH=)//')"
+    ;;
   --ABSPATH=*)
-  ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
-  DIRNAME="$(dirname "${ABSPATH}")"
-  OS_PATH="$(dirname "${DIRNAME}")"
-  ;;
+    ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
+    DIRNAME="$(dirname "${ABSPATH}")"
+    OS_PATH="$(dirname "${DIRNAME}")"
+    PKGNAME="$(basename "${DIRNAME,,}")"
+    ;;
   esac
 done
 
@@ -38,7 +40,7 @@ source "${OS_PATH}/functions.sh"
 source "${DIRNAME}/functions.sh"
 
 echo
-echo "Start installing vsftpd."
+echo "Start installing ${PKGNAME}."
 
 apt -y install vsftpd
 
@@ -67,4 +69,4 @@ VSFTPD_VERSION = $(getVsftpdVer)
 <<HERE"
 
 echo
-echo "Vsftpd is completely installed."
+echo "${PKGNAME^} is completely installed."

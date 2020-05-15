@@ -17,6 +17,7 @@ ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
+PKGNAME=""
 
 # Set the arguments of the file.
 for arg in "${@}"; do
@@ -28,6 +29,7 @@ for arg in "${@}"; do
     ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
     DIRNAME="$(dirname "${ABSPATH}")"
     OS_PATH="$(dirname "${DIRNAME}")"
+    PKGNAME="$(basename "${DIRNAME,,}")"
     ;;
   esac
 done
@@ -38,10 +40,10 @@ source "${OS_PATH}/functions.sh"
 source "${DIRNAME}/functions.sh"
 
 # Make sure the package is installed.
-pkgAudit "mariadb"
+pkgAudit "${PKGNAME}"
 
 echo
-echo "Reset the mariadb configuration."
+echo "Reset the ${PKGNAME} configuration."
 
 # Reset the file.
 cp -v /etc/my.cnf.bak /etc/my.cnf
@@ -50,4 +52,4 @@ cp -v /etc/my.cnf.bak /etc/my.cnf
 service mysqld restart
 
 echo
-echo "The mariadb configuration has been reset."
+echo "The ${PKGNAME} configuration has been reset."

@@ -17,6 +17,7 @@ ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
+PKGNAME=""
 
 # Set the arguments of the file.
 for arg in "${@}"; do
@@ -28,6 +29,7 @@ for arg in "${@}"; do
     ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
     DIRNAME="$(dirname "${ABSPATH}")"
     OS_PATH="$(dirname "${DIRNAME}")"
+    PKGNAME="$(basename "${DIRNAME,,}")"
     ;;
   esac
 done
@@ -38,7 +40,7 @@ source "${OS_PATH}/functions.sh"
 source "${DIRNAME}/functions.sh"
 
 # Make sure the package is installed.
-pkgAudit "fail2ban"
+pkgAudit "${PKGNAME}"
 
 # Run the command wizard.
 FAQS=(
@@ -53,89 +55,68 @@ FAQS=(
 
 echo
 IFS=$'\n'
-PS3="Choose the next step. (1-${#FAQS[@]}): "
+PS3="Please select one of the options. (1-${#FAQS[@]}): "
 select choice in ${FAQS[@]}; do
   case "${choice}" in
   "${FAQS[0]}")
-    step="${FAQS[0]}"
-    break
+    # "restart"
+    service fail2ban restart
+    echo "${PKGNAME^} restarted."
     ;;
   "${FAQS[1]}")
-    step="${FAQS[1]}"
-    break
+    # "status"
+    fail2ban-client status sshd
+    echo "${PKGNAME^} state loaded."
     ;;
   "${FAQS[2]}")
-    step="${FAQS[2]}"
-    break
+    # "unbanip"
+    banip=""
+    while [ -z "$banip" ]; do
+      read -p "Unban IP : " banip
+      if [ -z "$(iptables -L INPUT -v -n | grep "$banip")" ]; then
+        echo "$banip is not blocked."
+        banip=""
+      fi
+    done
+    fail2ban-client set sshd unbanip "$banip"
+    echo "IP unlocked."
     ;;
   "${FAQS[3]}")
-    step="${FAQS[3]}"
-    break
+    # "destemail"
+    echo "$(cat /etc/fail2ban/jail.local | egrep "destemail\s{0,}=")"
+    msgYn="$(msg -yn 'Would you like to change? (y/n) ')"
+    if [ "${msgYn}" == "Yes" ]; then
+      DESTEMAIL="$(msg -ync -p1='destemail = ' -p2='Are you sure you want to save the changes? (y/n/c) ')"
+      if [ ! -z "${DESTEMAIL}" ]; then
+        sed -i -E \
+          -e "/\[DEFAULT\]/,/\[.*\]/{ s/^[# ]{0,}(destemail\s{0,}=)/\1 ${DESTEMAIL}/; }" \
+          /etc/fail2ban/jail.local
+      fi
+    fi
+    echo "Destmail has been changed."
     ;;
   "${FAQS[4]}")
-    step="${FAQS[4]}"
-    break
+    # "sender"
+    echo "$(cat /etc/fail2ban/jail.local | egrep "sender\s{0,}=")"
+    msgYn="$(msg -yn 'Would you like to change? (y/n) ')"
+    if [ "${msgYn}" == "Yes" ]; then
+      SENDMAIL="$(msg -ync -p1='sender = ' -p2='Are you sure you want to save the changes? (y/n/c) ')"
+      if [ ! -z "${SENDMAIL}" ]; then
+        sed -i -E \
+          -e "/\[DEFAULT\]/,/\[.*\]/{ s/^[# ]{0,}(sender\s{0,}=)/\1 ${SENDMAIL}/; }" \
+          /etc/fail2ban/jail.local
+      fi
+    fi
+    echo "Sender has been changed."
     ;;
   "${FAQS[5]}")
-    step="${FAQS[5]}"
-    break
+    # "log"
+    tail -f /var/log/fail2ban.log
+    echo "The log is loaded."
     ;;
   "${FAQS[6]}")
+    # "quit"
     exit 0
     ;;
   esac
 done
-
-if [ "${step}" == "restart" ]; then
-  service fail2ban restart
-fi
-
-if [ "${step}" == "status" ]; then
-  fail2ban-client status sshd
-fi
-
-if [ "${step}" == "unbanip" ]; then
-  banip=""
-  while [ -z "$banip" ]; do
-    read -p "Unban IP : " banip
-    if [ -z "$(iptables -L INPUT -v -n | grep "$banip")" ]; then
-      echo "$banip is not blocked."
-      banip=""
-    fi
-  done
-  fail2ban-client set sshd unbanip "$banip"
-fi
-
-if [ "${step}" == "destemail" ]; then
-
-  echo "$(cat /etc/fail2ban/jail.local | egrep "destemail\s{0,}=")"
-  msgYn="$(msg -yn 'Would you like to change? (y/n) ')"
-  if [ "${msgYn}" == "Yes" ]; then
-    DESTEMAIL="$(msg -ync -p1='destemail = ' -p2='Are you sure you want to save the changes? (y/n/c) ')"
-    if [ ! -z "${DESTEMAIL}" ]; then
-      sed -i -E \
-        -e "/\[DEFAULT\]/,/\[.*\]/{ s/^[# ]{0,}(destemail\s{0,}=)/\1 ${DESTEMAIL}/; }" \
-        /etc/fail2ban/jail.local
-    fi
-  fi
-
-fi
-
-if [ "${step}" == "sender" ]; then
-
-  echo "$(cat /etc/fail2ban/jail.local | egrep "sender\s{0,}=")"
-  msgYn="$(msg -yn 'Would you like to change? (y/n) ')"
-  if [ "${msgYn}" == "Yes" ]; then
-    SENDMAIL="$(msg -ync -p1='sender = ' -p2='Are you sure you want to save the changes? (y/n/c) ')"
-    if [ ! -z "${SENDMAIL}" ]; then
-      sed -i -E \
-        -e "/\[DEFAULT\]/,/\[.*\]/{ s/^[# ]{0,}(sender\s{0,}=)/\1 ${SENDMAIL}/; }" \
-        /etc/fail2ban/jail.local
-    fi
-  fi
-
-fi
-
-if [ "${step}" == "log" ]; then
-  tail -f /var/log/fail2ban.log
-fi

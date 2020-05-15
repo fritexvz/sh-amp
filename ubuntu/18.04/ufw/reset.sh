@@ -17,6 +17,7 @@ ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
+PKGNAME=""
 
 # Set the arguments of the file.
 for arg in "${@}"; do
@@ -28,6 +29,7 @@ for arg in "${@}"; do
     ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
     DIRNAME="$(dirname "${ABSPATH}")"
     OS_PATH="$(dirname "${DIRNAME}")"
+    PKGNAME="$(basename "${DIRNAME,,}")"
     ;;
   esac
 done
@@ -38,14 +40,14 @@ source "${OS_PATH}/functions.sh"
 source "${DIRNAME}/functions.sh"
 
 # Make sure the package is installed.
-pkgAudit "ufw"
+pkgAudit "${PKGNAME}"
 
 echo
-echo "Reset the ufw configuration."
+echo "Reset the ${PKGNAME} configuration."
 
 # Reset the firewall.
 ufw --force disable
 ufw --force reset
 
 echo
-echo "The ufw configuration has been reset."
+echo "The ${PKGNAME} configuration has been reset."

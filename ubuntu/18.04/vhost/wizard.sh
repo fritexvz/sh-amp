@@ -17,6 +17,7 @@ ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
+PKGNAME=""
 
 # Set the arguments of the file.
 for arg in "${@}"; do
@@ -28,6 +29,7 @@ for arg in "${@}"; do
     ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
     DIRNAME="$(dirname "${ABSPATH}")"
     OS_PATH="$(dirname "${DIRNAME}")"
+    PKGNAME="$(basename "${DIRNAME,,}")"
     ;;
   esac
 done
@@ -49,7 +51,7 @@ FAQS=(
 
 echo
 IFS=$'\n'
-PS3="Choose the next step. (1-${#FAQS[@]}): "
+PS3="Please select one of the options. (1-${#FAQS[@]}): "
 select FAQ in ${FAQS[@]}; do
   case "${FAQ}" in
   "${FAQS[0]}")

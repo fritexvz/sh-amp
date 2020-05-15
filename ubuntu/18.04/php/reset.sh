@@ -17,6 +17,7 @@ ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
+PKGNAME=""
 
 # Set the arguments of the file.
 for arg in "${@}"; do
@@ -28,6 +29,7 @@ for arg in "${@}"; do
     ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
     DIRNAME="$(dirname "${ABSPATH}")"
     OS_PATH="$(dirname "${DIRNAME}")"
+    PKGNAME="$(basename "${DIRNAME,,}")"
     ;;
   esac
 done
@@ -38,13 +40,13 @@ source "${OS_PATH}/functions.sh"
 source "${DIRNAME}/functions.sh"
 
 # Make sure the package is installed.
-pkgAudit "php"
+pkgAudit "${PKGNAME}"
 
 # Import variables from the env file.
 PHP_VERSION="$(getPkgCnf -rs="\[PHP\]" -fs="=" -s="PHP_VERSION")"
 
 echo
-echo "Reset the php configuration."
+echo "Reset the ${PKGNAME} configuration."
 
 # Reset the file.
 cp -v "/etc/apache2/mods-available/dir.conf.bak" "/etc/apache2/mods-available/dir.conf"
@@ -57,4 +59,4 @@ if [ ! -z "$(isApache2)" ]; then
 fi
 
 echo
-echo "The php configuration has been reset."
+echo "The ${PKGNAME} configuration has been reset."

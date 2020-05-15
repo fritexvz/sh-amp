@@ -17,6 +17,7 @@ ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
+PKGNAME=""
 
 # Set the arguments of the file.
 for arg in "${@}"; do
@@ -28,6 +29,7 @@ for arg in "${@}"; do
     ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
     DIRNAME="$(dirname "${ABSPATH}")"
     OS_PATH="$(dirname "${DIRNAME}")"
+    PKGNAME="$(basename "${DIRNAME,,}")"
     ;;
   esac
 done
@@ -38,17 +40,17 @@ source "${OS_PATH}/functions.sh"
 source "${DIRNAME}/functions.sh"
 
 # Make sure the package is installed.
-pkgAudit "apache2"
+pkgAudit "${PKGNAME}"
 
 echo
-echo "The apache2 package starts to be removed."
+echo "The ${PKGNAME} package starts to be removed."
 
 # Stop the service.
 service apache2 stop
 service apache-htcacheclean stop
 
 # Remove the package completely.
-delPkg "apache2"
+delPkg "${PKGNAME}"
 
 echo
-echo "The apache2 package has been completely removed."
+echo "The ${PKGNAME} package has been completely removed."

@@ -17,6 +17,7 @@ ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
+PKGNAME=""
 
 # Set the arguments of the file.
 for arg in "${@}"; do
@@ -28,6 +29,7 @@ for arg in "${@}"; do
     ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
     DIRNAME="$(dirname "${ABSPATH}")"
     OS_PATH="$(dirname "${DIRNAME}")"
+    PKGNAME="$(basename "${DIRNAME,,}")"
     ;;
   esac
 done
@@ -41,9 +43,6 @@ source "${DIRNAME}/functions.sh"
 pkgAudit "apache2"
 
 echo
-echo "Start installing virtualhost."
-
-echo
 VHOST_NAME=""
 while [ -z "${VHOST_NAME}" ]; do
   VHOST_NAME="$(msg -yn -p1='Enter server name. (ex) example.com : ' -p2='Are you sure you want to save this? (y/n) ')"
@@ -54,6 +53,9 @@ while [ -z "${VHOST_NAME}" ]; do
     fi
   fi
 done
+
+echo
+echo "Start installing ${VHOST_NAME}."
 
 # config.sh
 if [ -f ./config.sh ]; then
@@ -98,4 +100,4 @@ select choice in "default" "database" "laravel" "wordpress" "laravel+wordpress" 
 done
 
 echo
-echo "Virtualhost is completely installed."
+echo "The ${VHOST_NAME} is completely installed."

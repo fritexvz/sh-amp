@@ -17,6 +17,7 @@ ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
+PKGNAME=""
 
 # Set the arguments of the file.
 for arg in "${@}"; do
@@ -28,6 +29,7 @@ for arg in "${@}"; do
     ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
     DIRNAME="$(dirname "${ABSPATH}")"
     OS_PATH="$(dirname "${DIRNAME}")"
+    PKGNAME="$(basename "${DIRNAME,,}")"
     ;;
   esac
 done
@@ -38,15 +40,15 @@ source "${OS_PATH}/functions.sh"
 source "${DIRNAME}/functions.sh"
 
 # Make sure the package is installed.
-pkgAudit "vsftpd"
+pkgAudit "${PKGNAME}"
 
 echo
-echo "The vsftpd package starts to be removed."
+echo "The ${PKGNAME} package starts to be removed."
 
 # Stop the service.
 systemctl stop vsftpd.service
 
 # Remove the package completely.
-delPkg "vsftpd"
+delPkg "${PKGNAME}"
 
-echo "The vsftpd package has been completely removed."
+echo "The ${PKGNAME} package has been completely removed."

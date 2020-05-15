@@ -17,6 +17,7 @@ ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
+PKGNAME=""
 
 # Set the arguments of the file.
 for arg in "${@}"; do
@@ -28,6 +29,7 @@ for arg in "${@}"; do
     ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
     DIRNAME="$(dirname "${ABSPATH}")"
     OS_PATH="$(dirname "${DIRNAME}")"
+    PKGNAME="$(basename "${DIRNAME,,}")"
     ;;
   esac
 done
@@ -38,7 +40,7 @@ source "${OS_PATH}/functions.sh"
 source "${DIRNAME}/functions.sh"
 
 # Make sure the package is installed.
-pkgAudit "mariadb"
+pkgAudit "${PKGNAME}"
 
 # Run the command wizard.
 FAQS=(
@@ -54,67 +56,39 @@ FAQS=(
 
 echo
 IFS=$'\n'
-PS3="Choose the next step. (1-${#FAQS[@]}): "
+PS3="Please select one of the options. (1-${#FAQS[@]}): "
 select FAQ in ${FAQS[@]}; do
   case "${FAQ}" in
   "${FAQS[0]}")
-    step="${FAQS[0]}"
-    break
+    systemctl status mariadb
+    echo "${PKGNAME^} state loaded."
     ;;
   "${FAQS[1]}")
-    step="${FAQS[1]}"
-    break
+    systemctl start mariadb
+    echo "${PKGNAME^} started."
     ;;
   "${FAQS[2]}")
-    step="${FAQS[2]}"
-    break
+    systemctl stop mariadb
+    echo "${PKGNAME^} has stopped."
     ;;
   "${FAQS[3]}")
-    step="${FAQS[3]}"
-    break
+    systemctl reload mariadb
+    echo "${PKGNAME^} was refreshed."
     ;;
   "${FAQS[4]}")
-    step="${FAQS[4]}"
-    break
+    systemctl restart mariadb
+    echo "${PKGNAME^} restarted."
     ;;
   "${FAQS[5]}")
-    step="${FAQS[5]}"
-    break
+    systemctl enable mariadb
+    echo "${PKGNAME^} is enabled."
     ;;
   "${FAQS[6]}")
-    step="${FAQS[6]}"
-    break
+    systemctl disable mariadb
+    echo "${PKGNAME^} is disabled."
     ;;
   "${FAQS[7]}")
     exit 0
     ;;
   esac
 done
-
-if [ "${step}" == "status" ]; then
-  systemctl status mariadb
-fi
-
-if [ "${step}" == "start" ]; then
-  systemctl start mariadb
-fi
-
-if [ "${step}" == "stop" ]; then
-  systemctl stop mariadb
-fi
-
-if [ "${step}" == "reload" ]; then
-  systemctl reload mariadb
-fi
-
-if [ "${step}" == "restart" ]; then
-  systemctl restart mariadb
-fi
-
-if [ "${step}" == "enable" ]; then
-  systemctl enable mariadb
-fi
-
-if [ "${step}" == "disable" ]; then
-  systemctl disable mariadb
-fi

@@ -4,6 +4,7 @@
 1. fixed: The wrong file path was fixed.
 2. fixed: Syntax errors have been fixed.
 3. updated: The syntax has been updated.
+4. added: Added global variables.
 
 # 0.0.31
 1. fixed: Fixed incorrect file path.

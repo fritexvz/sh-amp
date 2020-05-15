@@ -17,6 +17,7 @@ ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
+PKGNAME=""
 
 # Set the arguments of the file.
 for arg in "${@}"; do
@@ -28,6 +29,7 @@ for arg in "${@}"; do
     ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
     DIRNAME="$(dirname "${ABSPATH}")"
     OS_PATH="$(dirname "${DIRNAME}")"
+    PKGNAME="$(basename "${DIRNAME,,}")"
     ;;
   esac
 done
@@ -53,7 +55,7 @@ done
 echo
 if [ "$(msg -yn 'Are you sure you want to remove it? (y/n) ')" == "Yes" ]; then
   echo
-  echo "The virtualhost starts to be removed."
+  echo "The ${VHOST_NAME} starts to be removed."
 
   # Disabling virtualhost
   if [ ! -z "$(a2query -s | egrep "${VHOST_NAME}\s+")" ]; then
@@ -82,5 +84,5 @@ if [ "$(msg -yn 'Are you sure you want to remove it? (y/n) ')" == "Yes" ]; then
   systemctl reload apache2
 
   echo
-  echo "The virtualhost has been completely removed."
+  echo "The ${VHOST_NAME} has been completely removed."
 fi

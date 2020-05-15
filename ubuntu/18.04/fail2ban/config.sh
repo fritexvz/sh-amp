@@ -17,6 +17,7 @@ ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
+PKGNAME=""
 
 # Set the arguments of the file.
 for arg in "${@}"; do
@@ -28,6 +29,7 @@ for arg in "${@}"; do
     ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
     DIRNAME="$(dirname "${ABSPATH}")"
     OS_PATH="$(dirname "${DIRNAME}")"
+    PKGNAME="$(basename "${DIRNAME,,}")"
     ;;
   esac
 done
@@ -38,13 +40,13 @@ source "${OS_PATH}/functions.sh"
 source "${DIRNAME}/functions.sh"
 
 # Make sure the package is installed.
-pkgAudit "fail2ban"
+pkgAudit "${PKGNAME}"
 
 # Import variables from the env file.
 PUBLIC_IP="$(getPkgCnf -rs="\[HOSTS\]" -fs="=" -s="PUBLIC_IP")"
 
 echo
-echo "Start setting up fail2ban configuration."
+echo "Start setting up ${PKGNAME} configuration."
 
 f_jail="/etc/fail2ban/jail.local"
 
@@ -74,4 +76,4 @@ fi
 service fail2ban restart
 
 echo
-echo "Fail2ban configuration is complete."
+echo "${PKGNAME^} configuration is complete."

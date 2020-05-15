@@ -17,6 +17,7 @@ ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
+PKGNAME=""
 VHOST_NAME=""
 
 # Set the arguments of the file.
@@ -29,6 +30,7 @@ for arg in "${@}"; do
     ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
     DIRNAME="$(dirname "${ABSPATH}")"
     OS_PATH="$(dirname "${DIRNAME}")"
+    PKGNAME="$(basename "${DIRNAME,,}")"
     ;;
   --vhostname=*)
     VHOST_NAME="$(echo "${arg}" | sed -E 's/(--vhostname=)//')"
@@ -45,7 +47,7 @@ source "${DIRNAME}/functions.sh"
 pkgAudit "apache2"
 
 echo
-echo "Start setting up vhost configuration."
+echo "Start setting up ${PKGNAME} configuration."
 
 VHOST_DIR="/var/www/${VHOST_NAME}"
 VHOST_ROOT_DIR="${VHOST_DIR}/html"
@@ -132,4 +134,4 @@ fi
 systemctl reload apache2
 
 echo
-echo "Vhost configuration is complete."
+echo "${PKGNAME^} configuration is complete."
