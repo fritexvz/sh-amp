@@ -41,45 +41,57 @@ source "${DIRNAME}/functions.sh"
 pkgAudit "vsftpd"
 
 # Run the command wizard.
+FAQS=(
+  "Create a new ftp user?"
+  "Do you want users to access root?"
+  "Would you like to change the user password?"
+  "Change user's home directory?"
+  "Are you sure you want to delete the existing user?"
+  "Do you want to allow root account?"
+  "Do you want to reject the root account?"
+  "quit"
+)
+
 echo
-PS3="Choose the next step. (1-8): "
-select choice in "Create a new ftp user?" "Allow user root access?" "Change user password?" "Change user home directory?" "Delete an exist user?" "Allow access to the root account?" "Deny access to the root account?" "quit"; do
-  case "${choice}" in
-  "Create a new ftp user?")
+IFS=$'\n'
+PS3="Choose the next step. (1-${#FAQS[@]}): "
+select FAQ in ${FAQS[@]}; do
+  case "${FAQ}" in
+  "${FAQS[0]}")
     step="createUserAccount"
     break
     ;;
-  "Allow user root access?")
+  "${FAQS[1]}")
     step="allowUserRootAccess"
     break
     ;;
-  "Change user password?")
+  "${FAQS[2]}")
     step="changeUserPassword"
     break
     ;;
-  "Change user home directory?")
+  "${FAQS[3]}")
     step="changeUserHomeDirectory"
     break
     ;;
-  "Delete an exist user?")
+  "${FAQS[4]}")
     step="deleteUserAccount"
     break
     ;;
-  "Allow access to the root account?")
-    step="allowRootAccess"
+  "${FAQS[5]}")
+    step="allowRootAccount"
     break
     ;;
-  "Deny access to the root account?")
-    step="denyRootAccess"
+  "${FAQS[6]}")
+    step="denyRootAccount"
     break
     ;;
-  "quit")
-    exit
+  "${FAQS[7]}")
+    exit 0
     ;;
   esac
 done
 
-if [ "${step}" != "allowRootAccess" ] || [ "${step}" != "denyRootAccess" ]; then
+if [ "${step}" != "allowRootAccount" ] || [ "${step}" != "denyRootAccount" ]; then
   username=""
   while [ -z "${username}" ]; do
     read -p "username: " username
@@ -154,14 +166,14 @@ if [ "${step}" == "deleteUserAccount" ]; then
   echo "The existing user has been deleted."
 fi
 
-if [ "${step}" == "allowRootAccess" ]; then
+if [ "${step}" == "allowRootAccount" ]; then
   if [ ! -z "$(cat "/etc/ftpusers" | egrep "^root$")" ]; then
     sed -i -E "/^root$/d" /etc/ftpusers
   fi
   echo "Access to the root account is allowed."
 fi
 
-if [ "${step}" == "denyRootAccess" ]; then
+if [ "${step}" == "denyRootAccount" ]; then
   if [ -z "$(cat "/etc/ftpusers" | egrep "^root$")" ]; then
     echo "root" | sudo tee -a /etc/ftpusers
   fi

@@ -41,39 +41,51 @@ source "${DIRNAME}/functions.sh"
 pkgAudit "apache2"
 
 # Run the command wizard.
+FAQS=(
+  "status"
+  "start"
+  "stop"
+  "reload"
+  "restart"
+  "enable"
+  "disable"
+  "quit"
+)
+
 echo
-PS3="Choose the next step. (1-8): "
-select choice in "status" "start" "stop" "reload" "restart" "enable" "disable" "quit"; do
-  case "${choice}" in
-  "status")
-    step="status"
+IFS=$'\n'
+PS3="Choose the next step. (1-${#FAQS[@]}): "
+select FAQ in ${FAQS[@]}; do
+  case "${FAQ}" in
+  "${FAQS[0]}")
+    step="${FAQS[0]}"
     break
     ;;
-  "start")
-    step="start"
+  "${FAQS[1]}")
+    step="${FAQS[1]}"
     break
     ;;
-  "stop")
-    step="stop"
+  "${FAQS[2]}")
+    step="${FAQS[2]}"
     break
     ;;
-  "reload")
-    step="reload"
+  "${FAQS[3]}")
+    step="${FAQS[3]}"
     break
     ;;
-  "restart")
-    step="restart"
+  "${FAQS[4]}")
+    step="${FAQS[4]}"
     break
     ;;
-  "enable")
-    step="enable"
+  "${FAQS[5]}")
+    step="${FAQS[5]}"
     break
     ;;
-  "disable")
-    step="disable"
+  "${FAQS[6]}")
+    step="${FAQS[6]}"
     break
     ;;
-  "quit")
+  "${FAQS[7]}")
     exit 0
     ;;
   esac

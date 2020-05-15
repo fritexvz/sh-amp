@@ -41,36 +41,47 @@ source "${DIRNAME}/functions.sh"
 pkgAudit "fail2ban"
 
 # Run the command wizard.
+FAQS=(
+  "restart"
+  "status"
+  "unbanip"
+  "destemail"
+  "sender"
+  "log"
+  "quit"
+)
+
 echo
-PS3="Choose the next step. (1-7): "
-select choice in "restart" "status" "unbanip" "destemail" "sender" "log" "quit"; do
+IFS=$'\n'
+PS3="Choose the next step. (1-${#FAQS[@]}): "
+select choice in ${FAQS[@]}; do
   case "${choice}" in
-  "restart")
-    step="${choice}"
+  "${FAQS[0]}")
+    step="${FAQS[0]}"
     break
     ;;
-  "status")
-    step="${choice}"
+  "${FAQS[1]}")
+    step="${FAQS[1]}"
     break
     ;;
-  "unbanip")
-    step="${choice}"
+  "${FAQS[2]}")
+    step="${FAQS[2]}"
     break
     ;;
-  "destemail")
-    step="${choice}"
+  "${FAQS[3]}")
+    step="${FAQS[3]}"
     break
     ;;
-  "sender")
-    step="${choice}"
+  "${FAQS[4]}")
+    step="${FAQS[4]}"
     break
     ;;
-  "log")
-    step="${choice}"
+  "${FAQS[5]}")
+    step="${FAQS[5]}"
     break
     ;;
-  "quit")
-    exit
+  "${FAQS[6]}")
+    exit 0
     ;;
   esac
 done

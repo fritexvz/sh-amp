@@ -139,19 +139,19 @@ fi
 SERVERNAME="localhost"
 
 # 000-default configure
-f_000_default="/etc/apache2/sites-available/000-default.conf"
+f_80="/etc/apache2/sites-available/000-default.conf"
 
-if [ -f ".${f_000_default}" ]; then
-  cp ".${f_000_default}" "${f_000_default}"
+if [ -f ".${f_80}" ]; then
+  cp ".${f_80}" "${f_80}"
 else
-  if [ -z "$(cat "${f_000_default}" | egrep '^[# ]{0,}ServerName\s{1,}')" ]; then
+  if [ -z "$(cat "${f_80}" | egrep '^[# ]{0,}ServerName\s{1,}')" ]; then
     sed -i -E \
       -e "/^[# ]{0,}ServerAdmin\s{1,}/i\ServerName ${SERVERNAME}" \
-      "${f_000_default}"
+      "${f_80}"
   else
     sed -i -E \
       -e "s/^[# ]{0,}(ServerName)\s{1,}/\1 ${SERVERNAME}/" \
-      "${f_000_default}"
+      "${f_80}"
   fi
 fi
 
@@ -159,23 +159,23 @@ fi
 APACHE2_HTTPS="$(getPkgCnf -rs="\[APACHE2\]" -fs="=" -s="APACHE2_HTTPS")"
 
 if [ "${APACHE2_HTTPS^^}" == "ON" ]; then
-  f_000_default_ssl="/etc/apache2/sites-available/000-default-ssl.conf"
+  f_443="/etc/apache2/sites-available/000-default-ssl.conf"
 
-  if [ -f ".${f_000_default_ssl}" ]; then
-    cp ".${f_000_default_ssl}" "${f_000_default_ssl}"
+  if [ -f ".${f_443}" ]; then
+    cp ".${f_443}" "${f_443}"
   else
-    if [ -z "$(cat "${f_000_default_ssl}" | egrep '^[# ]{0,}ServerName\s{1,}')" ]; then
+    if [ -z "$(cat "${f_443}" | egrep '^[# ]{0,}ServerName\s{1,}')" ]; then
       sed -i -E \
         -e "/^[# ]{0,}ServerAdmin\s{1,}/i\ServerName ${SERVERNAME}" \
-        "${f_000_default_ssl}"
+        "${f_443}"
     fi
     sed -i -E \
       -e "s/^[# ]{0,}(ServerName)\s{1,}/\1 ${SERVERNAME}/" \
-      "${f_000_default_ssl}"
+      "${f_443}"
   fi
 
   # Enable site available
-  a2ensite "$(basename "${f_000_default_ssl}")"
+  a2ensite "$(basename "${f_443}")"
 fi
 
 

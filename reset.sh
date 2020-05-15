@@ -53,35 +53,36 @@ else
 fi
 
 # Get a list of directories.
-dirPath="./${OS_PATH}/*/"
-dirArgs=()
-dirExcl=('etc' 'vhost')
+DIRPATH="./${OS_PATH}/*/"
+DIRARGS=()
+DIREXCL=('etc' 'vhost')
 
 IFS=$'\n'
-for i in $(ls -d ${dirPath}); do
+for i in $(ls -d ${DIRPATH}); do
   i=${i%%/}
   i="$(basename "$i")"
-  in_array=""
-  if [ ! -z "${dirExcl}" ]; then
-    for ((j=0; j<${#dirExcl[@]}; j++)); do
-      if [ "${dirExcl[$j]}" == "$i" ]; then
-        in_array="Yes"
+  INARRAY=""
+  if [ ! -z "${DIREXCL}" ]; then
+    for ((j=0; j<${#DIREXCL[@]}; j++)); do
+      if [ "${DIREXCL[$j]}" == "$i" ]; then
+        INARRAY="Yes"
       fi
     done
   fi
-  if [ -z "${in_array}" ]; then
-    dirArgs+=("$i")
+  if [ -z "${INARRAY}" ]; then
+    DIRARGS+=("$i")
   fi
 done
 
-PS3="Select the package to be removed. (1-${#dirArgs[@]}) "
-select choice in ${dirArgs[@]} "quit"; do
-  case "${choice}" in
+echo
+PS3="Select the package to be removed. (1-${#DIRARGS[@]}) "
+select DIRECTORY in ${DIRARGS[@]} "quit"; do
+  case "${DIRECTORY}" in
   "quit")
-    exit
+    exit 0
     ;;
   *)
-    PACKAGE_ID="${choice}"
+    PACKAGE_ID="${DIRECTORY}"
     break
     ;;
   esac
