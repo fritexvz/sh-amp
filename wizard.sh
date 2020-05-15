@@ -70,7 +70,7 @@ for i in $(ls -d ${dirPath}); do
     done
   fi
   if [ -z "${in_array}" ]; then
-    dirArgs+=("\"$i\"")
+    dirArgs+=("$i")
   fi
 done
 
@@ -81,7 +81,7 @@ select choice in ${dirArgs[@]} "quit"; do
     exit 0
     ;;
   *)
-    PACKAGE_ID="${choice//\"/}"
+    PACKAGE_ID="${choice}"
     break
     ;;
   esac

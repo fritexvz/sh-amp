@@ -2,6 +2,7 @@
 
 # 0.0.32
 1. fixed: The wrong file path was fixed.
+2. fixed: Fixed syntax error.
 
 # 0.0.31
 1. fixed: Fixed incorrect file path.
