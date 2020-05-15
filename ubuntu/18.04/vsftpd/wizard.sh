@@ -41,6 +41,7 @@ source "${DIRNAME}/functions.sh"
 pkgAudit "vsftpd"
 
 # Run the command wizard.
+echo
 PS3="Choose the next step. (1-8): "
 select choice in "Create a new ftp user?" "Allow user root access?" "Change user password?" "Change user home directory?" "Delete an exist user?" "Allow access to the root account?" "Deny access to the root account?" "quit"; do
   case "${choice}" in
@@ -95,7 +96,7 @@ if [ "${step}" == "createUserAccount" ]; then
     echo "${create_username} is already in user_list."
   fi
   # Disabling Shell Access
-  usermod "${create_username} "-s /bin/ftponly
+  usermod "${create_username}" -s /bin/ftponly
   echo "New users have been added."
 fi
 
