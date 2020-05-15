@@ -1,5 +1,8 @@
 # Amp Stack   
 
+# 0.0.32
+1. fixed: The wrong file path was fixed.
+
 # 0.0.31
 1. fixed: Fixed incorrect file path.
 2. fixed: Fixed an error that occurred when the output line number was empty.

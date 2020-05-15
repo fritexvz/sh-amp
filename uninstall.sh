@@ -81,7 +81,7 @@ select choice in ${dirArgs[@]} "quit"; do
     exit 0
     ;;
   *)
-    PACKAGE_ID="${choice}"
+    PACKAGE_ID="${choice//\"/}"
     break
     ;;
   esac
