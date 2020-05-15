@@ -323,21 +323,18 @@ function getPubIPs() {
   fi
 }
 
-# You can also use ifconfig.me, ifconfig.co, checkip.amazonaws.com and icanhazip.come for curl URLs.
+# You can also use ifconfig.me, ifconfig.co and checkip.amazonaws.com for curl URLs.
 function addPubIPs() {
   local ip=""
   local ip1="$(curl ifconfig.me)"
   local ip2="$(curl ifconfig.co)"
   local ip3="$(curl checkip.amazonaws.com)"
-  local ip4="$(curl icanhazip.come)"
   if [ ! -z "${ip1}" ]; then
     ip="${ip1}"
   elif [ ! -z "${ip2}" ]; then
     ip="${ip2}"
   elif [ ! -z "${ip3}" ]; then
     ip="${ip3}"
-  elif [ ! -z "${ip4}" ]; then
-    ip="${ip4}"
   fi
   addPkgCnf -rs="\[HOSTS\]" -fs="=" -o="<<HERE
 PUBLIC_IP = ${ip}

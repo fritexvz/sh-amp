@@ -8,6 +8,7 @@
 5. added: Files for module updates were added.
 6. added: Fixed an issue where the static public IP was empty.
 7. fixed: Minor bug fixes.
+8. removed: Removed public IPs from icanhazip.com.
 
 # 0.0.3
 1. changed: The directory structure has been changed.
