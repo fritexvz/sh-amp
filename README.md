@@ -1,5 +1,5 @@
 # Amp Stack   
-Easy and fast installation of the latest version of the amp stack (apache2 + mariadb10 + php7 + fail2ban + vsftpd + sendmail + virtualhost).   
+Easy and fast installation of the latest version of the amp stack (apache2 + mariadb10 + php7 + fail2ban + vsftpd + sendmail + vhost).   
 
 ## Firewall   
 If you are installing scripts on cloud servers like aws, gcloud and azure, you need to open the following ports.   
@@ -50,7 +50,7 @@ $ ./uninstall.sh
 ```
 
 ## Wizard   
-"status" "stop" "start" "reload" "restart"   
+Frequently used systemctl commands such as status, start, stop, reload, restart, enable, disable and etc.
 ```
 $ ./wizard.sh
 ```

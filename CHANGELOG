@@ -6,6 +6,7 @@
 3. updated: The syntax has been updated.
 4. added: Added global variables.
 5. fixed: The default settings of php.ini have been changed.
+6. updated: The README.md file has been updated.
 
 # 0.0.31
 1. fixed: Fixed incorrect file path.
