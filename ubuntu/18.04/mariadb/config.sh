@@ -48,19 +48,7 @@ if [ -f ".${f1}" ]; then
   cp ".${f1}" "${f1}"
 else
   cat >"${f1}" <<MYCNFSCRIPT
-[client]
-default-character-set = utf8mb4
-
-[mysql]
-default-character-set = utf8mb4
-
-[mysqldump]
-default-character-set = utf8mb4
-
-[mysqld]
-character-set-server = utf8mb4
-collation-server = utf8mb4_unicode_ci
-character-set-client-handshake = FALSE
+$(cat ./tmpl/mycnf)
 MYCNFSCRIPT
 fi
 

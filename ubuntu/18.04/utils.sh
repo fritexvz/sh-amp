@@ -147,9 +147,24 @@ function getSendmailVer() {
   echo "$(dpkg-query -l | grep "sendmail" 2>/dev/null | awk '{print $3}' | awk -F "-" '{print $1}' | tail -1)"
 }
 
-# Truncate the first and last spaces.
-function trim() {
-  echo "$1" | sed -E -e 's/^\s+|\s+$//g'
+# Trim the starting space.
+function ltrim() {
+  echo "$1" | sed -E 's/^[ \t\r\n]+//g'
+}
+
+# Trim the ending space.
+function rtrim() {
+  echo "$1" | sed -E 's/[ \t\r\n]+$//g'
+}
+
+# Trim the start and end spaces.
+function trim()  {
+  echo "$(rtrim "$(ltrim "$1")")"
+}
+
+# Remove the comment.
+function removeComment() {
+  echo "$1" | sed -E 's/#.*//g'
 }
 
 # The escape string for regular expressions.
@@ -189,7 +204,7 @@ function escapeString() {
 
 # Escape quotes in regular expressions.
 function escapeQuote() {
-  echo "$1" | sed -e "s/'/\\\'/g" -e 's/"/\\"/g' -e 's/`/\\`/g'
+  echo "$1" | sed -E -e "s/'/\\\'/g" -e 's/"/\\"/g' -e 's/`/\\`/g'
 }
 
 # Get the absolute path of the file.

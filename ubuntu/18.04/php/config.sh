@@ -47,43 +47,42 @@ echo
 echo "Start setting up php configuration."
 
 # Tell the web server to prefer PHP files over others, so make Apache look for an index.php file first.
-f1="/etc/apache2/mods-available/dir.conf"
-if [ -f ".${f1}" ]; then
-  cp ".${f1}" "${f1}"
+f_dir="/etc/apache2/mods-available/dir.conf"
+if [ -f ".${f_dir}" ]; then
+  cp ".${f_dir}" "${f_dir}"
 else
   sed -i -E \
-    -e "/DirectoryIndex/{ s/\s+index.php//; s/index.html/index.php index.html/; }" \
-    "${f1}"
+    -e "/DirectoryIndex\s+/{ 
+      s/\s+index.php//;
+      s/index.html/index.php index.html/;
+    }" \
+    "${f_dir}"
 fi
 
 # Deny access to files without filename (e.g. '.php')
-f2="/etc/apache2/mods-available/php${PHP_VERSION}.conf"
-if [ -f ".${f2}" ]; then
-  cp ".${f2}" "${f2}"
+f_conf="/etc/apache2/mods-available/php${PHP_VERSION}.conf"
+
+if [ -f ".${f_conf}" ]; then
+  cp ".${f_conf}" "${f_conf}"
 else
   sed -i \
-    -e '/<FilesMatch/{ s/ph(ar|p|tml)/ph(ar|p[3457]?|tml)/; }' \
-    -e '/<FilesMatch/{ s/ph(ar|p|ps|tml)/ph(p[3457]?|t|tml|ps)/; }' \
-    "${f2}"
+    -e '/<FilesMatch/{
+      s/ph(ar|p|tml)/ph(ar|p[3457]?|tml)/;
+      s/ph(ar|p|ps|tml)/ph(p[3457]?|t|tml|ps)/;
+    }' \
+    "${f_conf}"
 fi
 
 # php.ini
-f3="/etc/php/${PHP_VERSION}/apache2/php.ini"
-if [ -f ".${f3}" ]; then
-  cp ".${f3}" "${f3}"
+f_ini="/etc/php/${PHP_VERSION}/apache2/php.ini"
+
+if [ -f ".${f_ini}" ]; then
+  cp ".${f_ini}" "${f_ini}"
 else
-  addPkgCnf -f="${f3}" -rs="\[PHP\]" -fs="=" -o="<<HERE
-short_open_tag = On
-max_execution_time = 3600
-max_input_time = 3600
-max_input_vars = 10000
-memory_limit = 256M
-display_errors = On
-post_max_size = 1024M
-upload_max_filesize = 960M
-max_file_uploads = 100
+  addPkgCnf -f="${f_ini}" -rs="\[PHP\]" -fs="=" -o="<<HERE
+$(cat ./tmpl/php.ini)
 <<HERE"
-  addPkgCnf -f="${f3}" -rs="\[Date\]" -fs="=" -o="<<HERE
+  addPkgCnf -f="${f_ini}" -rs="\[Date\]" -fs="=" -o="<<HERE
 date.timezone = $(cat /etc/timezone)
 <<HERE"
 fi

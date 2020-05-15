@@ -40,6 +40,10 @@ source "${DIRNAME}/functions.sh"
 echo
 echo "Set the host name."
 
+# Create a backup file.
+cp -v /etc/hosts{,.bak}
+cp -v /etc/cloud/cloud.cfg{,.bak}
+
 # Set the host name
 HOST_NAME=""
 while [ -z "${HOST_NAME}" ]; do
@@ -50,26 +54,23 @@ if [ hostname != "${HOST_NAME}" ]; then
   hostnamectl set-hostname "${HOST_NAME}"
 fi
 
-# Create a backup file.
-cp -v /etc/hosts{,.bak}
-cp -v /etc/cloud/cloud.cfg{,.bak}
+f_hosts="/etc/hosts"
 
-# hosts
-f1="/etc/hosts"
-if [ -f ".${f1}" ]; then
-  cp -v ".${f1}" "${f1}"
+if [ -f ".${f_hosts}" ]; then
+  cp -v ".${f_hosts}" "${f_hosts}"
 else
-  if [ -z "$(cat "${f1}" | grep "127.0.1.1 ${HOST_NAME}")" ]; then
-    sed -i -e "1 a\127.0.1.1 ${HOST_NAME}" "${f1}"
+  if [ -z "$(cat "${f_hosts}" | grep "127.0.1.1 ${HOST_NAME}")" ]; then
+    sed -i -e "1 a\127.0.1.1 ${HOST_NAME}" "${f_hosts}"
   fi
 fi
 
 # This will cause the set+update hostname module to not operate (if true)
-f2="/etc/cloud/cloud.cfg"
-if [ -f ".${f2}" ]; then
-  cp -v ".${f2}" "${f2}"
+f_cloud="/etc/cloud/cloud.cfg"
+
+if [ -f ".${f_cloud}" ]; then
+  cp -v ".${f_cloud}" "${f_cloud}"
 else
-  sed -i -E -e '/preserve_hostname\s{0,}\:/{ s/\:.*/\: true/; }' "${f2}"
+  sed -i -E -e '/preserve_hostname\s{0,}\:/{ s/\:.*/\: true/; }' "${f_cloud}"
 fi
 
 # Add a variable to the env file.

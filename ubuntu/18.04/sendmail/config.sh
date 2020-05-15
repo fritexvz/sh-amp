@@ -43,11 +43,12 @@ pkgAudit "sendmail"
 echo
 echo "Start setting up sendmail configuration."
 
-f1="/etc/mail/local-host-names"
-if [ -f ".${f1}" ]; then
-  cp ".${f1}" "${f1}"
+f_mail="/etc/mail/local-host-names"
+
+if [ -f ".${f_mail}" ]; then
+  cp ".${f_mail}" "${f_mail}"
 else
-  echo "localhost" >"${f1}"
+  echo "localhost" >"${f_mail}"
 fi
 
 # Restart the service.

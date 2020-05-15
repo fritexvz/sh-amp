@@ -42,8 +42,8 @@ pkgAudit "apache2"
 
 # Run the command wizard.
 echo
-PS3="Choose the next step. (1-6): "
-select choice in "status" "start" "stop" "reload" "restart" "quit"; do
+PS3="Choose the next step. (1-8): "
+select choice in "status" "start" "stop" "reload" "restart" "enable" "disable" "quit"; do
   case "${choice}" in
   "status")
     step="status"
@@ -65,8 +65,16 @@ select choice in "status" "start" "stop" "reload" "restart" "quit"; do
     step="restart"
     break
     ;;
+  "enable")
+    step="enable"
+    break
+    ;;
+  "disable")
+    step="disable"
+    break
+    ;;
   "quit")
-    exit
+    exit 0
     ;;
   esac
 done
@@ -89,4 +97,12 @@ fi
 
 if [ "${step}" == "restart" ]; then
   systemctl restart apache2
+fi
+
+if [ "${step}" == "enable" ]; then
+  systemctl enable apache2
+fi
+
+if [ "${step}" == "disable" ]; then
+  systemctl disable apache2
 fi

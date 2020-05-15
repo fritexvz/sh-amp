@@ -8,6 +8,7 @@ function getPkgCnf() {
   local FIELD_SEPERATOR=""
   local SEARCH=""
   local MATCH="tail"
+  local MATCHSTRING=""
 
   for arg in "${@}"; do
     case "${arg}" in
@@ -44,39 +45,43 @@ function getPkgCnf() {
     if [ ! -z "${FIELD_SEPERATOR}" ]; then
 
       if [ "${MATCH}" == "tail" ]; then
-        echo "$(cat "${FILE}" | sed -E -n "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
+        MATCHSTRING="$(cat "${FILE}" | sed -E -n "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
           /^[#; ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/{
             /^[^#;]{1,}/ s/\s{0,}${FIELD_SEPERATOR}\s{0,}/${FIELD_SEPERATOR}/p;
           }
-        }" | tail -1 | awk -F "${FIELD_SEPERATOR}" '{print $2}')"
+        }" | tail -1)"
+        echo "$(trim "$(removeComment "${MATCHSTRING}" | awk -F "${FIELD_SEPERATOR}" '{print $2}')")"
       elif [ "${MATCH}" == "head" ]; then
-        echo "$(cat "${FILE}" | sed -E -n "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
+        MATCHSTRING="$(cat "${FILE}" | sed -E -n "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
           /^[#; ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/{
             /^[^#;]{1,}/ s/\s{0,}${FIELD_SEPERATOR}\s{0,}/${FIELD_SEPERATOR}/p;
           }
-        }" | head -1 | awk -F "${FIELD_SEPERATOR}" '{print $2}')"
+        }" | head -1)"
+        echo "$(trim "$(removeComment "${MATCHSTRING}" | awk -F "${FIELD_SEPERATOR}" '{print $2}')")"
       else
         echo "$(cat "${FILE}" | sed -E -n "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
           /^[#; ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/{
             /^[^#;]{1,}/ s/\s{0,}${FIELD_SEPERATOR}\s{0,}/${FIELD_SEPERATOR}/p;
           }
-        }" | awk -F "${FIELD_SEPERATOR}" '{print $2}')"
+        }" | sed -E 's/#.*//g' | awk -F "${FIELD_SEPERATOR}" '{print $2}' | sed -E 's/^[ \t\r\n]+//g;s/[ \t\r\n]+$//g;')"
       fi
 
     else
 
       if [ "${MATCH}" == "tail" ]; then
-        echo "$(cat "${FILE}" | sed -E -n "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
+        MATCHSTRING="$(cat "${FILE}" | sed -E -n "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
           /^[#; ]{0,}${SEARCH}\s{1,}/{ /^[^#;]{1,}/p }
-        }" | tail -1 | awk '{print $2}')"
+        }" | tail -1)"
+        echo "$(trim "$(removeComment "${MATCHSTRING}" | awk '{print $2}')")"
       elif [ "${MATCH}" == "head" ]; then
-        echo "$(cat "${FILE}" | sed -E -n "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
+        MATCHSTRING="$(cat "${FILE}" | sed -E -n "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
           /^[#; ]{0,}${SEARCH}\s{1,}/{ /^[^#;]{1,}/p }
-        }" | head -1 | awk '{print $2}')"
+        }" | head -1)"
+        echo "$(trim "$(removeComment "${MATCHSTRING}" | awk '{print $2}')")"
       else
         echo "$(cat "${FILE}" | sed -E -n "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
           /^[#; ]{0,}${SEARCH}\s{1,}/{ /^[^#;]{1,}/p }
-        }" | awk '{print $2}')"
+        }" | sed -E 's/#.*//g' | awk '{print $2}' | sed -E 's/^[ \t\r\n]+//g;s/[ \t\r\n]+$//g;')"
       fi
 
     fi
@@ -85,27 +90,31 @@ function getPkgCnf() {
     if [ ! -z "${FIELD_SEPERATOR}" ]; then
 
       if [ "${MATCH}" == "tail" ]; then
-        echo "$(cat "${FILE}" | sed -E -n "/^[#; ]{0,}${SEARCH}s{0,}${FIELD_SEPERATOR}/{
+        MATCHSTRING="$(cat "${FILE}" | sed -E -n "/^[#; ]{0,}${SEARCH}s{0,}${FIELD_SEPERATOR}/{
           /^[^#;]{1,}/ s/\s{0,}${FIELD_SEPERATOR}\s{0,}/${FIELD_SEPERATOR}/p
-        }" | tail -1 | awk -F "${FIELD_SEPERATOR}" '{print $2}')"
+        }" | tail -1)"
+        echo "$(trim "$(removeComment "${MATCHSTRING}" | awk -F "${FIELD_SEPERATOR}" '{print $2}')")"
       elif [ "${MATCH}" == "head" ]; then
-        echo "$(cat "${FILE}" | sed -E -n "/^[#; ]{0,}${SEARCH}s{0,}${FIELD_SEPERATOR}/{
+        MATCHSTRING="$(cat "${FILE}" | sed -E -n "/^[#; ]{0,}${SEARCH}s{0,}${FIELD_SEPERATOR}/{
           /^[^#;]{1,}/ s/\s{0,}${FIELD_SEPERATOR}\s{0,}/${FIELD_SEPERATOR}/p
-        }" | head -1 | awk -F "${FIELD_SEPERATOR}" '{print $2}')"
+        }" | head -1)"
+        echo "$(trim "$(removeComment "${MATCHSTRING}" | awk -F "${FIELD_SEPERATOR}" '{print $2}')")"
       else
         echo "$(cat "${FILE}" | sed -E -n "/^[#; ]{0,}${SEARCH}s{0,}${FIELD_SEPERATOR}/{
           /^[^#;]{1,}/ s/\s{0,}${FIELD_SEPERATOR}\s{0,}/${FIELD_SEPERATOR}/p
-        }" | awk -F "${FIELD_SEPERATOR}" '{print $2}')"
+        }" | sed -E 's/#.*//g' | awk -F "${FIELD_SEPERATOR}" '{print $2}' | sed -E 's/^[ \t\r\n]+//g;s/[ \t\r\n]+$//g;')"
       fi
 
     else
 
       if [ "${MATCH}" == "tail" ]; then
-        echo "$(cat "${FILE}" | sed -E -n "/^[#; ]{0,}${SEARCH}s{1,}/{ /^[^#;]{1,}/p }" | tail -1 | awk '{print $2}')"
+        MATCHSTRING="$(cat "${FILE}" | sed -E -n "/^[#; ]{0,}${SEARCH}s{1,}/{ /^[^#;]{1,}/p }" | tail -1)"
+        echo "$(trim "$(removeComment "${MATCHSTRING}" | awk '{print $2}')")"
       elif [ "${MATCH}" == "head" ]; then
-        echo "$(cat "${FILE}" | sed -E -n "/^[#; ]{0,}${SEARCH}s{1,}/{ /^[^#;]{1,}/p }" | head -1 | awk '{print $2}')"
+        MATCHSTRING="$(cat "${FILE}" | sed -E -n "/^[#; ]{0,}${SEARCH}s{1,}/{ /^[^#;]{1,}/p }" | head -1)"
+        echo "$(trim "$(removeComment "${MATCHSTRING}" | awk '{print $2}')")"
       else
-        echo "$(cat "${FILE}" | sed -E -n "/^[#; ]{0,}${SEARCH}s{1,}/{ /^[^#;]{1,}/p }" | awk '{print $2}')"
+        echo "$(cat "${FILE}" | sed -E -n "/^[#; ]{0,}${SEARCH}s{1,}/{ /^[^#;]{1,}/p }" | sed -E 's/#.*//g' | awk '{print $2}' | sed -E 's/^[ \t\r\n]+//g;s/[ \t\r\n]+$//g;')"
       fi
 
     fi
@@ -161,14 +170,16 @@ function addPkgCnf() {
 
   while IFS= read -r line; do
 
-    if [ -z "${line}" ] || [ ! -z "$(echo "${line}" | egrep '^<<.*')" ]; then
+    if [ -z "${line}" ] || [ "${line// /}" == "#" ] || [ "${line// /}" == ";" ] || 
+       [ ! -z "$(echo ${line} | sed -E -n '/^[<]{1,}.*/p')" ] ||
+       [ ! -z "$(echo ${line} | sed -E -n '/^[#;]\s{1,}/p')" ]; then
       continue
     fi
 
     if [ ! -z "${FIELD_SEPERATOR}" ]; then
-      SEARCH="$(echo "${line}" | sed -E 's/^[#; ]{1,}//' | awk -F "${FIELD_SEPERATOR}" '{print $1}')"
+      SEARCH="$(echo "${line}" | sed -E 's/^[#; ]{1,}//;s/#.*//g;' | awk -F "${FIELD_SEPERATOR}" '{print $1}')" | sed -E 's/^[ \t\r\n]+//g;s/[ \t\r\n]+$//g;'
     else
-      SEARCH="$(echo "${line}" | sed -E 's/^[#; ]{1,}//' | awk '{print $1}')"
+      SEARCH="$(echo "${line}" | sed -E 's/^[#; ]{1,}//;s/#.*//g;' | awk '{print $1}')" | sed -E 's/^[ \t\r\n]+//g;s/[ \t\r\n]+$//g;'
     fi
 
     if [ ! -z "${BEGIN_RECORD_SEPERATOR}" ]; then
@@ -178,14 +189,14 @@ function addPkgCnf() {
           LINENUM="$(cat "${FILE}" | sed -E -n -e "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
             /^[#; ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/=;
           }" | tail -1)"
-          if [ ! -z "${LINENUM}" ] || [ "${LINENUM}" != "0" ]; then
+          if [ ! -z "${LINENUM}" ] && [ "${LINENUM}" -gt "0" ]; then
             sed -E -i -e "${LINENUM} c\\$(escapeQuote "${line}")" "${FILE}"
           fi
         elif [ "${MATCH}" == "head" ]; then
           LINENUM="$(cat "${FILE}" | sed -E -n -e "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
             /^[#; ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/=;
           }" | tail -1)"
-          if [ ! -z "${LINENUM}" ] || [ "${LINENUM}" != "0" ]; then
+          if [ ! -z "${LINENUM}" ] && [ "${LINENUM}" -gt "0" ]; then
             sed -E -i -e "${LINENUM} c\\$(escapeQuote "${line}")" "${FILE}"
           fi
         else
@@ -202,14 +213,14 @@ function addPkgCnf() {
           LINENUM="$(cat "${FILE}" | sed -E -n -e "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
             /^[#; ]{0,}${SEARCH}\s{1,}/=;
           }" | tail -1)"
-          if [ ! -z "${LINENUM}" ] || [ "${LINENUM}" != "0" ]; then
+          if [ ! -z "${LINENUM}" ] && [ "${LINENUM}" -gt "0" ]; then
             sed -E -i -e "${LINENUM} c\\$(escapeQuote "${line}")" "${FILE}"
           fi
         elif [ "${MATCH}" == "head" ]; then
           LINENUM="$(cat "${FILE}" | sed -E -n -e "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
             /^[#; ]{0,}${SEARCH}\s{1,}/=;
           }" | head -1)"
-          if [ ! -z "${LINENUM}" ] || [ "${LINENUM}" != "0" ]; then
+          if [ ! -z "${LINENUM}" ] && [ "${LINENUM}" -gt "0" ]; then
             sed -E -i -e "${LINENUM} c\\$(escapeQuote "${line}")" "${FILE}"
           fi
         else
@@ -226,12 +237,12 @@ function addPkgCnf() {
 
         if [ "${MATCH}" == "tail" ]; then
           LINENUM="$(cat "${FILE}" | sed -E -n -e "/^[#; ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/=;" | tail -1)"
-          if [ ! -z "${LINENUM}" ] || [ "${LINENUM}" != "0" ]; then
+          if [ ! -z "${LINENUM}" ] && [ "${LINENUM}" -gt "0" ]; then
             sed -E -i -e "${LINENUM} c\\$(escapeQuote "${line}")" "${FILE}"
           fi
         elif [ "${MATCH}" == "head" ]; then
           LINENUM="$(cat "${FILE}" | sed -E -n -e "/^[#; ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/=;" | head -1)"
-          if [ ! -z "${LINENUM}" ] || [ "${LINENUM}" != "0" ]; then
+          if [ ! -z "${LINENUM}" ] && [ "${LINENUM}" -gt "0" ]; then
             sed -E -i -e "${LINENUM} c\\$(escapeQuote "${line}")" "${FILE}"
           fi
         else
@@ -244,12 +255,12 @@ function addPkgCnf() {
 
         if [ "${MATCH}" == "tail" ]; then
           LINENUM="$(cat "${FILE}" | sed -E -n -e "/^[#; ]{0,}${SEARCH}\s{1,}/=;" | tail -1)"
-          if [ ! -z "${LINENUM}" ] || [ "${LINENUM}" != "0" ]; then
+          if [ ! -z "${LINENUM}" ] && [ "${LINENUM}" -gt "0" ]; then
             sed -E -i -e "${LINENUM} c\\$(escapeQuote "${line}")" "${FILE}"
           fi
         elif [ "${MATCH}" == "head" ]; then
           LINENUM="$(cat "${FILE}" | sed -E -n -e "/^[#; ]{0,}${SEARCH}\s{1,}/=;" | head -1)"
-          if [ ! -z "${LINENUM}" ] || [ "${LINENUM}" != "0" ]; then
+          if [ ! -z "${LINENUM}" ] && [ "${LINENUM}" -gt "0" ]; then
             sed -E -i -e "${LINENUM} c\\$(escapeQuote "${line}")" "${FILE}"
           fi
         else
@@ -266,9 +277,11 @@ function addPkgCnf() {
 }
 
 # Delete the variable from the env file.
-#function delPkgCnf() {
-#...
-#}
+function delPkgCnf() {
+  addPkgCnf -rs="\[${1^^}\]" -fs="=" -o="<<HERE
+${1^^}_VERSION = 
+<<HERE"
+}
 
 # Remove the package completely.
 function delPkg() {
@@ -284,7 +297,7 @@ function delPkg() {
   fi
 
   # Delete the variable from the env file.
-  #delPkgCnf "..."
+  delPkgCnf "$1"
 
   # Upgrade your operating system to the latest.
   apt update && apt -y upgrade
@@ -293,22 +306,9 @@ function delPkg() {
 
 # Make sure the package is installed.
 function pkgAudit() {
-  local pkg="$1"
-  if [ -z "$(is${pkg^})" ]; then
-    echo "The ${pkg,,} package is not installed."
-    local msg=""
-    while [ -z "${msg}" ]; do
-      read -p "Install ${pkg,,} package? (y/n) " msg
-      case "${msg}" in
-      y | Y)
-        bash ${pkg,,}.sh --install
-        break 2
-        ;;
-      n | N)
-        exit
-        ;;
-      esac
-    done
+  if [ -z "$(is${1^})" ]; then
+    echo "The ${1,,} package is not installed."
+    exit 0
   fi
 }
 

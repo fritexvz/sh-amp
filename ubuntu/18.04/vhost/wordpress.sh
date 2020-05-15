@@ -22,8 +22,8 @@ VHOST_SUBDIR=""
 # Set the arguments.
 for arg in "${@}"; do
   case "${arg}" in
-  --name=*)
-    VHOST_NAME="$(echo "${arg}" | sed -E 's/(--name=)//')"
+  --vhostname=*)
+    VHOST_NAME="$(echo "${arg}" | sed -E 's/(--vhostname=)//')"
     VHOST_DIR="/var/www/${VHOST_NAME}/html"
     ;;
   --subdir=*)

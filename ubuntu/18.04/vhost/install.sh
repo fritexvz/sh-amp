@@ -57,7 +57,7 @@ done
 
 # config.sh
 if [ -f ./config.sh ]; then
-  bash ./config.sh --name="${VHOST_NAME}"
+  bash ./config.sh --vhostname="${VHOST_NAME}"
 fi
 
 # Wizard
@@ -67,28 +67,28 @@ select choice in "default" "database" "laravel" "wordpress" "laravel+wordpress" 
   case "${choice}" in
   "default")
     step="default"
-    bash ./default.sh --name="${VHOST_NAME}"
+    bash ./default.sh --vhostname="${VHOST_NAME}"
     break
     ;;
   "database")
     step="database"
-    bash ./database.sh --name="${VHOST_NAME}"
+    bash ./database.sh --dbname="${VHOST_NAME}"
     break
     ;;
   "laravel")
     step="laravel"
-    bash ./laravel.sh --name="${VHOST_NAME}"
+    bash ./laravel.sh --vhostname="${VHOST_NAME}"
     break
     ;;
   "wordpress")
     step="wordpress"
-    bash ./wordpress.sh --name="${VHOST_NAME}"
+    bash ./wordpress.sh --vhostname="${VHOST_NAME}"
     break
     ;;
   "laravel+wordpress")
     step="laravel+wordpress"
-    bash ./laravel.sh --name="${VHOST_NAME}"
-    bash ./wordpress.sh --name="${VHOST_NAME}" --subdir="blog"
+    bash ./laravel.sh --vhostname="${VHOST_NAME}"
+    bash ./wordpress.sh --vhostname="${VHOST_NAME}" --subdir="blog"
     break
     ;;
   "quit")

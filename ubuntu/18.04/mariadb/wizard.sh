@@ -39,3 +39,70 @@ source "${DIRNAME}/functions.sh"
 
 # Make sure the package is installed.
 pkgAudit "mariadb"
+
+# Run the command wizard.
+echo
+PS3="Choose the next step. (1-8): "
+select choice in "status" "start" "stop" "reload" "restart" "enable" "disable" "quit"; do
+  case "${choice}" in
+  "status")
+    step="status"
+    break
+    ;;
+  "start")
+    step="start"
+    break
+    ;;
+  "stop")
+    step="stop"
+    break
+    ;;
+  "reload")
+    step="reload"
+    break
+    ;;
+  "restart")
+    step="restart"
+    break
+    ;;
+  "enable")
+    step="enable"
+    break
+    ;;
+  "disable")
+    step="disable"
+    break
+    ;;
+  "quit")
+    exit 0
+    ;;
+  esac
+done
+
+if [ "${step}" == "status" ]; then
+  systemctl status mariadb
+fi
+
+if [ "${step}" == "start" ]; then
+  systemctl start mariadb
+fi
+
+if [ "${step}" == "stop" ]; then
+  systemctl stop mariadb
+fi
+
+if [ "${step}" == "reload" ]; then
+  systemctl reload mariadb
+fi
+
+if [ "${step}" == "restart" ]; then
+  systemctl restart mariadb
+fi
+
+if [ "${step}" == "enable" ]; then
+  systemctl enable mariadb
+fi
+
+if [ "${step}" == "disable" ]; then
+  systemctl disable mariadb
+fi

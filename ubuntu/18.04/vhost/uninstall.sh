@@ -69,7 +69,7 @@ if [ "$(msg -yn 'Are you sure you want to remove it? (y/n) ')" == "Yes" ]; then
   PUBLIC_IP="$(getPkgCnf -rs="\[HOSTS\]" -fs="=" -s="PUBLIC_IP")"
 
   # Removing public ip address to the /etc/hosts file
-  if [ -z "$(cat "/etc/hosts" | egrep "^${PUBLIC_IP}\s+${VHOST_NAME}$")" ]; then
+  if [ ! -z "$(cat "/etc/hosts" | egrep "^${PUBLIC_IP}\s+${VHOST_NAME}$")" ]; then
     sed -i -E "/^${PUBLIC_IP}\s+${VHOST_NAME}$/d" /etc/hosts
   fi
 

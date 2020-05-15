@@ -22,8 +22,8 @@ VHOST_SUBDIR=""
 # Set the arguments.
 for arg in "${@}"; do
   case "${arg}" in
-  --name=*)
-    VHOST_NAME="$(echo "${arg}" | sed -E 's/(--name=)//')"
+  --vhostname=*)
+    VHOST_NAME="$(echo "${arg}" | sed -E 's/(--vhostname=)//')"
     VHOST_DIR="/var/www/${VHOST_NAME}/html"
     ;;
   --subdir=*)
@@ -42,7 +42,9 @@ sed -i -E \
   "/etc/apache2/sites-available/${VHOST_NAME}-ssl.conf"
 
 # Reload the service
-systemctl reload apache2
+if [ ! -z "$(isApache2)" ]; then
+  systemctl reload apache2
+fi
 
 # Download and extract the latest laravel.
 cd "$(echo "${VHOST_DIR}" | sed -E '{ s#/+#/#g; s#/+$##; }')"
@@ -51,7 +53,10 @@ composer create-project --prefer-dist laravel/laravel .
 
 php artisan serve
 
-sudo systemctl restart apache2
+# Restart the service
+if [ ! -z "$(isApache2)" ]; then
+  systemctl restart apache2
+fi
 
 echo
 echo "Laravel configuration is complete."
