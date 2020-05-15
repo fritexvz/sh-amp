@@ -327,15 +327,23 @@ function getPubIPs() {
 function addPubIPs() {
   local ip=""
   local ip1="$(curl ifconfig.me)"
-  local ip2="$(curl ifconfig.co)"
-  local ip3="$(curl checkip.amazonaws.com)"
+  local ip2=""
+  local ip3=""
+
   if [ ! -z "${ip1}" ]; then
     ip="${ip1}"
-  elif [ ! -z "${ip2}" ]; then
-    ip="${ip2}"
-  elif [ ! -z "${ip3}" ]; then
-    ip="${ip3}"
+  else
+    ip2="$(curl ifconfig.co)"
+    if [ ! -z "${ip2}" ]; then
+      ip="${ip2}"
+    else
+      ip3="$(curl checkip.amazonaws.com)"
+      if [ ! -z "${ip3}" ]; then
+        ip="${ip3}"
+      fi
+    fi
   fi
+
   addPkgCnf -rs="\[HOSTS\]" -fs="=" -o="<<HERE
 PUBLIC_IP = ${ip}
 <<HERE"
