@@ -177,9 +177,11 @@ function addPkgCnf() {
     fi
 
     if [ ! -z "${FIELD_SEPERATOR}" ]; then
-      SEARCH="$(echo "${line}" | sed -E 's/^[#; ]{1,}//;s/#.*//g;' | awk -F "${FIELD_SEPERATOR}" '{print $1}')" | sed -E 's/^[ \t\r\n]+//g;s/[ \t\r\n]+$//g;'
+      SEARCH="$(echo "${line}" | sed -E 's/^[#; ]{1,}//;s/#.*//g;' | awk -F "${FIELD_SEPERATOR}" '{print $1}')"
+      SEARCH="$(trim "${SEARCH}")"
     else
-      SEARCH="$(echo "${line}" | sed -E 's/^[#; ]{1,}//;s/#.*//g;' | awk '{print $1}')" | sed -E 's/^[ \t\r\n]+//g;s/[ \t\r\n]+$//g;'
+      SEARCH="$(echo "${line}" | sed -E 's/^[#; ]{1,}//;s/#.*//g;' | awk '{print $1}')"
+      SEARCH="$(trim "${SEARCH}")"
     fi
 
     if [ ! -z "${BEGIN_RECORD_SEPERATOR}" ]; then
