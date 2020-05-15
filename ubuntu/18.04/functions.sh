@@ -170,8 +170,9 @@ function addPkgCnf() {
 
   while IFS= read -r line; do
 
-    if [ -z "${line}" ] || [ "${line// /}" == "#" ] || [ "${line// /}" == ";" ] || 
-       [ ! -z "$(echo ${line} | sed -E -n '/^[<]{1,}.*/p')" ] ||
+    if [ -z "${line}" ] ||
+       [ ! -z "$(echo ${line} | sed -E -n '/^[<]{2}HERE/p')" ] ||
+       [ ! -z "$(echo ${line} | sed -E -n '/^\[.*\]/p')" ] ||
        [ ! -z "$(echo ${line} | sed -E -n '/^[#;]\s{1,}/p')" ]; then
       continue
     fi
@@ -182,6 +183,10 @@ function addPkgCnf() {
     else
       SEARCH="$(echo "${line}" | sed -E 's/^[#; ]{1,}//;s/#.*//g;' | awk '{print $1}')"
       SEARCH="$(trim "${SEARCH}")"
+    fi
+
+    if [ -z "${SEARCH}" ]; then
+      continue
     fi
 
     if [ ! -z "${BEGIN_RECORD_SEPERATOR}" ]; then

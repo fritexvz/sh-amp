@@ -5,6 +5,7 @@
 2. fixed: Syntax errors have been fixed.
 3. updated: The syntax has been updated.
 4. added: Added global variables.
+5. fixed: The default settings of php.ini have been changed.
 
 # 0.0.31
 1. fixed: Fixed incorrect file path.
@@ -13,7 +14,7 @@
 4. fixed: Fixed incorrect Apache 2 configuration settings.
 5. added: Files for module updates were added.
 6. added: Fixed an issue where the static public IP was empty.
-7. fixed: Minor bug fixes.
+7. fixed: Minor bugs were fixed.
 8. removed: Removed public IPs from icanhazip.com.
 9. fixed: Fixed an issue where keywords could not be loaded from env files.
 
