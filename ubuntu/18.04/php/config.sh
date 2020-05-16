@@ -81,12 +81,15 @@ f_ini="/etc/php/${PHP_VERSION}/apache2/php.ini"
 if [ -f ".${f_ini}" ]; then
   cp ".${f_ini}" "${f_ini}"
 else
+
   addPkgCnf -f="${f_ini}" -rs="\[PHP\]" -fs="=" -o="<<HERE
 $(cat ./tmpl/php.ini)
 <<HERE"
+
   addPkgCnf -f="${f_ini}" -rs="\[Date\]" -fs="=" -o="<<HERE
 date.timezone = $(cat /etc/timezone)
 <<HERE"
+
 fi
 
 # Restart the service.

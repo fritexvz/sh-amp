@@ -43,7 +43,7 @@ source "${DIRNAME}/functions.sh"
 pkgAudit "${PKGNAME}"
 
 # Run the command wizard.
-FAQS=(
+COMMANDS=(
   "status"
   "start"
   "stop"
@@ -56,38 +56,38 @@ FAQS=(
 
 echo
 IFS=$'\n'
-PS3="Please select one of the options. (1-${#FAQS[@]}): "
-select FAQ in ${FAQS[@]}; do
-  case "${FAQ}" in
-  "${FAQS[0]}")
+PS3="Please select one of the options. (1-${#COMMANDS[@]}): "
+select COMMAND in ${COMMANDS[@]}; do
+  case "${COMMAND}" in
+  "${COMMANDS[0]}")
     systemctl status mariadb
     echo "${PKGNAME^} state loaded."
     ;;
-  "${FAQS[1]}")
+  "${COMMANDS[1]}")
     systemctl start mariadb
     echo "${PKGNAME^} started."
     ;;
-  "${FAQS[2]}")
+  "${COMMANDS[2]}")
     systemctl stop mariadb
     echo "${PKGNAME^} has stopped."
     ;;
-  "${FAQS[3]}")
+  "${COMMANDS[3]}")
     systemctl reload mariadb
     echo "${PKGNAME^} was refreshed."
     ;;
-  "${FAQS[4]}")
+  "${COMMANDS[4]}")
     systemctl restart mariadb
     echo "${PKGNAME^} restarted."
     ;;
-  "${FAQS[5]}")
+  "${COMMANDS[5]}")
     systemctl enable mariadb
     echo "${PKGNAME^} is enabled."
     ;;
-  "${FAQS[6]}")
+  "${COMMANDS[6]}")
     systemctl disable mariadb
     echo "${PKGNAME^} is disabled."
     ;;
-  "${FAQS[7]}")
+  "${COMMANDS[7]}")
     exit 0
     ;;
   esac

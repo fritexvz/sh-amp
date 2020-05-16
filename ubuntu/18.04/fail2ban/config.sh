@@ -51,14 +51,7 @@ echo "Start setting up ${PKGNAME} configuration."
 f_jail="/etc/fail2ban/jail.local"
 
 if [ -f ".${f_jail}" ]; then
-
-  # Public IP are added to the whitelist
-  addPkgCnf -f=".${f_jail}" -rs="\[DEFAULT\]" -fs="=" -o="<<HERE
-ignoreip = 127.0.0.1/8 127.0.1.1 ${PUBLIC_IP}
-<<HERE"
-
   cp ".${f_jail}" "${f_jail}"
-
 else
 
   cat >"${f_jail}" <<FAIL2BANSCRIPT

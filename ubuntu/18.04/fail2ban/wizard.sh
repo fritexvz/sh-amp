@@ -43,7 +43,7 @@ source "${DIRNAME}/functions.sh"
 pkgAudit "${PKGNAME}"
 
 # Run the command wizard.
-FAQS=(
+COMMANDS=(
   "restart"
   "status"
   "unbanip"
@@ -55,20 +55,20 @@ FAQS=(
 
 echo
 IFS=$'\n'
-PS3="Please select one of the options. (1-${#FAQS[@]}): "
-select choice in ${FAQS[@]}; do
-  case "${choice}" in
-  "${FAQS[0]}")
+PS3="Please select one of the options. (1-${#COMMANDS[@]}): "
+select COMMAND in ${COMMANDS[@]}; do
+  case "${COMMAND}" in
+  "${COMMANDS[0]}")
     # "restart"
     service fail2ban restart
     echo "${PKGNAME^} restarted."
     ;;
-  "${FAQS[1]}")
+  "${COMMANDS[1]}")
     # "status"
     fail2ban-client status sshd
     echo "${PKGNAME^} state loaded."
     ;;
-  "${FAQS[2]}")
+  "${COMMANDS[2]}")
     # "unbanip"
     banip=""
     while [ -z "$banip" ]; do
@@ -81,7 +81,7 @@ select choice in ${FAQS[@]}; do
     fail2ban-client set sshd unbanip "$banip"
     echo "IP unlocked."
     ;;
-  "${FAQS[3]}")
+  "${COMMANDS[3]}")
     # "destemail"
     echo "$(cat /etc/fail2ban/jail.local | egrep "destemail\s{0,}=")"
     msgYn="$(msg -yn 'Would you like to change? (y/n) ')"
@@ -95,7 +95,7 @@ select choice in ${FAQS[@]}; do
     fi
     echo "Destmail has been changed."
     ;;
-  "${FAQS[4]}")
+  "${COMMANDS[4]}")
     # "sender"
     echo "$(cat /etc/fail2ban/jail.local | egrep "sender\s{0,}=")"
     msgYn="$(msg -yn 'Would you like to change? (y/n) ')"
@@ -109,12 +109,12 @@ select choice in ${FAQS[@]}; do
     fi
     echo "Sender has been changed."
     ;;
-  "${FAQS[5]}")
+  "${COMMANDS[5]}")
     # "log"
     tail -f /var/log/fail2ban.log
     echo "The log is loaded."
     ;;
-  "${FAQS[6]}")
+  "${COMMANDS[6]}")
     # "quit"
     exit 0
     ;;

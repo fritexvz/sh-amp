@@ -43,7 +43,7 @@ source "${DIRNAME}/functions.sh"
 pkgAudit "${PKGNAME}"
 
 # Run the command wizard.
-FAQS=(
+COMMANDS=(
   "Create a new ftp user?"
   "Do you want users to access root?"
   "Would you like to change the user password?"
@@ -56,10 +56,10 @@ FAQS=(
 
 echo
 IFS=$'\n'
-PS3="Please select one of the options. (1-${#FAQS[@]}): "
-select FAQ in ${FAQS[@]}; do
-  case "${FAQ}" in
-  "${FAQS[0]}")
+PS3="Please select one of the options. (1-${#COMMANDS[@]}): "
+select COMMAND in ${COMMANDS[@]}; do
+  case "${COMMAND}" in
+  "${COMMANDS[0]}")
     # "Create a new ftp user?"
     username=""
     while [ -z "${username}" ]; do
@@ -83,7 +83,7 @@ select FAQ in ${FAQS[@]}; do
 
     echo "New users have been added."
     ;;
-  "${FAQS[1]}")
+  "${COMMANDS[1]}")
     # "Do you want users to access root?"
     username=""
     while [ -z "${username}" ]; do
@@ -102,7 +102,7 @@ select FAQ in ${FAQS[@]}; do
 
     echo "User root access is allowed."
     ;;
-  "${FAQS[2]}")
+  "${COMMANDS[2]}")
     # "Would you like to change the user password?"
     username=""
     while [ -z "${username}" ]; do
@@ -117,7 +117,7 @@ select FAQ in ${FAQS[@]}; do
 
     echo "User password has been changed."
     ;;
-  "${FAQS[3]}")
+  "${COMMANDS[3]}")
     # "Change user's home directory?"
     username=""
     while [ -z "${username}" ]; do
@@ -152,7 +152,7 @@ select FAQ in ${FAQS[@]}; do
 
     echo "The user home directory has been changed."
     ;;
-  "${FAQS[4]}")
+  "${COMMANDS[4]}")
     # "Are you sure you want to delete the existing user?"
     username=""
     while [ -z "${username}" ]; do
@@ -173,7 +173,7 @@ select FAQ in ${FAQS[@]}; do
 
     echo "The existing user has been deleted."
     ;;
-  "${FAQS[5]}")
+  "${COMMANDS[5]}")
     # "Do you want to allow root account?"
 
     if [ ! -z "$(cat "/etc/ftpusers" | egrep "^root$")" ]; then
@@ -185,7 +185,7 @@ select FAQ in ${FAQS[@]}; do
 
     echo "Access to the root account is allowed."
     ;;
-  "${FAQS[6]}")
+  "${COMMANDS[6]}")
     # "Do you want to reject the root account?"
 
     if [ -z "$(cat "/etc/ftpusers" | egrep "^root$")" ]; then
@@ -197,7 +197,7 @@ select FAQ in ${FAQS[@]}; do
     
     echo "Access to the root account is denied."
     ;;
-  "${FAQS[7]}")
+  "${COMMANDS[7]}")
     # "quit"
     exit 0
     ;;

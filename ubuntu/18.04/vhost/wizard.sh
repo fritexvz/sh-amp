@@ -43,7 +43,7 @@ source "${DIRNAME}/functions.sh"
 pkgAudit "apache2"
 
 # Run the command wizard.
-FAQS=(
+COMMANDS=(
   "install"
   "uninstall"
   "quit"
@@ -51,18 +51,18 @@ FAQS=(
 
 echo
 IFS=$'\n'
-PS3="Please select one of the options. (1-${#FAQS[@]}): "
-select FAQ in ${FAQS[@]}; do
-  case "${FAQ}" in
-  "${FAQS[0]}")
+PS3="Please select one of the options. (1-${#COMMANDS[@]}): "
+select COMMAND in ${COMMANDS[@]}; do
+  case "${COMMAND}" in
+  "${COMMANDS[0]}")
     if [ -f install.sh ]; then bash install.sh; fi
     break
     ;;
-  "${FAQS[1]}")
+  "${COMMANDS[1]}")
     if [ -f uninstall.sh ]; then bash uninstall.sh; fi
     break
     ;;
-  "${FAQS[2]}")
+  "${COMMANDS[2]}")
     exit 0
     ;;
   esac

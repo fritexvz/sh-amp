@@ -52,38 +52,53 @@ else
   exit 0
 fi
 
-# Get a list of directories.
-DIRPATH="./${OS_PATH}/*/"
-DIRARGS=()
-DIREXCL=('etc' 'vhost')
-
-IFS=$'\n'
-for i in $(ls -d ${DIRPATH}); do
-  i=${i%%/}
-  i="$(basename "$i")"
-  INARRAY=""
-  if [ ! -z "${DIREXCL}" ]; then
-    for ((j=0; j<${#DIREXCL[@]}; j++)); do
-      if [ "${DIREXCL[$j]}" == "$i" ]; then
-        INARRAY="Yes"
-      fi
-    done
-  fi
-  if [ -z "${INARRAY}" ]; then
-    DIRARGS+=("$i")
-  fi
-done
+# Set up a package list.
+PACKAGES=(
+  "apache2"
+  "fail2ban"
+  "mariadb"
+  "php"
+  "sendmail"
+  "ufw"
+  "vsftpd"
+  "quit"
+)
 
 echo
-PS3="Select the package to be removed. (1-${#DIRARGS[@]}) "
-select DIRECTORY in ${DIRARGS[@]} "quit"; do
-  case "${DIRECTORY}" in
-  "quit")
-    exit 0
-    ;;
-  *)
-    PACKAGE_ID="${DIRECTORY}"
+IFS=$'\n'
+PS3="Please select one of the options. (1-${#PACKAGES[@]}): "
+select PACKAGE in ${PACKAGES[@]}; do
+  case "${PACKAGE}" in
+  "${PACKAGES[0]}")
+    PACKAGE_ID="${PACKAGES[0]}"
     break
+    ;;
+  "${PACKAGES[1]}")
+    PACKAGE_ID="${PACKAGES[1]}"
+    break
+    ;;
+  "${PACKAGES[2]}")
+    PACKAGE_ID="${PACKAGES[2]}"
+    break
+    ;;
+  "${PACKAGES[3]}")
+    PACKAGE_ID="${PACKAGES[3]}"
+    break
+    ;;
+  "${PACKAGES[4]}")
+    PACKAGE_ID="${PACKAGES[4]}"
+    break
+    ;;
+  "${PACKAGES[5]}")
+    PACKAGE_ID="${PACKAGES[5]}"
+    break
+    ;;
+  "${PACKAGES[6]}")
+    PACKAGE_ID="${PACKAGES[6]}"
+    break
+    ;;
+  "${PACKAGES[7]}")
+    exit 0
     ;;
   esac
 done
