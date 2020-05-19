@@ -3,7 +3,8 @@
 # 0.0.33
 1. fixed: Syntax errors have been fixed.
 2. fixed: The wrong file path was fixed.
-4. added: Added verbose option to cp command.
+3. added: Added verbose option to cp command.
+4. moved: Moved mpm-itk installation from config.sh to install.sh.
 
 # 0.0.32
 1. fixed: The wrong file path was fixed.

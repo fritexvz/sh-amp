@@ -94,13 +94,6 @@ APACHE2SCRIPT
   fi
 fi
 
-# mpm-itk allows you to run each of your vhost under a separate uid and gid—in short,
-# the scripts and configuration files for one vhost no longer have to be readable for all the other vhosts.
-apt-cache search mpm-itk
-apt -y install libapache2-mpm-itk
-chmod 711 /home
-chmod -R 700 /home/*
-
 # prefork MPM
 # StartServers: number of server processes to start
 # MinSpareServers: minimum number of server processes which are kept spare
