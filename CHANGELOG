@@ -6,6 +6,7 @@
 3. added: Added verbose option to cp command.
 4. moved: Moved mpm-itk installation from config.sh to install.sh.
 5. updated: Updated to safety blank.
+6. updated: The vsftpd configuration has been updated.
 
 # 0.0.32
 1. fixed: The wrong file path was fixed.
