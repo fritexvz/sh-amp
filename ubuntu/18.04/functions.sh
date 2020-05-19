@@ -173,7 +173,7 @@ function addPkgCnf() {
     if [ -z "${line}" ] ||
        [ ! -z "$(echo ${line} | sed -E -n '/^[<]{2}HERE/p')" ] ||
        [ ! -z "$(echo ${line} | sed -E -n '/^\[.*\]/p')" ] ||
-       [ ! -z "$(echo ${line} | sed -E -n '/^[#;]\s{1,}/p')" ]; then
+       [ ! -z "$(echo ${line} | sed -E -n '/^[#;](\s|\t){1,}/p')" ]; then
       continue
     fi
 
