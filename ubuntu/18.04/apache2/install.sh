@@ -52,7 +52,7 @@ a2dismod -f autoindex
 
 # Create a basic SSL configuration file.
 if [ -f /etc/apache2/sites-available/default-ssl.conf ]; then
-  cp /etc/apache2/sites-available/default-ssl.conf /etc/apache2/sites-available/000-default-ssl.conf
+  cp -v /etc/apache2/sites-available/default-ssl.conf /etc/apache2/sites-available/000-default-ssl.conf
 fi
 
 # Reload the service.

@@ -51,7 +51,7 @@ echo "Start setting up ${PKGNAME} configuration."
 f_conf="/etc/vsftpd.conf"
 
 if [ -f ".${f_conf}" ]; then
-  cp ".${f_conf}" "${f_conf}"
+  cp -v ".${f_conf}" "${f_conf}"
 else
 
   # Added dynamic variable in template file.

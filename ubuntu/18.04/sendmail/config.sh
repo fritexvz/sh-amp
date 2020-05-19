@@ -48,7 +48,7 @@ echo "Start setting up ${PKGNAME} configuration."
 f_mail="/etc/mail/local-host-names"
 
 if [ -f ".${f_mail}" ]; then
-  cp ".${f_mail}" "${f_mail}"
+  cp -v ".${f_mail}" "${f_mail}"
 else
   echo "localhost" >"${f_mail}"
 fi

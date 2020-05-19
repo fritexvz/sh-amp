@@ -51,7 +51,7 @@ echo "Start setting up ${PKGNAME} configuration."
 f_jail="/etc/fail2ban/jail.local"
 
 if [ -f ".${f_jail}" ]; then
-  cp ".${f_jail}" "${f_jail}"
+  cp -v ".${f_jail}" "${f_jail}"
 else
 
   cat >"${f_jail}" <<FAIL2BANSCRIPT

@@ -47,7 +47,7 @@ echo "Start setting up ${PKGNAME} configuration."
 
 f1="/etc/my.cnf"
 if [ -f ".${f1}" ]; then
-  cp ".${f1}" "${f1}"
+  cp -v ".${f1}" "${f1}"
 else
   cat >"${f1}" <<MYCNFSCRIPT
 $(cat "${DIRNAME}/tmpl/my.cnf")

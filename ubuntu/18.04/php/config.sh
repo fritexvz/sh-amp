@@ -51,7 +51,7 @@ echo "Start setting up ${PKGNAME} configuration."
 # Tell the web server to prefer PHP files over others, so make Apache look for an index.php file first.
 f_dir="/etc/apache2/mods-available/dir.conf"
 if [ -f ".${f_dir}" ]; then
-  cp ".${f_dir}" "${f_dir}"
+  cp -v ".${f_dir}" "${f_dir}"
 else
   sed -i -E \
     -e "/DirectoryIndex\s+/{ 
@@ -65,7 +65,7 @@ fi
 f_conf="/etc/apache2/mods-available/php${PHP_VERSION}.conf"
 
 if [ -f ".${f_conf}" ]; then
-  cp ".${f_conf}" "${f_conf}"
+  cp -v ".${f_conf}" "${f_conf}"
 else
   sed -i \
     -e '/<FilesMatch/{
@@ -79,7 +79,7 @@ fi
 f_ini="/etc/php/${PHP_VERSION}/apache2/php.ini"
 
 if [ -f ".${f_ini}" ]; then
-  cp ".${f_ini}" "${f_ini}"
+  cp -v ".${f_ini}" "${f_ini}"
 else
 
   addPkgCnf -f="${f_ini}" -rs="\[PHP\]" -fs="=" -o="<<HERE
