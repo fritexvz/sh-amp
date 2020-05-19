@@ -1,5 +1,5 @@
 # Amp Stack   
-Easy and fast installation of the latest version of the amp stack (apache2 + mariadb10 + php7 + fail2ban + vsftpd + sendmail + vhost).   
+Easy and fast installation of the latest version of the amp stack (apache2 + mariadb10 + php7 + fail2ban + vsftpd + sendmail + virtualhost).   
 
 ## Firewall   
 If you are installing scripts on cloud servers like aws, gcloud and azure, you need to open the following ports.   
@@ -23,6 +23,11 @@ $ git clone https://github.com/w3src/sh-amp.git
 $ cd sh-amp
 $ chmod +x ./*.sh
 $ ./install.sh
+```
+
+## Virtualhost   
+```
+$ ./virtualhost.sh
 ```
 
 ## Config   

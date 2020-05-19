@@ -16,17 +16,24 @@ echo
 echo "Start installing default html."
 
 VHOST_NAME=""
+VHOST_DIR="/var/www/html"
+VHOST_SUBDIR=""
 
 # Set the arguments.
 for arg in "${@}"; do
   case "${arg}" in
   --vhostname=*)
     VHOST_NAME="$(echo "${arg}" | sed -E 's/(--vhostname=)//')"
+    VHOST_DIR="/var/www/${VHOST_NAME}/html"
+    ;;
+  --subdir=*)
+    VHOST_SUBDIR="$(echo "${arg}" | sed -E 's/(--subdir=)//')"
+    VHOST_DIR="/var/www/${VHOST_NAME}/html/${VHOST_SUBDIR}"
     ;;
   esac
 done
 
-cp -v "/var/www/html/index.html" "/var/www/${VHOST_NAME}/html/index.html"
+cp -v "/var/www/html/index.html" "${VHOST_DIR}/index.html"
 
 echo
 echo "Default html is completely installed."
