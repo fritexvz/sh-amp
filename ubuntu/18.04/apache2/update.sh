@@ -45,10 +45,7 @@ pkgAudit "${PKGNAME}"
 echo
 echo "The ${PKGNAME} package starts to be updated."
 
-# Add a variable to the env file.
-addPkgCnf -rs="\[APACHE2\]" -fs="=" -o="<<HERE
-APACHE2_VERSION = $(getApache2Ver)
-<<HERE"
+# ...
 
 echo
 echo "The ${PKGNAME} package has been completely updated."

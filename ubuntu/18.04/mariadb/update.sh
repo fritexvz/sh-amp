@@ -45,10 +45,7 @@ pkgAudit "${PKGNAME}"
 echo
 echo "The ${PKGNAME} package starts to be updated."
 
-# Add a variable to the env file.
-addPkgCnf -rs="\[MARIADB\]" -fs="=" -o="<<HERE
-MARIADB_VERSION = $(getMariadbVer)
-<<HERE"
+# ...
 
 echo
 echo "The ${PKGNAME} package has been completely updated."

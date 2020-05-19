@@ -25,9 +25,13 @@ if ! hash git 2>/dev/null; then
   exit 0
 fi
 
+cp env{,.bak}
+
 # Update the latest release version.
 git reset --hard HEAD
 git pull
+
+cp env.bak env
 
 # Recursive chmod to make all .sh files in the directory executable.
 find ./ -type f -name "*.sh" -exec chmod +x {} +

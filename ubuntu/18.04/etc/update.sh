@@ -42,10 +42,7 @@ source "${DIRNAME}/functions.sh"
 echo
 echo "The hosts package starts to be updated."
 
-# Add a variable to the env file.
-addPkgCnf -rs="\[HOSTS\]" -fs="=" -o="<<HERE
-PUBLIC_IP = $(getPubIPs)
-<<HERE"
+# ...
 
 echo
 echo "The hosts package has been completely updated."

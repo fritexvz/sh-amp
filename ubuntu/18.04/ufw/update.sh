@@ -45,10 +45,7 @@ pkgAudit "${PKGNAME}"
 echo
 echo "The ${PKGNAME} package starts to be updated."
 
-# Add a variable to the env file.
-addPkgCnf -rs="\[UFW\]" -fs="=" -o="<<HERE
-UFW_VERSION = $(getUfwVer)
-<<HERE"
+# ...
 
 echo
 echo "The ${PKGNAME} package has been completely updated."

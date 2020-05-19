@@ -83,7 +83,7 @@ if [ -f ".${f_ini}" ]; then
 else
 
   addPkgCnf -f="${f_ini}" -rs="\[PHP\]" -fs="=" -o="<<HERE
-$(cat ./tmpl/php.ini)
+$(cat tmpl/php.ini)
 <<HERE"
 
   addPkgCnf -f="${f_ini}" -rs="\[Date\]" -fs="=" -o="<<HERE

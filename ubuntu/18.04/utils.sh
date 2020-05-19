@@ -129,7 +129,7 @@ function getPhpVer() {
 
 # Get the ufw package version information.
 function getUfwVer() {
-  echo "$(dpkg-query -l | grep "ufw" 2>/dev/null | awk '{print $3}' | awk -F "-" '/0ubuntu0/{print $1}' | tail -1)"
+  echo "$(dpkg-query -l | grep "ufw" 2>/dev/null | awk '{print $3}' | awk -F "-" '{print $1}' | tail -1)"
 }
 
 # Get the fail2ban package version information.

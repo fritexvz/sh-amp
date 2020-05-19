@@ -45,10 +45,7 @@ pkgAudit "${PKGNAME}"
 echo
 echo "The ${PKGNAME} package starts to be updated."
 
-# Add a variable to the env file.
-addPkgCnf -rs="\[SENDMAIL\]" -fs="=" -o="<<HERE
-SENDMAIL_VERSION = $(getSendmailVer)
-<<HERE"
+# ...
 
 echo
 echo "The ${PKGNAME} package has been completely updated."

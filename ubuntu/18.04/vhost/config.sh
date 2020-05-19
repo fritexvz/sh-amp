@@ -72,7 +72,7 @@ if [ -f ".${f_80}" ]; then
   cp -v ".${f_80}" "/etc/apache2/sites-available/${VHOST_NAME}.conf"
 else
   cat >"/etc/apache2/sites-available/${VHOST_NAME}.conf" <<VHOSTCONFSCRIPT
-$(cat ./tmpl/vhost.conf)
+$(cat tmpl/vhost.conf)
 VHOSTCONFSCRIPT
 fi
 
@@ -102,7 +102,7 @@ if [ "${APACHE2_HTTPS^^}" == "ON" ]; then
     cp -v ".${f_443}" "/etc/apache2/sites-available/${VHOST_NAME}-ssl.conf"
   else
     cat >"/etc/apache2/sites-available/${VHOST_NAME}-ssl.conf" <<VHOSTCONFSCRIPT
-$(cat ./tmpl/vhost-ssl.conf)
+$(cat tmpl/vhost-ssl.conf)
 VHOSTCONFSCRIPT
   fi
 
