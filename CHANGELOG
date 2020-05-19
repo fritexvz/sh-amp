@@ -9,6 +9,7 @@
 6. updated: The vsftpd configuration has been updated.
 7. updated: The apache2 configuration has been updated.
 8. added: The virtualhost command was added.
+9. fixed: The wrong file path was fixed.
 
 # 0.0.32
 1. fixed: The wrong file path was fixed.

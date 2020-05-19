@@ -12,6 +12,12 @@
 # Work even if somebody does "sh thisscript.sh".
 set -e
 
+# Set constants in the file.
+ENVPATH=""
+ABSPATH=""
+DIRNAME=""
+OS_PATH=""
+
 echo
 echo "Start installing wordpress."
 
@@ -22,6 +28,14 @@ VHOST_SUBDIR=""
 # Set the arguments.
 for arg in "${@}"; do
   case "${arg}" in
+  --ENVPATH=*)
+    ENVPATH="$(echo "${arg}" | sed -E 's/(--ENVPATH=)//')"
+    ;;
+  --ABSPATH=*)
+    ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
+    DIRNAME="$(dirname "${ABSPATH}")"
+    OS_PATH="$(dirname "${DIRNAME}")"
+    ;;
   --vhostname=*)
     VHOST_NAME="$(echo "${arg}" | sed -E 's/(--vhostname=)//')"
     VHOST_DIR="/var/www/${VHOST_NAME}/html"
@@ -34,7 +48,7 @@ for arg in "${@}"; do
 done
 
 # Create a database.
-bash ./database.sh --dbname="${VHOST_NAME}"
+bash "${DIRNAME}/database.sh" --dbname="${VHOST_NAME}"
 
 # Download and extract the latest WordPress.
 cd "$(echo "${VHOST_DIR}" | sed -E '{ s#/+#/#g; s#/+$##; }')"

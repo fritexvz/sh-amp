@@ -17,7 +17,6 @@ ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
-PKGNAME=""
 
 # Set the arguments of the file.
 for arg in "${@}"; do
@@ -29,7 +28,6 @@ for arg in "${@}"; do
     ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
     DIRNAME="$(dirname "${ABSPATH}")"
     OS_PATH="$(dirname "${DIRNAME}")"
-    PKGNAME="$(basename "${DIRNAME,,}")"
     ;;
   esac
 done
@@ -58,42 +56,61 @@ echo
 echo "Start installing ${VHOST_NAME}."
 
 # config.sh
-if [ -f ./config.sh ]; then
-  bash ./config.sh --vhostname="${VHOST_NAME}"
+if [ -f "${DIRNAME}/config.sh" ]; then
+  bash "${DIRNAME}/config.sh" --vhostname="${VHOST_NAME}"
 fi
 
 # Wizard
+COMMANDS=(
+  "default"
+  "database"
+  "laravel"
+  "wordpress"
+  "laravel+wordpress"
+  "quit"
+)
+
 echo
-PS3="Choose the next step. (1-6) : "
-select choice in "default" "database" "laravel" "wordpress" "laravel+wordpress" "quit"; do
-  case "${choice}" in
-  "default")
-    step="default"
-    bash ./default.sh --vhostname="${VHOST_NAME}"
+IFS=$'\n'
+PS3="Please select one of the options. (1-${#COMMANDS[@]}): "
+select COMMAND in ${COMMANDS[@]}; do
+  case "${COMMAND}" in
+  "${COMMANDS[0]}")
+    FILENAME="default.sh"
+    FILEPATH="${DIRNAME}/${FILENAME}"
+    bash "${FILEPATH}" --vhostname="${VHOST_NAME}" --ENVPATH="${ENVPATH}" --ABSPATH="${FILEPATH}"
     break
     ;;
-  "database")
-    step="database"
-    bash ./database.sh --dbname="${VHOST_NAME}"
+  "${COMMANDS[1]}")
+    FILENAME="database.sh"
+    FILEPATH="${DIRNAME}/${FILENAME}"
+    bash "${FILEPATH}" --dbname="${VHOST_NAME}" --ENVPATH="${ENVPATH}" --ABSPATH="${FILEPATH}"
     break
     ;;
-  "laravel")
-    step="laravel"
-    bash ./laravel.sh --vhostname="${VHOST_NAME}"
+  "${COMMANDS[2]}")
+    FILENAME="laravel.sh"
+    FILEPATH="${DIRNAME}/${FILENAME}"
+    bash "${FILEPATH}" --vhostname="${VHOST_NAME}" --ENVPATH="${ENVPATH}" --ABSPATH="${FILEPATH}" --subdir="laravel"
     break
     ;;
-  "wordpress")
-    step="wordpress"
-    bash ./wordpress.sh --vhostname="${VHOST_NAME}"
+  "${COMMANDS[3]}")
+    FILENAME="wordpress.sh"
+    FILEPATH="${DIRNAME}/${FILENAME}"
+    bash "${FILEPATH}" --vhostname="${VHOST_NAME}" --ENVPATH="${ENVPATH}" --ABSPATH="${FILEPATH}" --subdir="wordpress"
     break
     ;;
-  "laravel+wordpress")
-    step="laravel+wordpress"
-    bash ./laravel.sh --vhostname="${VHOST_NAME}"
-    bash ./wordpress.sh --vhostname="${VHOST_NAME}" --subdir="blog"
+  "${COMMANDS[4]}")
+    # step1
+    FILENAME="laravel.sh"
+    FILEPATH="${DIRNAME}/${FILENAME}"
+    bash "${FILEPATH}" --vhostname="${VHOST_NAME}" --ENVPATH="${ENVPATH}" --ABSPATH="${FILEPATH}" --subdir="laravel"
+    # step2
+    FILENAME="wordpress.sh"
+    FILEPATH="${DIRNAME}/${FILENAME}"
+    bash "${FILEPATH}" --vhostname="${VHOST_NAME}" --ENVPATH="${ENVPATH}" --ABSPATH="${FILEPATH}" --subdir="laravel/blog"
     break
     ;;
-  "quit")
+  "${COMMANDS[5]}")
     exit
     ;;
   esac
