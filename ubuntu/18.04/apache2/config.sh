@@ -123,17 +123,19 @@ else
   if [ -z "$(cat "${f_mpm_prefork}" | egrep '^[# ]{0,}ServerLimit\s{1,}')" ]; then
     sed -i -E \
       -e "/<IfModule mpm_prefork_module>/,/<\/IfModule>/{ 
-        /^[# ]{0,}MaxRequestWorkers\s{1,}/a\ServerLimit ${SERVERLIMIT} 
-      }" "${f_mpm_prefork}"
+        s/^([# ]{0,})(MaxRequestWorkers\s{1,}.*)/\1\2\n\1Temp_\2/;
+        s/Temp_MaxRequestWorkers(\s{1,}).*/ServerLimit\1${SERVERLIMIT}/;
+      }" \
+      "${f_mpm_prefork}"
   fi
   sed -i -E \
     -e "/<IfModule mpm_prefork_module>/,/<\/IfModule>/{ 
-      s/^[# ]{0,}(StartServers\s{1,}).*/\1${STARTSERVERS}/; };
-      s/^[# ]{0,}(MinSpareServers\s{1,}).*/\1${MINSPARESERVERS}/; };
-      s/^[# ]{0,}(MaxSpareServers\s{1,}).*/\1${MAXSPARESERVERS}/; };
-      s/^[# ]{0,}(MaxRequestWorkers\s{1,}).*/\1${MAXREQUESTWORKERS}/; };
-      s/^[# ]{0,}(ServerLimit\s{1,}).*/\1${SERVERLIMIT}/; };
-      s/^[# ]{0,}(MaxConnectionsPerChild\s{1,}).*/\1${MAXCONNECTIONSPERCHILD}/; };
+      s/^([# ]{0,}StartServers\s{1,}).*/\1${STARTSERVERS}/;
+      s/^([# ]{0,}MinSpareServers\s{1,}).*/\1${MINSPARESERVERS}/;
+      s/^([# ]{0,}MaxSpareServers\s{1,}).*/\1${MAXSPARESERVERS}/;
+      s/^([# ]{0,}MaxRequestWorkers\s{1,}).*/\1${MAXREQUESTWORKERS}/;
+      s/^([# ]{0,}ServerLimit\s{1,}).*/\1${SERVERLIMIT}/;
+      s/^([# ]{0,}MaxConnectionsPerChild\s{1,}).*/\1${MAXCONNECTIONSPERCHILD}/;
     }" \
     "${f_mpm_prefork}"
 fi
