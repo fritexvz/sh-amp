@@ -55,7 +55,7 @@ if [ -f ".${f_jail}" ]; then
 else
 
   cat >"${f_jail}" <<FAIL2BANSCRIPT
-$(cat tmpl/jail.local)
+$(cat "${DIRNAME}/tmpl/jail.local")
 FAIL2BANSCRIPT
 
   # Public IP are added to the whitelist
