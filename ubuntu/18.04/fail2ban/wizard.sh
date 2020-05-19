@@ -89,7 +89,7 @@ select COMMAND in ${COMMANDS[@]}; do
       DESTEMAIL="$(msg -ync -p1='destemail = ' -p2='Are you sure you want to save the changes? (y/n/c) ')"
       if [ ! -z "${DESTEMAIL}" ]; then
         sed -i -E \
-          -e "/\[DEFAULT\]/,/\[.*\]/{ s/^[# ]{0,}(destemail\s{0,}=)/\1 ${DESTEMAIL}/; }" \
+          -e "/\[DEFAULT\]/,/\[.*\]/{ s/^[#\t ]{0,}(destemail\s{0,}=)/\1 ${DESTEMAIL}/; }" \
           /etc/fail2ban/jail.local
       fi
     fi
@@ -103,7 +103,7 @@ select COMMAND in ${COMMANDS[@]}; do
       SENDMAIL="$(msg -ync -p1='sender = ' -p2='Are you sure you want to save the changes? (y/n/c) ')"
       if [ ! -z "${SENDMAIL}" ]; then
         sed -i -E \
-          -e "/\[DEFAULT\]/,/\[.*\]/{ s/^[# ]{0,}(sender\s{0,}=)/\1 ${SENDMAIL}/; }" \
+          -e "/\[DEFAULT\]/,/\[.*\]/{ s/^[#\t ]{0,}(sender\s{0,}=)/\1 ${SENDMAIL}/; }" \
           /etc/fail2ban/jail.local
       fi
     fi

@@ -46,21 +46,21 @@ function getPkgCnf() {
 
       if [ "${MATCH}" == "tail" ]; then
         MATCHSTRING="$(cat "${FILE}" | sed -E -n "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
-          /^[#; ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/{
+          /^[#;\t ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/{
             /^[^#;]{1,}/ s/\s{0,}${FIELD_SEPERATOR}\s{0,}/${FIELD_SEPERATOR}/p;
           }
         }" | tail -1)"
         echo "$(trim "$(removeComment "${MATCHSTRING}" | awk -F "${FIELD_SEPERATOR}" '{print $2}')")"
       elif [ "${MATCH}" == "head" ]; then
         MATCHSTRING="$(cat "${FILE}" | sed -E -n "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
-          /^[#; ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/{
+          /^[#;\t ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/{
             /^[^#;]{1,}/ s/\s{0,}${FIELD_SEPERATOR}\s{0,}/${FIELD_SEPERATOR}/p;
           }
         }" | head -1)"
         echo "$(trim "$(removeComment "${MATCHSTRING}" | awk -F "${FIELD_SEPERATOR}" '{print $2}')")"
       else
         echo "$(cat "${FILE}" | sed -E -n "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
-          /^[#; ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/{
+          /^[#;\t ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/{
             /^[^#;]{1,}/ s/\s{0,}${FIELD_SEPERATOR}\s{0,}/${FIELD_SEPERATOR}/p;
           }
         }" | sed -E 's/#.*//g' | awk -F "${FIELD_SEPERATOR}" '{print $2}' | sed -E 's/^[ \t\r\n]+//g;s/[ \t\r\n]+$//g;')"
@@ -70,17 +70,17 @@ function getPkgCnf() {
 
       if [ "${MATCH}" == "tail" ]; then
         MATCHSTRING="$(cat "${FILE}" | sed -E -n "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
-          /^[#; ]{0,}${SEARCH}\s{1,}/{ /^[^#;]{1,}/p }
+          /^[#;\t ]{0,}${SEARCH}\s{1,}/{ /^[^#;]{1,}/p }
         }" | tail -1)"
         echo "$(trim "$(removeComment "${MATCHSTRING}" | awk '{print $2}')")"
       elif [ "${MATCH}" == "head" ]; then
         MATCHSTRING="$(cat "${FILE}" | sed -E -n "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
-          /^[#; ]{0,}${SEARCH}\s{1,}/{ /^[^#;]{1,}/p }
+          /^[#;\t ]{0,}${SEARCH}\s{1,}/{ /^[^#;]{1,}/p }
         }" | head -1)"
         echo "$(trim "$(removeComment "${MATCHSTRING}" | awk '{print $2}')")"
       else
         echo "$(cat "${FILE}" | sed -E -n "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
-          /^[#; ]{0,}${SEARCH}\s{1,}/{ /^[^#;]{1,}/p }
+          /^[#;\t ]{0,}${SEARCH}\s{1,}/{ /^[^#;]{1,}/p }
         }" | sed -E 's/#.*//g' | awk '{print $2}' | sed -E 's/^[ \t\r\n]+//g;s/[ \t\r\n]+$//g;')"
       fi
 
@@ -90,17 +90,17 @@ function getPkgCnf() {
     if [ ! -z "${FIELD_SEPERATOR}" ]; then
 
       if [ "${MATCH}" == "tail" ]; then
-        MATCHSTRING="$(cat "${FILE}" | sed -E -n "/^[#; ]{0,}${SEARCH}s{0,}${FIELD_SEPERATOR}/{
+        MATCHSTRING="$(cat "${FILE}" | sed -E -n "/^[#;\t ]{0,}${SEARCH}s{0,}${FIELD_SEPERATOR}/{
           /^[^#;]{1,}/ s/\s{0,}${FIELD_SEPERATOR}\s{0,}/${FIELD_SEPERATOR}/p
         }" | tail -1)"
         echo "$(trim "$(removeComment "${MATCHSTRING}" | awk -F "${FIELD_SEPERATOR}" '{print $2}')")"
       elif [ "${MATCH}" == "head" ]; then
-        MATCHSTRING="$(cat "${FILE}" | sed -E -n "/^[#; ]{0,}${SEARCH}s{0,}${FIELD_SEPERATOR}/{
+        MATCHSTRING="$(cat "${FILE}" | sed -E -n "/^[#;\t ]{0,}${SEARCH}s{0,}${FIELD_SEPERATOR}/{
           /^[^#;]{1,}/ s/\s{0,}${FIELD_SEPERATOR}\s{0,}/${FIELD_SEPERATOR}/p
         }" | head -1)"
         echo "$(trim "$(removeComment "${MATCHSTRING}" | awk -F "${FIELD_SEPERATOR}" '{print $2}')")"
       else
-        echo "$(cat "${FILE}" | sed -E -n "/^[#; ]{0,}${SEARCH}s{0,}${FIELD_SEPERATOR}/{
+        echo "$(cat "${FILE}" | sed -E -n "/^[#;\t ]{0,}${SEARCH}s{0,}${FIELD_SEPERATOR}/{
           /^[^#;]{1,}/ s/\s{0,}${FIELD_SEPERATOR}\s{0,}/${FIELD_SEPERATOR}/p
         }" | sed -E 's/#.*//g' | awk -F "${FIELD_SEPERATOR}" '{print $2}' | sed -E 's/^[ \t\r\n]+//g;s/[ \t\r\n]+$//g;')"
       fi
@@ -108,13 +108,13 @@ function getPkgCnf() {
     else
 
       if [ "${MATCH}" == "tail" ]; then
-        MATCHSTRING="$(cat "${FILE}" | sed -E -n "/^[#; ]{0,}${SEARCH}s{1,}/{ /^[^#;]{1,}/p }" | tail -1)"
+        MATCHSTRING="$(cat "${FILE}" | sed -E -n "/^[#;\t ]{0,}${SEARCH}s{1,}/{ /^[^#;]{1,}/p }" | tail -1)"
         echo "$(trim "$(removeComment "${MATCHSTRING}" | awk '{print $2}')")"
       elif [ "${MATCH}" == "head" ]; then
-        MATCHSTRING="$(cat "${FILE}" | sed -E -n "/^[#; ]{0,}${SEARCH}s{1,}/{ /^[^#;]{1,}/p }" | head -1)"
+        MATCHSTRING="$(cat "${FILE}" | sed -E -n "/^[#;\t ]{0,}${SEARCH}s{1,}/{ /^[^#;]{1,}/p }" | head -1)"
         echo "$(trim "$(removeComment "${MATCHSTRING}" | awk '{print $2}')")"
       else
-        echo "$(cat "${FILE}" | sed -E -n "/^[#; ]{0,}${SEARCH}s{1,}/{ /^[^#;]{1,}/p }" | sed -E 's/#.*//g' | awk '{print $2}' | sed -E 's/^[ \t\r\n]+//g;s/[ \t\r\n]+$//g;')"
+        echo "$(cat "${FILE}" | sed -E -n "/^[#;\t ]{0,}${SEARCH}s{1,}/{ /^[^#;]{1,}/p }" | sed -E 's/#.*//g' | awk '{print $2}' | sed -E 's/^[ \t\r\n]+//g;s/[ \t\r\n]+$//g;')"
       fi
 
     fi
@@ -178,10 +178,10 @@ function addPkgCnf() {
     fi
 
     if [ ! -z "${FIELD_SEPERATOR}" ]; then
-      SEARCH="$(echo "${line}" | sed -E 's/^[#; ]{1,}//;s/#.*//g;' | awk -F "${FIELD_SEPERATOR}" '{print $1}')"
+      SEARCH="$(echo "${line}" | sed -E 's/^[#;\t ]{1,}//;s/#.*//g;' | awk -F "${FIELD_SEPERATOR}" '{print $1}')"
       SEARCH="$(trim "${SEARCH}")"
     else
-      SEARCH="$(echo "${line}" | sed -E 's/^[#; ]{1,}//;s/#.*//g;' | awk '{print $1}')"
+      SEARCH="$(echo "${line}" | sed -E 's/^[#;\t ]{1,}//;s/#.*//g;' | awk '{print $1}')"
       SEARCH="$(trim "${SEARCH}")"
     fi
 
@@ -194,21 +194,21 @@ function addPkgCnf() {
 
         if [ "${MATCH}" == "tail" ]; then
           LINENUM="$(cat "${FILE}" | sed -E -n -e "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
-            /^[#; ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/=;
+            /^[#;\t ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/=;
           }" | tail -1)"
           if [ ! -z "${LINENUM}" ] && [ "${LINENUM}" -gt "0" ]; then
             sed -E -i -e "${LINENUM} c\\$(escapeQuote "${line}")" "${FILE}"
           fi
         elif [ "${MATCH}" == "head" ]; then
           LINENUM="$(cat "${FILE}" | sed -E -n -e "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
-            /^[#; ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/=;
+            /^[#;\t ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/=;
           }" | tail -1)"
           if [ ! -z "${LINENUM}" ] && [ "${LINENUM}" -gt "0" ]; then
             sed -E -i -e "${LINENUM} c\\$(escapeQuote "${line}")" "${FILE}"
           fi
         else
           sed -E -i -e "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
-            /^[#; ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/{
+            /^[#;\t ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/{
               c\\$(escapeQuote "${line}")
             }
           }" "${FILE}"
@@ -218,21 +218,21 @@ function addPkgCnf() {
 
         if [ "${MATCH}" == "tail" ]; then
           LINENUM="$(cat "${FILE}" | sed -E -n -e "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
-            /^[#; ]{0,}${SEARCH}\s{1,}/=;
+            /^[#;\t ]{0,}${SEARCH}\s{1,}/=;
           }" | tail -1)"
           if [ ! -z "${LINENUM}" ] && [ "${LINENUM}" -gt "0" ]; then
             sed -E -i -e "${LINENUM} c\\$(escapeQuote "${line}")" "${FILE}"
           fi
         elif [ "${MATCH}" == "head" ]; then
           LINENUM="$(cat "${FILE}" | sed -E -n -e "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
-            /^[#; ]{0,}${SEARCH}\s{1,}/=;
+            /^[#;\t ]{0,}${SEARCH}\s{1,}/=;
           }" | head -1)"
           if [ ! -z "${LINENUM}" ] && [ "${LINENUM}" -gt "0" ]; then
             sed -E -i -e "${LINENUM} c\\$(escapeQuote "${line}")" "${FILE}"
           fi
         else
           sed -E -i -e "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
-            /^[#; ]{0,}${SEARCH}\s{1,}/{
+            /^[#;\t ]{0,}${SEARCH}\s{1,}/{
               c\\$(escapeQuote "${line}")
             }
           }" "${FILE}"
@@ -243,17 +243,17 @@ function addPkgCnf() {
       if [ ! -z "${FIELD_SEPERATOR}" ]; then
 
         if [ "${MATCH}" == "tail" ]; then
-          LINENUM="$(cat "${FILE}" | sed -E -n -e "/^[#; ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/=;" | tail -1)"
+          LINENUM="$(cat "${FILE}" | sed -E -n -e "/^[#;\t ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/=;" | tail -1)"
           if [ ! -z "${LINENUM}" ] && [ "${LINENUM}" -gt "0" ]; then
             sed -E -i -e "${LINENUM} c\\$(escapeQuote "${line}")" "${FILE}"
           fi
         elif [ "${MATCH}" == "head" ]; then
-          LINENUM="$(cat "${FILE}" | sed -E -n -e "/^[#; ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/=;" | head -1)"
+          LINENUM="$(cat "${FILE}" | sed -E -n -e "/^[#;\t ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/=;" | head -1)"
           if [ ! -z "${LINENUM}" ] && [ "${LINENUM}" -gt "0" ]; then
             sed -E -i -e "${LINENUM} c\\$(escapeQuote "${line}")" "${FILE}"
           fi
         else
-          sed -i -E -e "/^[#; ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/{
+          sed -i -E -e "/^[#;\t ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/{
             c\\$(escapeQuote "${line}")
           }" "${FILE}"
         fi
@@ -261,17 +261,17 @@ function addPkgCnf() {
       else
 
         if [ "${MATCH}" == "tail" ]; then
-          LINENUM="$(cat "${FILE}" | sed -E -n -e "/^[#; ]{0,}${SEARCH}\s{1,}/=;" | tail -1)"
+          LINENUM="$(cat "${FILE}" | sed -E -n -e "/^[#;\t ]{0,}${SEARCH}\s{1,}/=;" | tail -1)"
           if [ ! -z "${LINENUM}" ] && [ "${LINENUM}" -gt "0" ]; then
             sed -E -i -e "${LINENUM} c\\$(escapeQuote "${line}")" "${FILE}"
           fi
         elif [ "${MATCH}" == "head" ]; then
-          LINENUM="$(cat "${FILE}" | sed -E -n -e "/^[#; ]{0,}${SEARCH}\s{1,}/=;" | head -1)"
+          LINENUM="$(cat "${FILE}" | sed -E -n -e "/^[#;\t ]{0,}${SEARCH}\s{1,}/=;" | head -1)"
           if [ ! -z "${LINENUM}" ] && [ "${LINENUM}" -gt "0" ]; then
             sed -E -i -e "${LINENUM} c\\$(escapeQuote "${line}")" "${FILE}"
           fi
         else
-          sed -i -E -e "/^[#; ]{0,}${SEARCH}\s{1,}/{
+          sed -i -E -e "/^[#;\t ]{0,}${SEARCH}\s{1,}/{
             c\\$(escapeQuote "${line}")
           }" "${FILE}"
         fi
