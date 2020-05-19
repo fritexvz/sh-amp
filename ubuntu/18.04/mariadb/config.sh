@@ -50,7 +50,7 @@ if [ -f ".${f1}" ]; then
   cp ".${f1}" "${f1}"
 else
   cat >"${f1}" <<MYCNFSCRIPT
-$(cat "${DIRNAME}/tmpl/mycnf")
+$(cat "${DIRNAME}/tmpl/my.cnf")
 MYCNFSCRIPT
 fi
 
