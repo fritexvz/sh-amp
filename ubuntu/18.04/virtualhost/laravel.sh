@@ -12,15 +12,13 @@
 # Work even if somebody does "sh thisscript.sh".
 set -e
 
-# Set constants in the file.
+# Set global constants in the file.
 ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
 
-echo
-echo "Start setting up laravel configuration."
-
+# Set virtualhost constants in the file.
 VHOST_NAME=""
 VHOST_DIR="/var/www/html"
 VHOST_SUBDIR=""
@@ -38,30 +36,42 @@ for arg in "${@}"; do
     ;;
   --vhostname=*)
     VHOST_NAME="$(echo "${arg}" | sed -E 's/(--vhostname=)//')"
-    VHOST_DIR="/var/www/${VHOST_NAME}/html"
+    VHOST_DIR="$(echo "/var/www/${VHOST_NAME}/html" | sed -E -e 's#/+#/#g' -e 's#/+$##')"
     ;;
   --subdir=*)
     VHOST_SUBDIR="$(echo "${arg}" | sed -E 's/(--subdir=)//')"
-    VHOST_DIR="/var/www/${VHOST_NAME}/html/${VHOST_SUBDIR}"
+    VHOST_DIR="$(echo "/var/www/${VHOST_NAME}/html/${VHOST_SUBDIR}" | sed -E -e 's#/+#/#g' -e 's#/+$##')"
     ;;
   esac
 done
 
+# Include the file.
+source "${OS_PATH}/utils.sh"
+source "${OS_PATH}/functions.sh"
+source "${DIRNAME}/functions.sh"
+
+echo
+echo "Start setting up laravel configuration."
+
 sed -i -E \
-  -e "/DocumentRoot/{ s#${VHOST_DIR}#${VHOST_DIR}/public#; }" \
+  -e "/DocumentRoot/{ s/($(escapeString "${VHOST_DIR}"))/\1\/public/; }" \
   "/etc/apache2/sites-available/${VHOST_NAME}.conf"
 
-sed -i -E \
-  -e "/DocumentRoot/{ s#${VHOST_DIR}#${VHOST_DIR}/public#; }" \
-  "/etc/apache2/sites-available/${VHOST_NAME}-ssl.conf"
+APACHE2_HTTPS="$(getPkgCnf -rs="\[APACHE2\]" -fs="=" -s="APACHE2_HTTPS")"
 
-# Reload the service
-if [ ! -z "$(isApache2)" ]; then
-  systemctl reload apache2
+if [ "${APACHE2_HTTPS^^}" == "ON" ]; then
+  sed -i -E \
+    -e "/DocumentRoot/{ s/($(escapeString "${VHOST_DIR}"))/\1\/public/; }" \
+    "/etc/apache2/sites-available/${VHOST_NAME}-ssl.conf"
+fi
+
+# Setting up vhosting directory
+if [ ! -d "${VHOST_DIR}" ]; then
+  mkdir -p "${VHOST_DIR}"
 fi
 
 # Download and extract the latest laravel.
-cd "$(echo "${VHOST_DIR}" | sed -E '{ s#/+#/#g; s#/+$##; }')"
+cd "${VHOST_DIR}"
 
 composer create-project --prefer-dist laravel/laravel .
 

@@ -58,11 +58,8 @@ PACKAGE_ID="virtualhost"
 # Set the arguments of the file.
 for arg in "${@}"; do
   case "${arg}" in
-  --install)
-    FILENAME="install.sh"
-    ;;
-  --uninstall)
-    FILENAME="uninstall.sh"
+  --*)
+    FILENAME="${arg//--/}.sh"
     ;;
   esac
 done
@@ -72,6 +69,7 @@ if [ -z "${FILENAME}" ]; then
   COMMANDS=(
     "install"
     "uninstall"
+    "wizard"
     "quit"
   )
   echo
@@ -80,14 +78,18 @@ if [ -z "${FILENAME}" ]; then
   select COMMAND in ${COMMANDS[@]}; do
     case "${COMMAND}" in
     "${COMMANDS[0]}")
-      FILENAME="install.sh"
+      FILENAME="${COMMANDS[0]}.sh"
       break
       ;;
     "${COMMANDS[1]}")
-      FILENAME="uninstall.sh"
+      FILENAME="${COMMANDS[1]}.sh"
       break
       ;;
     "${COMMANDS[2]}")
+      FILENAME="${COMMANDS[2]}.sh"
+      break
+      ;;
+    "${COMMANDS[3]}")
       exit 0
       ;;
     esac

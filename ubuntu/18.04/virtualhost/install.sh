@@ -52,6 +52,11 @@ while [ -z "${VHOST_NAME}" ]; do
   fi
 done
 
+# Setting up vhosting directory
+if [ ! -d "/var/www/${VHOST_NAME}/html" ]; then
+  mkdir -p "/var/www/${VHOST_NAME}/html"
+fi
+
 echo
 echo "Start installing ${VHOST_NAME}."
 

@@ -12,15 +12,13 @@
 # Work even if somebody does "sh thisscript.sh".
 set -e
 
-# Set constants in the file.
+# Set global constants in the file.
 ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
 
-echo
-echo "Start installing wordpress."
-
+# Set virtualhost constants in the file.
 VHOST_NAME=""
 VHOST_DIR="/var/www/html"
 VHOST_SUBDIR=""
@@ -38,20 +36,37 @@ for arg in "${@}"; do
     ;;
   --vhostname=*)
     VHOST_NAME="$(echo "${arg}" | sed -E 's/(--vhostname=)//')"
-    VHOST_DIR="/var/www/${VHOST_NAME}/html"
+    VHOST_DIR="$(echo "/var/www/${VHOST_NAME}/html" | sed -E -e 's#/+#/#g' -e 's#/+$##')"
     ;;
   --subdir=*)
     VHOST_SUBDIR="$(echo "${arg}" | sed -E 's/(--subdir=)//')"
-    VHOST_DIR="/var/www/${VHOST_NAME}/html/${VHOST_SUBDIR}"
+    VHOST_DIR="$(echo "/var/www/${VHOST_NAME}/html/${VHOST_SUBDIR}" | sed -E -e 's#/+#/#g' -e 's#/+$##')"
     ;;
   esac
 done
 
+# Include the file.
+source "${OS_PATH}/utils.sh"
+source "${OS_PATH}/functions.sh"
+source "${DIRNAME}/functions.sh"
+
+echo
+echo "Start installing wordpress."
+
+# Setting up vhosting directory
+if [ ! -d "${VHOST_DIR}" ]; then
+  mkdir -p "${VHOST_DIR}"
+fi
+
 # Create a database.
-bash "${DIRNAME}/database.sh" --dbname="${VHOST_NAME}"
+FILENAME="database.sh"
+FILEPATH="${DIRNAME}/${FILENAME}"
+if [ -f "${FILEPATH}" ]; then
+  bash "${FILEPATH}" --dbname="${VHOST_NAME}" --ENVPATH="${ENVPATH}" --ABSPATH="${FILEPATH}" --create
+fi
 
 # Download and extract the latest WordPress.
-cd "$(echo "${VHOST_DIR}" | sed -E '{ s#/+#/#g; s#/+$##; }')"
+cd "${VHOST_DIR}"
 
 wget https://wordpress.org/latest.zip
 

@@ -52,56 +52,68 @@ else
   exit 0
 fi
 
-# Set up a package list.
-PACKAGES=(
-  "apache2"
-  "fail2ban"
-  "mariadb"
-  "php"
-  "sendmail"
-  "ufw"
-  "vsftpd"
-  "quit"
-)
+PACKAGE_ID=""
 
-echo
-IFS=$'\n'
-PS3="Please select one of the options. (1-${#PACKAGES[@]}): "
-select PACKAGE in ${PACKAGES[@]}; do
-  case "${PACKAGE}" in
-  "${PACKAGES[0]}")
-    PACKAGE_ID="${PACKAGES[0]}"
-    break
-    ;;
-  "${PACKAGES[1]}")
-    PACKAGE_ID="${PACKAGES[1]}"
-    break
-    ;;
-  "${PACKAGES[2]}")
-    PACKAGE_ID="${PACKAGES[2]}"
-    break
-    ;;
-  "${PACKAGES[3]}")
-    PACKAGE_ID="${PACKAGES[3]}"
-    break
-    ;;
-  "${PACKAGES[4]}")
-    PACKAGE_ID="${PACKAGES[4]}"
-    break
-    ;;
-  "${PACKAGES[5]}")
-    PACKAGE_ID="${PACKAGES[5]}"
-    break
-    ;;
-  "${PACKAGES[6]}")
-    PACKAGE_ID="${PACKAGES[6]}"
-    break
-    ;;
-  "${PACKAGES[7]}")
-    exit 0
+# Set the arguments of the file.
+for arg in "${@}"; do
+  case "${arg}" in
+  --*)
+    PACKAGE_ID="${arg//--/}"
     ;;
   esac
 done
+
+# Set up a package list.
+if [ -z "${PACKAGE_ID}" ]; then
+  PACKAGES=(
+    "apache2"
+    "fail2ban"
+    "mariadb"
+    "php"
+    "sendmail"
+    "ufw"
+    "vsftpd"
+    "quit"
+  )
+  echo
+  IFS=$'\n'
+  PS3="Please select one of the options. (1-${#PACKAGES[@]}): "
+  select PACKAGE in ${PACKAGES[@]}; do
+    case "${PACKAGE}" in
+    "${PACKAGES[0]}")
+      PACKAGE_ID="${PACKAGES[0]}"
+      break
+      ;;
+    "${PACKAGES[1]}")
+      PACKAGE_ID="${PACKAGES[1]}"
+      break
+      ;;
+    "${PACKAGES[2]}")
+      PACKAGE_ID="${PACKAGES[2]}"
+      break
+      ;;
+    "${PACKAGES[3]}")
+      PACKAGE_ID="${PACKAGES[3]}"
+      break
+      ;;
+    "${PACKAGES[4]}")
+      PACKAGE_ID="${PACKAGES[4]}"
+      break
+      ;;
+    "${PACKAGES[5]}")
+      PACKAGE_ID="${PACKAGES[5]}"
+      break
+      ;;
+    "${PACKAGES[6]}")
+      PACKAGE_ID="${PACKAGES[6]}"
+      break
+      ;;
+    "${PACKAGES[7]}")
+      exit 0
+      ;;
+    esac
+  done
+fi
 
 # Run the command wizard.
 FILENAME="$(basename $0)"

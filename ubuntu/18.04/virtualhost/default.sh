@@ -38,11 +38,11 @@ for arg in "${@}"; do
     ;;
   --vhostname=*)
     VHOST_NAME="$(echo "${arg}" | sed -E 's/(--vhostname=)//')"
-    VHOST_DIR="/var/www/${VHOST_NAME}/html"
+    VHOST_DIR="$(echo "/var/www/${VHOST_NAME}/html" | sed -E -e 's#/+#/#g' -e 's#/+$##')"
     ;;
   --subdir=*)
     VHOST_SUBDIR="$(echo "${arg}" | sed -E 's/(--subdir=)//')"
-    VHOST_DIR="/var/www/${VHOST_NAME}/html/${VHOST_SUBDIR}"
+    VHOST_DIR="$(echo "/var/www/${VHOST_NAME}/html/${VHOST_SUBDIR}" | sed -E -e 's#/+#/#g' -e 's#/+$##')"
     ;;
   esac
 done
