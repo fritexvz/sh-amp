@@ -163,8 +163,8 @@ if [ "${APACHE2_HTTPS^^}" == "ON" ]; then
   else
     if [ -z "$(cat "${f_443}" | egrep '^[#\t ]{0,}ServerName\s{1,}')" ]; then
       sed -i -E \
-      -e "s/^([#\t ]{0,})(ServerAdmin\s{1,}.*)/\1\2\n\1Temp_\1/" \
-      -e "s/Temp_ServerAdmin/ServerName/" \
+        -e "s/^([#\t ]{0,})(ServerAdmin\s{1,}.*)/\1\2\n\1Temp_\1/" \
+        -e "s/Temp_ServerAdmin/ServerName/" \
         "${f_443}"
     fi
     sed -i -E \

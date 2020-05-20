@@ -77,9 +77,9 @@ VHOSTCONFSCRIPT
 fi
 
 sed -i -E \
-  -e "s/VHOST_NAME/${VHOST_NAME}/g" \
-  -e "s/VHOST_ROOT_DIR/${VHOST_ROOT_DIR}/g" \
-  -e "s/VHOST_LOG_DIR/${VHOST_LOG_DIR}/g" \
+  -e "s/VHOST_NAME/$(escapeString "${VHOST_NAME}")/g" \
+  -e "s/VHOST_ROOT_DIR/$(escapeString "${VHOST_ROOT_DIR}")/g" \
+  -e "s/VHOST_LOG_DIR/$(escapeString "${VHOST_LOG_DIR}")/g" \
   "/etc/apache2/sites-available/${VHOST_NAME}.conf"
 
 # Disabling default vhosting
@@ -107,9 +107,9 @@ VHOSTCONFSCRIPT
   fi
 
   sed -i -E \
-    -e "s/VHOST_NAME/${VHOST_NAME}/g" \
-    -e "s/VHOST_ROOT_DIR/${VHOST_ROOT_DIR}/g" \
-    -e "s/VHOST_LOG_DIR/${VHOST_LOG_DIR}/g" \
+    -e "s/VHOST_NAME/$(escapeString "${VHOST_NAME}")/g" \
+    -e "s/VHOST_ROOT_DIR/$(escapeString "${VHOST_ROOT_DIR}")/g" \
+    -e "s/VHOST_LOG_DIR/$(escapeString "${VHOST_LOG_DIR}")/g" \
     "/etc/apache2/sites-available/${VHOST_NAME}-ssl.conf"
 
   # Disabling default SSL vhosting
