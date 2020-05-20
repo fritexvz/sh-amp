@@ -45,8 +45,8 @@ pkgAudit "apache2"
 echo
 VHOST_NAME=""
 while [ -z "${VHOST_NAME}" ]; do
-  VHOST_NAME="$(msg -yn -p1='Enter server name. (ex) example.com : ' -p2='Are you sure you want to save this? (y/n) ')"
-  if [ ! -d "/var/www/${VHOST_NAME} "]; then
+  VHOST_NAME="$(msg -yn -p1='Enter domain name: ' -p2='Are you sure you want to save this? (y/n) ')"
+  if [ ! -d "/var/www/${VHOST_NAME}" ]; then
     echo "${VHOST_NAME} does not exists."
     VHOST_NAME=""
   fi

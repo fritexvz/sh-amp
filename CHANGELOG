@@ -4,6 +4,7 @@
 1. fixed: The wrong file path was fixed.
 2. fixed: Escapes have been added when searching and replacing in templates.
 3. updated: The virtual host database script has been updated.
+3. updated: The wordpress script has been updated.
 
 # 0.0.33
 1. fixed: Syntax errors have been fixed.

@@ -45,7 +45,8 @@ pkgAudit "apache2"
 # Run the command wizard.
 COMMANDS=(
   "Create a database?"
-  "Are you sure you want to delete the database and user?"
+  "Are you sure you want to delete the database?"
+  "Are you sure you want to delete the virtual host?"
   "quit"
 )
 
@@ -56,39 +57,37 @@ select COMMAND in ${COMMANDS[@]}; do
   case "${COMMAND}" in
   "${COMMANDS[0]}")
     echo
-    DBNAME=""
-    while [ -z "${DBNAME}" ]; do
-      DBNAME="$(msg -yn -p1='Enter the database name: ' -p2='Are you sure you want to save this? (y/n) ')"
-      if [ -z "$(mysql -u root -e 'SELECT db FROM mysql.db;' | egrep "^${DBNAME}$")" ] ||
-        [ -z "$(mysql -u root -e 'SELECT User FROM mysql.user;' | egrep "^${DBNAME}$")" ]; then
-        echo "${DBNAME} does not exists."
-        DBNAME=""
+    DB_NAME=""
+    while [ -z "${DB_NAME}" ]; do
+      DB_NAME="$(msg -yn -p1='Enter the database name: ' -p2='Are you sure you want to save this? (y/n) ')"
+      if [ -z "$(mysql -u root -e 'SELECT db FROM mysql.db;' | egrep "^${DB_NAME}$")" ] ||
+        [ -z "$(mysql -u root -e 'SELECT User FROM mysql.user;' | egrep "^${DB_NAME}$")" ]; then
+        echo "${DB_NAME} does not exists."
+        DB_NAME=""
       fi
     done
-    FILENAME="database.sh"
-    FILEPATH="${DIRNAME}/${FILENAME}"
-    if [ -f "${FILEPATH}" ]; then
-      bash "${FILEPATH}" --dbname="${DBNAME}" --ENVPATH="${ENVPATH}" --ABSPATH="${FILEPATH}" --create
-    fi
+    DB_NAME="${DB_NAME//[^a-zA-Z0-9_]/}"
+    DB_NAME="${DB_NAME:0:16}"
+    DB_USER="${DB_NAME}"
+    DB_PASSWORD="$(openssl rand -base64 12)"
+    DB_PASSWORD="${DB_PASSWORD:0:16}"
+    create_database "${DB_NAME}" "${DB_USER}" "${DB_PASSWORD}"
     ;;
   "${COMMANDS[1]}")
     echo
-    DBNAME=""
-    while [ -z "${DBNAME}" ]; do
-      DBNAME="$(msg -yn -p1='Enter the database name: ' -p2='Are you sure you want to save this? (y/n) ')"
-      if [ -z "$(mysql -u root -e 'SELECT db FROM mysql.db;' | egrep "^${DBNAME}$")" ] ||
-        [ -z "$(mysql -u root -e 'SELECT User FROM mysql.user;' | egrep "^${DBNAME}$")" ]; then
-        echo "${DBNAME} does not exists."
-        DBNAME=""
+    DB_NAME=""
+    while [ -z "${DB_NAME}" ]; do
+      DB_NAME="$(msg -yn -p1='Enter the database name: ' -p2='Are you sure you want to save this? (y/n) ')"
+      if [ -z "$(mysql -u root -e 'SELECT db FROM mysql.db;' | egrep "^${DB_NAME}$")" ] ||
+        [ -z "$(mysql -u root -e 'SELECT User FROM mysql.user;' | egrep "^${DB_NAME}$")" ]; then
+        echo "${DB_NAME} does not exists."
+        DB_NAME=""
       fi
     done
-    FILENAME="database.sh"
-    FILEPATH="${DIRNAME}/${FILENAME}"
-    if [ -f "${FILEPATH}" ]; then
-      bash "${FILEPATH}" --dbname="${DBNAME}" --ENVPATH="${ENVPATH}" --ABSPATH="${FILEPATH}" --delete
-    fi
+    DB_USER="${DB_NAME}"
+    delete_database "${DB_NAME}" "${DB_USER}"
     ;;
-  "${COMMANDS[2]}")
+  "${COMMANDS[3]}")
     exit 0
     ;;
   esac
