@@ -45,44 +45,45 @@ pkgAudit "apache2"
 echo
 VHOST_NAME=""
 while [ -z "${VHOST_NAME}" ]; do
-  VHOST_NAME="$(msg -yn -p1='Enter domain name: ' -p2='Are you sure you want to save this? (y/n) ')"
+  VHOST_NAME="$(msg -yn -p1='Enter domain name (ex) example.com: ')"
   if [ ! -d "/var/www/${VHOST_NAME}" ]; then
     echo "${VHOST_NAME} does not exists."
     VHOST_NAME=""
   fi
 done
 
-echo
-if [ "$(msg -yn 'Are you sure you want to remove it? (y/n) ')" == "Yes" ]; then
-  echo
-  echo "The ${VHOST_NAME} starts to be removed."
-
-  # Disabling virtualhost
-  if [ ! -z "$(a2query -s | egrep "${VHOST_NAME}\s+")" ]; then
-    a2dissite "${VHOST_NAME}.conf"
-  fi
-
-  # Disabling SSL virtualhost
-  if [ ! -z "$(a2query -s | egrep "${VHOST_NAME}-ssl\s+")" ]; then
-    a2dissite "${VHOST_NAME}-ssl.conf"
-  fi
-
-  # Import variables from the env file.
-  PUBLIC_IP="$(getPkgCnf -rs="\[HOSTS\]" -fs="=" -s="PUBLIC_IP")"
-
-  # Removing public ip address to the /etc/hosts file
-  if [ ! -z "$(cat "/etc/hosts" | egrep "^${PUBLIC_IP}\s+${VHOST_NAME}$")" ]; then
-    sed -i -E "/^${PUBLIC_IP}\s+${VHOST_NAME}$/d" /etc/hosts
-  fi
-
-  # Removing virtualhost directory
-  if [ -d "/var/www/${VHOST_NAME}" ]; then
-    rm -rf "/var/www/${VHOST_NAME}"
-  fi
-
-  # Reloading apache2
-  systemctl reload apache2
-
-  echo
-  echo "The ${VHOST_NAME} has been completely removed."
+if [ "$(msg -yn 'Are you sure you want to remove it? (y/n) ')" != "Yes" ]; then
+  exit 0
 fi
+
+echo
+echo "The ${VHOST_NAME} starts to be removed."
+
+# Disabling virtualhost
+if [ ! -z "$(a2query -s | egrep "${VHOST_NAME}[\t ]{1,}")" ]; then
+  a2dissite "${VHOST_NAME}.conf"
+fi
+
+# Disabling SSL virtualhost
+if [ ! -z "$(a2query -s | egrep "${VHOST_NAME}-ssl[\t ]{1,}")" ]; then
+  a2dissite "${VHOST_NAME}-ssl.conf"
+fi
+
+# Import variables from the env file.
+PUBLIC_IP="$(getPkgCnf -rs="\[HOSTS\]" -fs="=" -s="PUBLIC_IP")"
+
+# Removing public ip address to the /etc/hosts file
+if [ ! -z "$(cat "/etc/hosts" | egrep "^${PUBLIC_IP}[\t ]{1,}${VHOST_NAME}$")" ]; then
+  sed -i -E "/^${PUBLIC_IP}[\t ]{1,}${VHOST_NAME}$/d" /etc/hosts
+fi
+
+# Removing virtualhost directory
+if [ -d "/var/www/${VHOST_NAME}" ]; then
+  rm -rf "/var/www/${VHOST_NAME}"
+fi
+
+# Reloading apache2
+systemctl reload apache2
+
+echo
+echo "The ${VHOST_NAME} has been completely removed."

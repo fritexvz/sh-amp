@@ -107,6 +107,47 @@ MINSPARESERVERS=${STARTSERVERS}
 MAXSPARESERVERS=$((${MINSPARESERVERS} * 2))
 SERVERLIMIT=${MAXREQUESTWORKERS}
 
+echo
+echo "Would you like to install mpm_prefork with the following settings?"
+echo "STARTSERVERS: ${STARTSERVERS}"
+echo "MAXREQUESTWORKERS: ${MAXREQUESTWORKERS}"
+echo "MAXCONNECTIONSPERCHILD: ${MAXCONNECTIONSPERCHILD}"
+echo "MINSPARESERVERS: ${MINSPARESERVERS}"
+echo "MAXSPARESERVERS: ${MAXSPARESERVERS}"
+echo "SERVERLIMIT: ${SERVERLIMIT}"
+
+if [ "$(msg -yn 'Do you want to change it? (y/n)')" == "Yes" ]; then
+  NEW_CONFIG=""
+  while [ -z "${NEW_CONFIG}" ]; do
+    read -p "STARTSERVERS: " NEW_STARTSERVERS
+    read -p "MAXREQUESTWORKERS: " NEW_MAXREQUESTWORKERS
+    read -p "MAXCONNECTIONSPERCHILD: " NEW_MAXCONNECTIONSPERCHILD
+    read -p "MINSPARESERVERS: " NEW_MINSPARESERVERS
+    read -p "MAXSPARESERVERS: " NEW_MAXSPARESERVERS
+    read -p "SERVERLIMIT: " NEW_SERVERLIMIT
+    msgYnc=$(msg -ync 'Do you want to save it? (y/n/c)')
+    case "${msgYnc}" in
+    "Yes")
+      STARTSERVERS="${NEW_STARTSERVERS}"
+      MAXREQUESTWORKERS="${NEW_MAXREQUESTWORKERS}"
+      MAXCONNECTIONSPERCHILD="${NEW_MAXCONNECTIONSPERCHILD}"
+      MINSPARESERVERS="${NEW_MINSPARESERVERS}"
+      MAXSPARESERVERS="${NEW_MAXSPARESERVERS}"
+      SERVERLIMIT="${NEW_SERVERLIMIT}"
+      NEW_CONFIG="Yes"
+      break
+      ;;
+    "No")
+      NEW_CONFIG=""
+      ;;
+    "Cancel")
+      NEW_CONFIG=""
+      break
+      ;;
+    esac
+  done
+fi
+
 # mpm_prefork.conf
 f_mpm_prefork="/etc/apache2/mods-available/mpm_prefork.conf"
 
@@ -116,19 +157,19 @@ else
   if [ -z "$(cat "${f_mpm_prefork}" | egrep '^[#\t ]{0,}ServerLimit\s{1,}')" ]; then
     sed -i -E \
       -e "/<IfModule mpm_prefork_module>/,/<\/IfModule>/{ 
-        s/^([# ]{0,})(MaxRequestWorkers\s{1,}.*)/\1\2\n\1Temp_\2/;
+        s/^([#\t ]{0,})(MaxRequestWorkers\s{1,}.*)/\1\2\n\1Temp_\2/;
         s/Temp_MaxRequestWorkers/ServerLimit/;
       }" \
       "${f_mpm_prefork}"
   fi
   sed -i -E \
     -e "/<IfModule mpm_prefork_module>/,/<\/IfModule>/{ 
-      s/^([# ]{0,}StartServers\s{1,}).*/\1${STARTSERVERS}/;
-      s/^([# ]{0,}MinSpareServers\s{1,}).*/\1${MINSPARESERVERS}/;
-      s/^([# ]{0,}MaxSpareServers\s{1,}).*/\1${MAXSPARESERVERS}/;
-      s/^([# ]{0,}MaxRequestWorkers\s{1,}).*/\1${MAXREQUESTWORKERS}/;
-      s/^([# ]{0,}ServerLimit\s{1,}).*/\1${SERVERLIMIT}/;
-      s/^([# ]{0,}MaxConnectionsPerChild\s{1,}).*/\1${MAXCONNECTIONSPERCHILD}/;
+      s/^([#\t ]{0,}StartServers\s{1,}).*/\1${STARTSERVERS}/;
+      s/^([#\t ]{0,}MinSpareServers\s{1,}).*/\1${MINSPARESERVERS}/;
+      s/^([#\t ]{0,}MaxSpareServers\s{1,}).*/\1${MAXSPARESERVERS}/;
+      s/^([#\t ]{0,}MaxRequestWorkers\s{1,}).*/\1${MAXREQUESTWORKERS}/;
+      s/^([#\t ]{0,}ServerLimit\s{1,}).*/\1${SERVERLIMIT}/;
+      s/^([#\t ]{0,}MaxConnectionsPerChild\s{1,}).*/\1${MAXCONNECTIONSPERCHILD}/;
     }" \
     "${f_mpm_prefork}"
 fi

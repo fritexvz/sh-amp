@@ -70,7 +70,6 @@ fi
 # Wizard
 COMMANDS=(
   "default"
-  "database"
   "laravel"
   "wordpress"
   "laravel+wordpress"
@@ -89,24 +88,18 @@ select COMMAND in ${COMMANDS[@]}; do
     break
     ;;
   "${COMMANDS[1]}")
-    FILENAME="database.sh"
-    FILEPATH="${DIRNAME}/${FILENAME}"
-    bash "${FILEPATH}" --dbname="${VHOST_NAME}" --ENVPATH="${ENVPATH}" --ABSPATH="${FILEPATH}"
-    break
-    ;;
-  "${COMMANDS[2]}")
     FILENAME="laravel.sh"
     FILEPATH="${DIRNAME}/${FILENAME}"
     bash "${FILEPATH}" --vhostname="${VHOST_NAME}" --ENVPATH="${ENVPATH}" --ABSPATH="${FILEPATH}" --subdir="laravel"
     break
     ;;
-  "${COMMANDS[3]}")
+  "${COMMANDS[2]}")
     FILENAME="wordpress.sh"
     FILEPATH="${DIRNAME}/${FILENAME}"
     bash "${FILEPATH}" --vhostname="${VHOST_NAME}" --ENVPATH="${ENVPATH}" --ABSPATH="${FILEPATH}" --subdir="wordpress"
     break
     ;;
-  "${COMMANDS[4]}")
+  "${COMMANDS[3]}")
     # step1
     FILENAME="laravel.sh"
     FILEPATH="${DIRNAME}/${FILENAME}"
@@ -117,7 +110,7 @@ select COMMAND in ${COMMANDS[@]}; do
     bash "${FILEPATH}" --vhostname="${VHOST_NAME}" --ENVPATH="${ENVPATH}" --ABSPATH="${FILEPATH}" --subdir="laravel/blog"
     break
     ;;
-  "${COMMANDS[5]}")
+  "${COMMANDS[4]}")
     exit
     ;;
   esac

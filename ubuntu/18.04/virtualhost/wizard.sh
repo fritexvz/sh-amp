@@ -46,7 +46,7 @@ pkgAudit "apache2"
 COMMANDS=(
   "Create a database?"
   "Are you sure you want to delete the database?"
-  "Are you sure you want to delete the virtual host?"
+  "Are you sure you want to delete the server?"
   "quit"
 )
 
@@ -56,6 +56,7 @@ PS3="Please select one of the options. (1-${#COMMANDS[@]}): "
 select COMMAND in ${COMMANDS[@]}; do
   case "${COMMAND}" in
   "${COMMANDS[0]}")
+
     echo
     DB_NAME=""
     while [ -z "${DB_NAME}" ]; do
@@ -66,14 +67,19 @@ select COMMAND in ${COMMANDS[@]}; do
         DB_NAME=""
       fi
     done
+
     DB_NAME="${DB_NAME//[^a-zA-Z0-9_]/}"
     DB_NAME="${DB_NAME:0:16}"
     DB_USER="${DB_NAME}"
     DB_PASSWORD="$(openssl rand -base64 12)"
     DB_PASSWORD="${DB_PASSWORD:0:16}"
+
+    # Creating a database
     create_database "${DB_NAME}" "${DB_USER}" "${DB_PASSWORD}"
+
     ;;
   "${COMMANDS[1]}")
+
     echo
     DB_NAME=""
     while [ -z "${DB_NAME}" ]; do
@@ -85,7 +91,49 @@ select COMMAND in ${COMMANDS[@]}; do
       fi
     done
     DB_USER="${DB_NAME}"
+
+    # Deleting a database
     delete_database "${DB_NAME}" "${DB_USER}"
+
+    ;;
+  "${COMMANDS[2]}")
+
+    echo
+    VHOST_NAME=""
+    while [ -z "${VHOST_NAME}" ]; do
+      VHOST_NAME="$(msg -yn -p1='Enter domain name (ex) example.com: ')"
+      if [ ! -d "/var/www/${VHOST_NAME}" ]; then
+        echo "${VHOST_NAME} does not exists."
+        VHOST_NAME=""
+      fi
+    done
+
+    # Disabling virtualhost
+    if [ ! -z "$(a2query -s | egrep "${VHOST_NAME}[\t ]{1,}")" ]; then
+      a2dissite "${VHOST_NAME}.conf"
+    fi
+
+    # Disabling SSL virtualhost
+    if [ ! -z "$(a2query -s | egrep "${VHOST_NAME}-ssl[\t ]{1,}")" ]; then
+      a2dissite "${VHOST_NAME}-ssl.conf"
+    fi
+
+    # Import variables from the env file.
+    PUBLIC_IP="$(getPkgCnf -rs="\[HOSTS\]" -fs="=" -s="PUBLIC_IP")"
+
+    # Removing public ip address to the /etc/hosts file
+    if [ ! -z "$(cat "/etc/hosts" | egrep "^${PUBLIC_IP}[\t ]{1,}${VHOST_NAME}$")" ]; then
+      sed -i -E "/^${PUBLIC_IP}[\t ]{1,}${VHOST_NAME}$/d" /etc/hosts
+    fi
+
+    # Removing virtualhost directory
+    if [ -d "/var/www/${VHOST_NAME}" ]; then
+      rm -rf "/var/www/${VHOST_NAME}"
+    fi
+
+    # Reloading apache2
+    systemctl reload apache2
+
     ;;
   "${COMMANDS[3]}")
     exit 0
