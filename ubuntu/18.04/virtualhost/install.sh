@@ -56,8 +56,10 @@ echo
 echo "Start installing ${VHOST_NAME}."
 
 # config.sh
-if [ -f "${DIRNAME}/config.sh" ]; then
-  bash "${DIRNAME}/config.sh" --vhostname="${VHOST_NAME}"
+FILENAME="config.sh"
+FILEPATH="${DIRNAME}/${FILENAME}"
+if [ -f "${FILEPATH}" ]; then
+  bash "${FILEPATH}" --vhostname="${VHOST_NAME}" --ENVPATH="${ENVPATH}" --ABSPATH="${FILEPATH}"
 fi
 
 # Wizard

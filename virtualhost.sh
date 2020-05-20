@@ -52,34 +52,49 @@ else
   exit 0
 fi
 
-# Run the command wizard.
-COMMANDS=(
-  "install"
-  "uninstall"
-  "quit"
-)
+FILENAME=""
+PACKAGE_ID="virtualhost"
 
-echo
-IFS=$'\n'
-PS3="Please select one of the options. (1-${#COMMANDS[@]}): "
-select COMMAND in ${COMMANDS[@]}; do
-  case "${COMMAND}" in
-  "${COMMANDS[0]}")
+# Set the arguments of the file.
+for arg in "${@}"; do
+  case "${arg}" in
+  --install)
     FILENAME="install.sh"
-    break
     ;;
-  "${COMMANDS[1]}")
+  --uninstall)
     FILENAME="uninstall.sh"
-    break
-    ;;
-  "${COMMANDS[2]}")
-    exit 0
     ;;
   esac
 done
 
+# Run the command wizard.
+if [ -z "${FILENAME}" ]; then
+  COMMANDS=(
+    "install"
+    "uninstall"
+    "quit"
+  )
+  echo
+  IFS=$'\n'
+  PS3="Please select one of the options. (1-${#COMMANDS[@]}): "
+  select COMMAND in ${COMMANDS[@]}; do
+    case "${COMMAND}" in
+    "${COMMANDS[0]}")
+      FILENAME="install.sh"
+      break
+      ;;
+    "${COMMANDS[1]}")
+      FILENAME="uninstall.sh"
+      break
+      ;;
+    "${COMMANDS[2]}")
+      exit 0
+      ;;
+    esac
+  done
+fi
+
 # Set up a package list.
-PACKAGE_ID="virtualhost"
 FILEPATH="/${OS_PATH}/${PACKAGE_ID}/${FILENAME}"
 if [ -f ".${FILEPATH}" ]; then
   bash ".${FILEPATH}" --ENVPATH="$(cd "$(dirname "")" && pwd)/env" --ABSPATH="$(cd "$(dirname "")" && pwd)${FILEPATH}"

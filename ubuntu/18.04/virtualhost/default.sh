@@ -19,7 +19,7 @@ DIRNAME=""
 OS_PATH=""
 
 echo
-echo "Start installing default html."
+echo "Start installing default template."
 
 VHOST_NAME=""
 VHOST_DIR="/var/www/html"
@@ -50,4 +50,4 @@ done
 cp -v "/var/www/html/index.html" "${VHOST_DIR}/index.html"
 
 echo
-echo "Default html is completely installed."
+echo "Default template is completely installed."
