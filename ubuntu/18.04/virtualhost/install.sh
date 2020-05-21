@@ -12,11 +12,12 @@
 # Work even if somebody does "sh thisscript.sh".
 set -e
 
-# Set constants in the file.
+# Set global constants.
 ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
+PKGNAME=""
 
 # Set the arguments of the file.
 for arg in "${@}"; do
@@ -28,6 +29,7 @@ for arg in "${@}"; do
     ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
     DIRNAME="$(dirname "${ABSPATH}")"
     OS_PATH="$(dirname "${DIRNAME}")"
+    PKGNAME="$(basename "${DIRNAME,,}")"
     ;;
   esac
 done
@@ -43,7 +45,7 @@ pkgAudit "apache2"
 echo
 VHOST_NAME=""
 while [ -z "${VHOST_NAME}" ]; do
-  VHOST_NAME="$(msg -yn -p1='Enter server name. (ex) example.com : ' -p2='Are you sure you want to save this? (y/n) ')"
+  VHOST_NAME="$(msg -yn -p1='Enter server name. (ex) example.com : ')"
   if [ -d "/var/www/${VHOST_NAME}" ]; then
     echo "${VHOST_NAME} already exists."
     if [ "$(msg -yn 'Do you want to overwrite it? (y/n) ')" == "No" ]; then
@@ -60,13 +62,6 @@ fi
 echo
 echo "Start installing ${VHOST_NAME}."
 
-# config.sh
-FILENAME="config.sh"
-FILEPATH="${DIRNAME}/${FILENAME}"
-if [ -f "${FILEPATH}" ]; then
-  bash "${FILEPATH}" --vhostname="${VHOST_NAME}" --ENVPATH="${ENVPATH}" --ABSPATH="${FILEPATH}"
-fi
-
 # Wizard
 COMMANDS=(
   "default"
@@ -82,32 +77,24 @@ PS3="Please select one of the options. (1-${#COMMANDS[@]}): "
 select COMMAND in ${COMMANDS[@]}; do
   case "${COMMAND}" in
   "${COMMANDS[0]}")
-    FILENAME="default.sh"
-    FILEPATH="${DIRNAME}/${FILENAME}"
-    bash "${FILEPATH}" --vhostname="${VHOST_NAME}" --ENVPATH="${ENVPATH}" --ABSPATH="${FILEPATH}"
+    bash "${DIRNAME}/config.sh" --ENVPATH="${ENVPATH}" --ABSPATH="${DIRNAME}/config.sh" --vhostname="${VHOST_NAME}"
+    bash "${DIRNAME}/default.sh" --ENVPATH="${ENVPATH}" --ABSPATH="${DIRNAME}/default.sh" --vhostname="${VHOST_NAME}"
     break
     ;;
   "${COMMANDS[1]}")
-    FILENAME="laravel.sh"
-    FILEPATH="${DIRNAME}/${FILENAME}"
-    bash "${FILEPATH}" --vhostname="${VHOST_NAME}" --ENVPATH="${ENVPATH}" --ABSPATH="${FILEPATH}" --subdir="laravel"
+    bash "${DIRNAME}/config.sh" --ENVPATH="${ENVPATH}" --ABSPATH="${DIRNAME}/config.sh" --vhostname="${VHOST_NAME}" --vhostroot="/public"
+    bash "${DIRNAME}/laravel.sh" --ENVPATH="${ENVPATH}" --ABSPATH="${DIRNAME}/laravel.sh" --vhostname="${VHOST_NAME}"
     break
     ;;
   "${COMMANDS[2]}")
-    FILENAME="wordpress.sh"
-    FILEPATH="${DIRNAME}/${FILENAME}"
-    bash "${FILEPATH}" --vhostname="${VHOST_NAME}" --ENVPATH="${ENVPATH}" --ABSPATH="${FILEPATH}" --subdir="wordpress"
+    bash "${DIRNAME}/config.sh" --ENVPATH="${ENVPATH}" --ABSPATH="${DIRNAME}/config.sh" --vhostname="${VHOST_NAME}"
+    bash "${DIRNAME}/wordpress.sh" --ENVPATH="${ENVPATH}" --ABSPATH="${DIRNAME}/wordpress.sh" --vhostname="${VHOST_NAME}"
     break
     ;;
   "${COMMANDS[3]}")
-    # step1
-    FILENAME="laravel.sh"
-    FILEPATH="${DIRNAME}/${FILENAME}"
-    bash "${FILEPATH}" --vhostname="${VHOST_NAME}" --ENVPATH="${ENVPATH}" --ABSPATH="${FILEPATH}" --subdir="laravel"
-    # step2
-    FILENAME="wordpress.sh"
-    FILEPATH="${DIRNAME}/${FILENAME}"
-    bash "${FILEPATH}" --vhostname="${VHOST_NAME}" --ENVPATH="${ENVPATH}" --ABSPATH="${FILEPATH}" --subdir="laravel/blog"
+    bash "${DIRNAME}/config.sh" --ENVPATH="${ENVPATH}" --ABSPATH="${DIRNAME}/config.sh" --vhostname="${VHOST_NAME}" --vhostroot="/public"
+    bash "${DIRNAME}/laravel.sh" --ENVPATH="${ENVPATH}" --ABSPATH="${DIRNAME}/laravel.sh" --vhostname="${VHOST_NAME}"
+    bash "${DIRNAME}/wordpress.sh" --ENVPATH="${ENVPATH}" --ABSPATH="${DIRNAME}/wordpress.sh" --vhostname="${VHOST_NAME}" --vhostroot="/blog"
     break
     ;;
   "${COMMANDS[4]}")

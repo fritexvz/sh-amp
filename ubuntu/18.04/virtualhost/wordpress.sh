@@ -17,11 +17,13 @@ ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
+PKGNAME=""
 
 # Set virtualhost constants in the file.
 VHOST_NAME=""
-VHOST_DIR="/var/www/html"
-VHOST_SUBDIR=""
+VHOST_DIR=""
+VHOST_ROOT=""
+VHOST_ROOT_DIR=""
 
 # Set the arguments.
 for arg in "${@}"; do
@@ -33,14 +35,13 @@ for arg in "${@}"; do
     ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
     DIRNAME="$(dirname "${ABSPATH}")"
     OS_PATH="$(dirname "${DIRNAME}")"
+    PKGNAME="$(basename "${DIRNAME,,}")"
     ;;
   --vhostname=*)
     VHOST_NAME="$(echo "${arg}" | sed -E 's/(--vhostname=)//')"
-    VHOST_DIR="$(echo "/var/www/${VHOST_NAME}/html" | sed -E -e 's#/+#/#g' -e 's#/+$##')"
     ;;
-  --subdir=*)
-    VHOST_SUBDIR="$(echo "${arg}" | sed -E 's/(--subdir=)//')"
-    VHOST_DIR="$(echo "/var/www/${VHOST_NAME}/html/${VHOST_SUBDIR}" | sed -E -e 's#/+#/#g' -e 's#/+$##')"
+  --vhostroot=*)
+    VHOST_ROOT="$(echo "${arg}" | sed -E 's/(--vhostroot=)//')"
     ;;
   esac
 done
@@ -50,16 +51,34 @@ source "${OS_PATH}/utils.sh"
 source "${OS_PATH}/functions.sh"
 source "${DIRNAME}/functions.sh"
 
+# Make sure the package is installed.
+pkgAudit "apache2"
+
 echo
 echo "Start installing wordpress."
 
+# Vhosting root directory settings.
+if [ -z "${VHOST_NAME}" ]; then
+  VHOST_DIR="/var/www/html"
+else
+  VHOST_DIR="/var/www/${VHOST_NAME}/html"
+fi
+
+# Vhosting document directory settings.
+if [ -z "${VHOST_ROOT}" ]; then
+  VHOST_ROOT_DIR="${VHOST_DIR}"
+else
+  VHOST_ROOT_DIR="${VHOST_DIR}/${VHOST_ROOT}"
+fi
+VHOST_ROOT_DIR="$(echo "${VHOST_ROOT_DIR}" | sed -E -e 's/\/+/\//g' -e 's/\/+$//g')"
+
 # Setting up vhosting directory
-if [ ! -d "${VHOST_DIR}" ]; then
-  mkdir -p "${VHOST_DIR}"
+if [ ! -d "${VHOST_ROOT_DIR}" ]; then
+  mkdir -p "${VHOST_ROOT_DIR}"
 fi
 
 # Download and extract the latest WordPress.
-cd "${VHOST_DIR}"
+cd "${VHOST_ROOT_DIR}"
 
 wget https://wordpress.org/latest.zip
 
@@ -68,8 +87,8 @@ rm latest.zip
 mv wordpress/* .
 rmdir wordpress
 
-cp "${VHOST_DIR}/wp-config-sample.php" "${VHOST_DIR}/wp-config.php"
-cp "${VHOST_DIR}/wp-config.php"{,.bak}
+cp "${VHOST_ROOT_DIR}/wp-config-sample.php" "${VHOST_ROOT_DIR}/wp-config.php"
+cp "${VHOST_ROOT_DIR}/wp-config.php"{,.bak}
 
 # Set database constants in the file.
 DB_NAME="${VHOST_NAME//[^a-zA-Z0-9_]/}"
@@ -150,7 +169,12 @@ sed -i -E \
   -e "s/^(define\([\t ]{0,}'DB_CHARSET',[\t ]{0,}')(.*)('[\t ]{0,}\))$/\1${DB_CHARSET}\3/" \
   -e "s/^(define\([\t ]{0,}'DB_COLLATE',[\t ]{0,}')(.*)('[\t ]{0,}\))$/\1${DB_COLLATE}\3/" \
   -e "s/^(\$table_prefix[\t ]{0,}=[\t ]{0,}')(.*)('\;)$/\1${TABLE_PREFIX}\3/" \
-  "${VHOST_DIR}/wp-config.php"
+  "${VHOST_ROOT_DIR}/wp-config.php"
+
+# Reloading the service
+if [ ! -z "$(isApache2)" ]; then
+  systemctl reload apache2
+fi
 
 echo
 echo "Wordpress is completely installed."

@@ -44,6 +44,7 @@ pkgAudit "apache2"
 
 # Run the command wizard.
 COMMANDS=(
+  "List of active virtual hosts."
   "Create a database?"
   "Are you sure you want to delete the database?"
   "Are you sure you want to delete the server?"
@@ -56,6 +57,9 @@ PS3="Please select one of the options. (1-${#COMMANDS[@]}): "
 select COMMAND in ${COMMANDS[@]}; do
   case "${COMMAND}" in
   "${COMMANDS[0]}")
+    a2query -s
+    ;;
+  "${COMMANDS[1]}")
 
     echo
     DB_NAME=""
@@ -78,7 +82,7 @@ select COMMAND in ${COMMANDS[@]}; do
     create_database "${DB_NAME}" "${DB_USER}" "${DB_PASSWORD}"
 
     ;;
-  "${COMMANDS[1]}")
+  "${COMMANDS[2]}")
 
     echo
     DB_NAME=""
@@ -96,7 +100,7 @@ select COMMAND in ${COMMANDS[@]}; do
     delete_database "${DB_NAME}" "${DB_USER}"
 
     ;;
-  "${COMMANDS[2]}")
+  "${COMMANDS[3]}")
 
     echo
     VHOST_NAME=""
@@ -135,7 +139,7 @@ select COMMAND in ${COMMANDS[@]}; do
     systemctl reload apache2
 
     ;;
-  "${COMMANDS[3]}")
+  "${COMMANDS[4]}")
     exit 0
     ;;
   esac

@@ -12,16 +12,18 @@
 # Work even if somebody does "sh thisscript.sh".
 set -e
 
-# Set global constants in the file.
+# Set global constants.
 ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
+PKGNAME=""
 
-# Set virtualhost constants in the file.
+# Set local constants.
 VHOST_NAME=""
-VHOST_DIR="/var/www/html"
-VHOST_SUBDIR=""
+VHOST_DIR=""
+VHOST_ROOT=""
+VHOST_ROOT_DIR=""
 
 # Set the arguments.
 for arg in "${@}"; do
@@ -33,14 +35,13 @@ for arg in "${@}"; do
     ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
     DIRNAME="$(dirname "${ABSPATH}")"
     OS_PATH="$(dirname "${DIRNAME}")"
+    PKGNAME="$(basename "${DIRNAME,,}")"
     ;;
   --vhostname=*)
     VHOST_NAME="$(echo "${arg}" | sed -E 's/(--vhostname=)//')"
-    VHOST_DIR="$(echo "/var/www/${VHOST_NAME}/html" | sed -E -e 's#/+#/#g' -e 's#/+$##')"
     ;;
-  --subdir=*)
-    VHOST_SUBDIR="$(echo "${arg}" | sed -E 's/(--subdir=)//')"
-    VHOST_DIR="$(echo "/var/www/${VHOST_NAME}/html/${VHOST_SUBDIR}" | sed -E -e 's#/+#/#g' -e 's#/+$##')"
+  --vhostroot=*)
+    VHOST_ROOT="$(echo "${arg}" | sed -E 's/(--vhostroot=)//')"
     ;;
   esac
 done
@@ -50,34 +51,40 @@ source "${OS_PATH}/utils.sh"
 source "${OS_PATH}/functions.sh"
 source "${DIRNAME}/functions.sh"
 
+# Make sure the package is installed.
+pkgAudit "apache2"
+
 echo
 echo "Start setting up laravel configuration."
 
-sed -i -E \
-  -e "/DocumentRoot/{ s/($(escapeString "${VHOST_DIR}"))/\1\/public/; }" \
-  "/etc/apache2/sites-available/${VHOST_NAME}.conf"
-
-APACHE2_HTTPS="$(getPkgCnf -rs="\[APACHE2\]" -fs="=" -s="APACHE2_HTTPS")"
-
-if [ "${APACHE2_HTTPS^^}" == "ON" ]; then
-  sed -i -E \
-    -e "/DocumentRoot/{ s/($(escapeString "${VHOST_DIR}"))/\1\/public/; }" \
-    "/etc/apache2/sites-available/${VHOST_NAME}-ssl.conf"
+# Vhosting root directory settings.
+if [ -z "${VHOST_NAME}" ]; then
+  VHOST_DIR="/var/www/html"
+else
+  VHOST_DIR="/var/www/${VHOST_NAME}/html"
 fi
 
+# Vhosting document directory settings.
+if [ -z "${VHOST_ROOT}" ]; then
+  VHOST_ROOT_DIR="${VHOST_DIR}"
+else
+  VHOST_ROOT_DIR="${VHOST_DIR}/${VHOST_ROOT}"
+fi
+VHOST_ROOT_DIR="$(echo "${VHOST_ROOT_DIR}" | sed -E -e 's/\/+/\//g' -e 's/\/+$//g')"
+
 # Setting up vhosting directory
-if [ ! -d "${VHOST_DIR}" ]; then
-  mkdir -p "${VHOST_DIR}"
+if [ ! -d "${VHOST_ROOT_DIR}" ]; then
+  mkdir -p "${VHOST_ROOT_DIR}"
 fi
 
 # Download and extract the latest laravel.
-cd "${VHOST_DIR}"
+cd "${VHOST_ROOT_DIR}"
 
 composer create-project --prefer-dist laravel/laravel .
 
 php artisan serve
 
-# Restart the service
+# Restarting the service
 if [ ! -z "$(isApache2)" ]; then
   systemctl restart apache2
 fi
