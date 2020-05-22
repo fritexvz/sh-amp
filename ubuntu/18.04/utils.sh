@@ -149,12 +149,12 @@ function getSendmailVer() {
 
 # Trim the starting space.
 function ltrim() {
-  echo "$1" | sed -E 's/^[ \t\r\n]+//g'
+  echo "$1" | sed -E 's/^[ \t\r\n]{1,}//g'
 }
 
 # Trim the ending space.
 function rtrim() {
-  echo "$1" | sed -E 's/[ \t\r\n]+$//g'
+  echo "$1" | sed -E 's/[ \t\r\n]{1,}$//g'
 }
 
 # Trim the start and end spaces.

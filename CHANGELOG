@@ -6,6 +6,7 @@
 3. fixed: Fixed SQL syntax error when installing WordPress.
 4. added: A reinstall command line was added.
 5. fixed: Fixed the syntax error.
+6. updated: whitespace regex has been updated.
 
 # 0.0.34
 1. fixed: The wrong file path was fixed.

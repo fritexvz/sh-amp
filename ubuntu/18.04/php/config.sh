@@ -19,6 +19,10 @@ DIRNAME=""
 OS_PATH=""
 PKGNAME=""
 
+# Set regex pattern.
+SPACE0='[\t ]{0,}'
+SPACE1='[\t ]{1,}'
+
 # Set the arguments of the file.
 for arg in "${@}"; do
   case "${arg}" in
@@ -55,7 +59,7 @@ if [ -f ".${f_dir}" ]; then
 else
   sed -i -E \
     -e "/DirectoryIndex\s+/{ 
-      s/[\t ]{1,}index.php//;
+      s/${SPACE1}index.php//;
       s/index.html/index.php index.html/;
     }" \
     "${f_dir}"

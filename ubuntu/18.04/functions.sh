@@ -63,7 +63,7 @@ function getPkgCnf() {
           /^[#;\t ]{0,}${SEARCH}\s{0,}${FIELD_SEPERATOR}/{
             /^[^#;]{1,}/ s/\s{0,}${FIELD_SEPERATOR}\s{0,}/${FIELD_SEPERATOR}/p;
           }
-        }" | sed -E 's/#.*//g' | awk -F "${FIELD_SEPERATOR}" '{print $2}' | sed -E 's/^[ \t\r\n]+//g;s/[ \t\r\n]+$//g;')"
+        }" | sed -E 's/#.*//g' | awk -F "${FIELD_SEPERATOR}" '{print $2}' | sed -E 's/^[ \t\r\n]{1,}//g;s/[ \t\r\n]{1,}$//g;')"
       fi
 
     else
@@ -81,7 +81,7 @@ function getPkgCnf() {
       else
         echo "$(cat "${FILE}" | sed -E -n "/^${BEGIN_RECORD_SEPERATOR}/,/^${END_RECORD_SEPERATOR}/{
           /^[#;\t ]{0,}${SEARCH}\s{1,}/{ /^[^#;]{1,}/p }
-        }" | sed -E 's/#.*//g' | awk '{print $2}' | sed -E 's/^[ \t\r\n]+//g;s/[ \t\r\n]+$//g;')"
+        }" | sed -E 's/#.*//g' | awk '{print $2}' | sed -E 's/^[ \t\r\n]{1,}//g;s/[ \t\r\n]{1,}$//g;')"
       fi
 
     fi
@@ -102,7 +102,7 @@ function getPkgCnf() {
       else
         echo "$(cat "${FILE}" | sed -E -n "/^[#;\t ]{0,}${SEARCH}s{0,}${FIELD_SEPERATOR}/{
           /^[^#;]{1,}/ s/\s{0,}${FIELD_SEPERATOR}\s{0,}/${FIELD_SEPERATOR}/p
-        }" | sed -E 's/#.*//g' | awk -F "${FIELD_SEPERATOR}" '{print $2}' | sed -E 's/^[ \t\r\n]+//g;s/[ \t\r\n]+$//g;')"
+        }" | sed -E 's/#.*//g' | awk -F "${FIELD_SEPERATOR}" '{print $2}' | sed -E 's/^[ \t\r\n]{1,}//g;s/[ \t\r\n]{1,}$//g;')"
       fi
 
     else
@@ -114,7 +114,7 @@ function getPkgCnf() {
         MATCHSTRING="$(cat "${FILE}" | sed -E -n "/^[#;\t ]{0,}${SEARCH}s{1,}/{ /^[^#;]{1,}/p }" | head -1)"
         echo "$(trim "$(removeComment "${MATCHSTRING}" | awk '{print $2}')")"
       else
-        echo "$(cat "${FILE}" | sed -E -n "/^[#;\t ]{0,}${SEARCH}s{1,}/{ /^[^#;]{1,}/p }" | sed -E 's/#.*//g' | awk '{print $2}' | sed -E 's/^[ \t\r\n]+//g;s/[ \t\r\n]+$//g;')"
+        echo "$(cat "${FILE}" | sed -E -n "/^[#;\t ]{0,}${SEARCH}s{1,}/{ /^[^#;]{1,}/p }" | sed -E 's/#.*//g' | awk '{print $2}' | sed -E 's/^[ \t\r\n]{1,}//g;s/[ \t\r\n]{1,}$//g;')"
       fi
 
     fi

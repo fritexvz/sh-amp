@@ -26,6 +26,10 @@ VHOST_LOG_DIR=""
 VHOST_ROOT=""
 VHOST_ROOT_DIR=""
 
+# Set regex pattern.
+SPACE0='[\t ]{0,}'
+SPACE1='[\t ]{1,}'
+
 # Set the arguments of the file.
 for arg in "${@}"; do
   case "${arg}" in
@@ -63,7 +67,7 @@ PUBLIC_IP="$(getPkgCnf -rs="\[HOSTS\]" -fs="=" -s="PUBLIC_IP")"
 
 # Adding virtual host name to the /etc/hosts file.
 if [ ! -z "${VHOST_NAME}" ]; then
-  if [ -z "$(cat "/etc/hosts" | egrep "^${PUBLIC_IP}[\t ]{1,}${VHOST_NAME}$")" ]; then
+  if [ -z "$(cat "/etc/hosts" | egrep "^${PUBLIC_IP}${SPACE1}${VHOST_NAME}$")" ]; then
     sed -i "2 a\\${PUBLIC_IP} ${VHOST_NAME}" /etc/hosts
   fi
 fi

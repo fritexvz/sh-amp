@@ -26,7 +26,7 @@ VHOST_ROOT=""
 VHOST_ROOT_DIR=""
 
 # Set regex pattern.
-SPACE='[\t ]{0,}'
+SPACE0='[\t ]{0,}'
 
 # Set the arguments.
 for arg in "${@}"; do
@@ -172,13 +172,13 @@ else
 fi
 
 sed -i -E \
-  -e "s/^(${SPACE}define\(${SPACE}'DB_NAME'${SPACE}\,${SPACE}')(.*)('${SPACE}\)${SPACE}\;.*)/\1${DB_NAME}\3/" \
-  -e "s/^(${SPACE}define\(${SPACE}'DB_USER'${SPACE}\,${SPACE}')(.*)('${SPACE}\)${SPACE}\;.*)/\1${DB_USER}\3/" \
-  -e "s/^(${SPACE}define\(${SPACE}'DB_PASSWORD'${SPACE}\,${SPACE}')(.*)('${SPACE}\)${SPACE}\;.*)/\1${DB_PASSWORD}\3/" \
-  -e "s/^(${SPACE}define\(${SPACE}'DB_HOST'${SPACE}\,${SPACE}')(.*)('${SPACE}\)${SPACE}\;.*)/\1${DB_HOST}\3/" \
-  -e "s/^(${SPACE}define\(${SPACE}'DB_CHARSET'${SPACE}\,${SPACE}')(.*)('${SPACE}\)${SPACE}\;.*)/\1${DB_CHARSET}\3/" \
-  -e "s/^(${SPACE}define\(${SPACE}'DB_COLLATE'${SPACE}\,${SPACE}')(.*)('${SPACE}\)${SPACE}\;.*)/\1${DB_COLLATE}\3/" \
-  -e "s/^(${SPACE}\\\$table_prefix${SPACE}=${SPACE}')(.*)('${SPACE}\;.*)$/\1${TABLE_PREFIX}\3/" \
+  -e "s/^(${SPACE0}define\(${SPACE0}'DB_NAME'${SPACE0}\,${SPACE0}')(.*)('${SPACE0}\)${SPACE0}\;.*)/\1${DB_NAME}\3/" \
+  -e "s/^(${SPACE0}define\(${SPACE0}'DB_USER'${SPACE0}\,${SPACE0}')(.*)('${SPACE0}\)${SPACE0}\;.*)/\1${DB_USER}\3/" \
+  -e "s/^(${SPACE0}define\(${SPACE0}'DB_PASSWORD'${SPACE0}\,${SPACE0}')(.*)('${SPACE0}\)${SPACE0}\;.*)/\1${DB_PASSWORD}\3/" \
+  -e "s/^(${SPACE0}define\(${SPACE0}'DB_HOST'${SPACE0}\,${SPACE0}')(.*)('${SPACE0}\)${SPACE0}\;.*)/\1${DB_HOST}\3/" \
+  -e "s/^(${SPACE0}define\(${SPACE0}'DB_CHARSET'${SPACE0}\,${SPACE0}')(.*)('${SPACE0}\)${SPACE0}\;.*)/\1${DB_CHARSET}\3/" \
+  -e "s/^(${SPACE0}define\(${SPACE0}'DB_COLLATE'${SPACE0}\,${SPACE0}')(.*)('${SPACE0}\)${SPACE0}\;.*)/\1${DB_COLLATE}\3/" \
+  -e "s/^(${SPACE0}\\\$table_prefix${SPACE0}=${SPACE0}')(.*)('${SPACE0}\;.*)$/\1${TABLE_PREFIX}\3/" \
   "${VHOST_ROOT_DIR}/wp-config.php"
 
 # Reloading the service

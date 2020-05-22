@@ -19,6 +19,10 @@ DIRNAME=""
 OS_PATH=""
 PKGNAME=""
 
+# Set regex pattern.
+SPACE0='[\t ]{0,}'
+SPACE1='[\t ]{1,}'
+
 # Set the arguments of the file.
 for arg in "${@}"; do
   case "${arg}" in
@@ -51,7 +55,7 @@ if [ -f ".${f_charset}" ]; then
   cp -v ".${f_charset}" "${f_charset}"
 else
   sed -i -E \
-    -e "/^[#\t ]{0,}AddDefaultCharset[\t ]{1,}/{ s/^[#\t ]{1,}//; }" \
+    -e "/^[#\t ]{0,}AddDefaultCharset${SPACE1}/{ s/^[#\t ]{1,}//; }" \
     "${f_charset}"
 fi
 
@@ -64,20 +68,20 @@ f_security="/etc/apache2/conf-available/security.conf"
 if [ -f ".${f_security}" ]; then
   cp -v ".${f_security}" "${f_security}"
 else
-  if [ -z "$(cat "${f_security}" | sed -E -n '/^[#\t ]{0,}ServerTokens[\t ]{1,}Prod/p')" ]; then
+  if [ -z "$(cat "${f_security}" | sed -E -n "/^[#\t ]{0,}ServerTokens${SPACE1}Prod/p")" ]; then
     sed -i -E \
-      -e "/^[#\t ]{0,}ServerTokens[\t ]{1,}Full/a\ServerTokens Prod" \
+      -e "/^[#\t ]{0,}ServerTokens${SPACE1}Full/a\ServerTokens Prod" \
       "${f_security}"
   fi
   sed -i -E \
-    -e "/^[#\t ]{0,}<Directory[\t ]{1,}\/>/,/^[#\t ]{0,}<\/Directory>/{ s/^[#]{1,}//; }" \
-    -e "/^[#\t ]{0,}ServerTokens[\t ]{1,}OS/{ s/^/#/; s/^[#\t ]{1,}/#/; }" \
-    -e "/^[#\t ]{0,}ServerTokens[\t ]{1,}Full/{ s/^/#/; s/^[#\t ]{1,}/#/; }" \
-    -e "/^[#\t ]{0,}ServerTokens[\t ]{1,}Prod/{ s/^[#\t ]{1,}//; }" \
-    -e "/^[#\t ]{0,}ServerSignature[\t ]{1,}On/{ s/^/#/; s/^[#\t ]{1,}/#/; }" \
-    -e "/^[#\t ]{0,}ServerSignature[\t ]{1,}Off/{ s/^[#\t ]{1,}//; }" \
-    -e "/^[#\t ]{0,}Header[\t ]{1,}set[\t ]{1,}X-Content-Type-Options\s{0,}\:/{ s/^[#\t ]{1,}//; }" \
-    -e "/^[#\t ]{0,}Header[\t ]{1,}set[\t ]{1,}X-Frame-Options\s{0,}\:/{ s/^[#\t ]{1,}//; }" \
+    -e "/^[#\t ]{0,}<Directory${SPACE1}\/>/,/^[#\t ]{0,}<\/Directory>/{ s/^[#]{1,}//; }" \
+    -e "/^[#\t ]{0,}ServerTokens${SPACE1}OS/{ s/^/#/; s/^[#\t ]{1,}/#/; }" \
+    -e "/^[#\t ]{0,}ServerTokens${SPACE1}Full/{ s/^/#/; s/^[#\t ]{1,}/#/; }" \
+    -e "/^[#\t ]{0,}ServerTokens${SPACE1}Prod/{ s/^[#\t ]{1,}//; }" \
+    -e "/^[#\t ]{0,}ServerSignature${SPACE1}On/{ s/^/#/; s/^[#\t ]{1,}/#/; }" \
+    -e "/^[#\t ]{0,}ServerSignature${SPACE1}Off/{ s/^[#\t ]{1,}//; }" \
+    -e "/^[#\t ]{0,}Header${SPACE1}set${SPACE1}X-Content-Type-Options\s{0,}\:/{ s/^[#\t ]{1,}//; }" \
+    -e "/^[#\t ]{0,}Header${SPACE1}set${SPACE1}X-Frame-Options\s{0,}\:/{ s/^[#\t ]{1,}//; }" \
     "${f_security}"
 fi
 
@@ -155,22 +159,22 @@ f_mpm_prefork="/etc/apache2/mods-available/mpm_prefork.conf"
 if [ -f ".${f_mpm_prefork}" ]; then
   cp -v ".${f_mpm_prefork}" "${f_mpm_prefork}"
 else
-  if [ -z "$(cat "${f_mpm_prefork}" | sed -E -n '/<IfModule mpm_prefork_module>/,/<\/IfModule>/{ /^[\t ]{0,}ServerLimit[\t ]{1,}/p }')" ]; then
+  if [ -z "$(cat "${f_mpm_prefork}" | sed -E -n "/<IfModule mpm_prefork_module>/,/<\/IfModule>/{ /^${SPACE0}ServerLimit${SPACE1}/p }")" ]; then
     sed -i -E \
       -e "/<IfModule mpm_prefork_module>/,/<\/IfModule>/{ 
-        s/^([\t ]{0,})(MaxRequestWorkers[\t ]{1,}.*)/\1\2\n\1Temp_\2/;
+        s/^(${SPACE0})(MaxRequestWorkers${SPACE1}.*)/\1\2\n\1Temp_\2/;
         s/Temp_MaxRequestWorkers/ServerLimit/;
       }" \
       "${f_mpm_prefork}"
   fi
   sed -i -E \
     -e "/<IfModule mpm_prefork_module>/,/<\/IfModule>/{ 
-      s/^([\t ]{0,}StartServers[\t ]{1,}).*/\1${STARTSERVERS}/;
-      s/^([\t ]{0,}MinSpareServers[\t ]{1,}).*/\1${MINSPARESERVERS}/;
-      s/^([\t ]{0,}MaxSpareServers[\t ]{1,}).*/\1${MAXSPARESERVERS}/;
-      s/^([\t ]{0,}MaxRequestWorkers[\t ]{1,}).*/\1${MAXREQUESTWORKERS}/;
-      s/^([\t ]{0,}ServerLimit[\t ]{1,}).*/\1${SERVERLIMIT}/;
-      s/^([\t ]{0,}MaxConnectionsPerChild[\t ]{1,}).*/\1${MAXCONNECTIONSPERCHILD}/;
+      s/^(${SPACE0}StartServers${SPACE1}).*/\1${STARTSERVERS}/;
+      s/^(${SPACE0}MinSpareServers${SPACE1}).*/\1${MINSPARESERVERS}/;
+      s/^(${SPACE0}MaxSpareServers${SPACE1}).*/\1${MAXSPARESERVERS}/;
+      s/^(${SPACE0}MaxRequestWorkers${SPACE1}).*/\1${MAXREQUESTWORKERS}/;
+      s/^(${SPACE0}ServerLimit${SPACE1}).*/\1${SERVERLIMIT}/;
+      s/^(${SPACE0}MaxConnectionsPerChild${SPACE1}).*/\1${MAXCONNECTIONSPERCHILD}/;
     }" \
     "${f_mpm_prefork}"
 fi
@@ -183,13 +187,13 @@ f_80="/etc/apache2/sites-available/000-default.conf"
 if [ -f ".${f_80}" ]; then
   cp -v ".${f_80}" "${f_80}"
 else
-  if [ -z "$(cat "${f_80}" | sed -E -n '/^[\t ]{0,}ServerName[\t ]{1,}/p')" ]; then
+  if [ -z "$(cat "${f_80}" | sed -E -n "/^${SPACE0}ServerName${SPACE1}/p")" ]; then
     sed -i -E \
-      -e "s/^([\t ]{0,})(ServerAdmin[\t ]{1,})(.*)/\1ServerName ${SERVERNAME}\n\1\2\3/" \
+      -e "s/^(${SPACE0})(ServerAdmin${SPACE1})(.*)/\1ServerName ${SERVERNAME}\n\1\2\3/" \
       "${f_80}"
   else
     sed -i -E \
-      -e "s/^([\t ]{0,}ServerName[\t ]{1,}).*/\1${SERVERNAME}/" \
+      -e "s/^(${SPACE0}ServerName${SPACE1}).*/\1${SERVERNAME}/" \
       "${f_80}"
   fi
 fi
@@ -204,13 +208,13 @@ if [ "${APACHE2_HTTPS^^}" == "ON" ]; then
   if [ -f ".${f_443}" ]; then
     cp -v ".${f_443}" "${f_443}"
   else
-    if [ -z "$(cat "${f_443}" | sed -E -n '/^[\t ]{0,}ServerName[\t ]{1,}/p')" ]; then
+    if [ -z "$(cat "${f_443}" | sed -E -n "/^${SPACE0}ServerName${SPACE1}/p")" ]; then
       sed -i -E \
-        -e "s/^([\t ]{0,})(ServerAdmin[\t ]{1,})(.*)/\1ServerName ${SERVERNAME}\n\1\2\3/" \
+        -e "s/^(${SPACE0})(ServerAdmin${SPACE1})(.*)/\1ServerName ${SERVERNAME}\n\1\2\3/" \
         "${f_443}"
     else
       sed -i -E \
-        -e "s/^([\t ]{0,}ServerName[\t ]{1,}).*/\1${SERVERNAME}/" \
+        -e "s/^(${SPACE0}ServerName${SPACE1}).*/\1${SERVERNAME}/" \
         "${f_443}"
     fi
   fi

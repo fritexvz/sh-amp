@@ -19,6 +19,10 @@ DIRNAME=""
 OS_PATH=""
 PKGNAME=""
 
+# Set regex pattern.
+SPACE0='[\t ]{0,}'
+SPACE1='[\t ]{1,}'
+
 # Set the arguments of the file.
 for arg in "${@}"; do
   case "${arg}" in
@@ -128,8 +132,8 @@ select COMMAND in ${COMMANDS[@]}; do
     PUBLIC_IP="$(getPkgCnf -rs="\[HOSTS\]" -fs="=" -s="PUBLIC_IP")"
 
     # Removing public ip address to the /etc/hosts file
-    if [ ! -z "$(cat "/etc/hosts" | egrep "^${PUBLIC_IP}[\t ]{1,}${VHOST_NAME}$")" ]; then
-      sed -i -E "/^${PUBLIC_IP}[\t ]{1,}${VHOST_NAME}$/d" /etc/hosts
+    if [ ! -z "$(cat "/etc/hosts" | egrep "^${PUBLIC_IP}${SPACE1}${VHOST_NAME}$")" ]; then
+      sed -i -E "/^${PUBLIC_IP}${SPACE1}${VHOST_NAME}$/d" /etc/hosts
     fi
 
     # Removing virtualhost directory
