@@ -110,11 +110,11 @@ SERVERLIMIT=${MAXREQUESTWORKERS}
 echo
 echo "Would you like to install mpm_prefork with the following settings?"
 echo "STARTSERVERS: ${STARTSERVERS}"
-echo "MAXREQUESTWORKERS: ${MAXREQUESTWORKERS}"
-echo "MAXCONNECTIONSPERCHILD: ${MAXCONNECTIONSPERCHILD}"
 echo "MINSPARESERVERS: ${MINSPARESERVERS}"
 echo "MAXSPARESERVERS: ${MAXSPARESERVERS}"
+echo "MAXREQUESTWORKERS: ${MAXREQUESTWORKERS}"
 echo "SERVERLIMIT: ${SERVERLIMIT}"
+echo "MAXCONNECTIONSPERCHILD: ${MAXCONNECTIONSPERCHILD}"
 
 CHANGE_MESSAGE="$(msg -yn "Do you want to change it? (y/n) ")"
 if [ "${CHANGE_MESSAGE}" == "Yes" ]; then
@@ -218,8 +218,8 @@ if [ "${APACHE2_HTTPS^^}" == "ON" ]; then
   a2ensite "$(basename "${f_443}")"
 fi
 
-# Reload the service.
-systemctl restart apache2
+# Reloading the service.
+systemctl reload apache2
 
 echo
 echo "${PKGNAME^} configuration is complete."
