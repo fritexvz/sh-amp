@@ -12,18 +12,21 @@
 # Work even if somebody does "sh thisscript.sh".
 set -e
 
-# Set global constants in the file.
+# Set global constants.
 ENVPATH=""
 ABSPATH=""
 DIRNAME=""
 OS_PATH=""
 PKGNAME=""
 
-# Set virtualhost constants in the file.
+# Set local constants.
 VHOST_NAME=""
 VHOST_DIR=""
 VHOST_ROOT=""
 VHOST_ROOT_DIR=""
+
+# Set regex pattern.
+SPACE='[\t ]{0,}'
 
 # Set the arguments.
 for arg in "${@}"; do
@@ -169,13 +172,13 @@ else
 fi
 
 sed -i -E \
-  -e "s/^(define\([\t ]{0,}'DB_NAME',[\t ]{0,}')(.*)('[\t ]{0,}\))$/\1${DB_NAME}\3/" \
-  -e "s/^(define\([\t ]{0,}'DB_USER',[\t ]{0,}')(.*)('[\t ]{0,}\))$/\1${DB_USER}\3/" \
-  -e "s/^(define\([\t ]{0,}'DB_PASSWORD',[\t ]{0,}')(.*)('[\t ]{0,}\))$/\1${DB_PASSWORD}\3/" \
-  -e "s/^(define\([\t ]{0,}'DB_HOST',[\t ]{0,}')(.*)('[\t ]{0,}\))$/\1${DB_HOST}\3/" \
-  -e "s/^(define\([\t ]{0,}'DB_CHARSET',[\t ]{0,}')(.*)('[\t ]{0,}\))$/\1${DB_CHARSET}\3/" \
-  -e "s/^(define\([\t ]{0,}'DB_COLLATE',[\t ]{0,}')(.*)('[\t ]{0,}\))$/\1${DB_COLLATE}\3/" \
-  -e "s/^(\$table_prefix[\t ]{0,}=[\t ]{0,}')(.*)('\;)$/\1${TABLE_PREFIX}\3/" \
+  -e "s/^(${SPACE}define\(${SPACE}'DB_NAME'${SPACE}\,${SPACE}')(.*)('${SPACE}\)${SPACE}\;.*)/\1${DB_NAME}\3/" \
+  -e "s/^(${SPACE}define\(${SPACE}'DB_USER'${SPACE}\,${SPACE}')(.*)('${SPACE}\)${SPACE}\;.*)/\1${DB_USER}\3/" \
+  -e "s/^(${SPACE}define\(${SPACE}'DB_PASSWORD'${SPACE}\,${SPACE}')(.*)('${SPACE}\)${SPACE}\;.*)/\1${DB_PASSWORD}\3/" \
+  -e "s/^(${SPACE}define\(${SPACE}'DB_HOST'${SPACE}\,${SPACE}')(.*)('${SPACE}\)${SPACE}\;.*)/\1${DB_HOST}\3/" \
+  -e "s/^(${SPACE}define\(${SPACE}'DB_CHARSET'${SPACE}\,${SPACE}')(.*)('${SPACE}\)${SPACE}\;.*)/\1${DB_CHARSET}\3/" \
+  -e "s/^(${SPACE}define\(${SPACE}'DB_COLLATE'${SPACE}\,${SPACE}')(.*)('${SPACE}\)${SPACE}\;.*)/\1${DB_COLLATE}\3/" \
+  -e "s/^(${SPACE}\\\$table_prefix${SPACE}=${SPACE}')(.*)('${SPACE}\;.*)$/\1${TABLE_PREFIX}\3/" \
   "${VHOST_ROOT_DIR}/wp-config.php"
 
 # Reloading the service
