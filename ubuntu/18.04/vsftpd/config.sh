@@ -12,7 +12,7 @@
 # Work even if somebody does "sh thisscript.sh".
 set -e
 
-# Set constants in the file.
+# Set global constants.
 ENVPATH=""
 ABSPATH=""
 DIRNAME=""
@@ -82,13 +82,10 @@ VSFTPDCONFSCRIPT
 
     if [ -f "${f_pem}" ]; then
       echo "The ${f_pem} file already exists."
-      msgYn="$(msg -yn 'Do you want to overwrite? (y/n) ')"
-      if [ "${msgYn}" == "Yes" ]; then
-        msgYnc="$(msg -ync 'Are you sure you want to save the changes? (y/n/c) ')"
-        if [ "${msgYnc}" == "Yes" ]; then
-          openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout "${f_pem}" -out "${f_pem}"
-          chmod 600 "${f_pem}"
-        fi
+      CHANGE_MESSAGE="$(msg -ync "Do you want to change it? (y/n/c) ")"
+      if [ "${CHANGE_MESSAGE}" == "Yes" ]; then
+        openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout "${f_pem}" -out "${f_pem}"
+        chmod 600 "${f_pem}"
       fi
     else
       openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout "${f_pem}" -out "${f_pem}"

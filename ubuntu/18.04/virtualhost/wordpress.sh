@@ -112,7 +112,8 @@ echo "DB_CHARSET: ${DB_CHARSET}"
 echo "DB_COLLATE: ${DB_COLLATE}"
 echo "TABLE_PREFIX: ${TABLE_PREFIX}"
 
-if [ "$(msg -yn 'Do you want to change it? (y/n)')" == "Yes" ]; then
+CHANGE_MESSAGE="$(msg -yn "Do you want to change it? (y/n) ")"
+if [ "${CHANGE_MESSAGE}" == "Yes" ]; then
   NEW_CONFIG=""
   while [ -z "${NEW_CONFIG}" ]; do
     read -p "DB_NAME: " NEW_DB_NAME
@@ -122,8 +123,8 @@ if [ "$(msg -yn 'Do you want to change it? (y/n)')" == "Yes" ]; then
     read -p "DB_CHARSET: " NEW_DB_CHARSET
     read -p "DB_COLLATE: " NEW_DB_COLLATE
     read -p "TABLE_PREFIX: " NEW_TABLE_PREFIX
-    msgYnc=$(msg -ync 'Do you want to save it? (y/n/c)')
-    case "${msgYnc}" in
+    SAVE_MESSAGE="$(msg -ync "Do you want to save it? (y/n/c) ")"
+    case "${SAVE_MESSAGE}" in
     "Yes")
       DB_NAME="${NEW_DB_NAME//[^a-zA-Z0-9_]/}"
       DB_NAME="${DB_NAME:0:16}"
@@ -154,8 +155,8 @@ if [ -z "$(mysql -u root -e 'SELECT db FROM mysql.db;' | egrep "^${DB_NAME}$")" 
   create_database "${DB_NAME}" "${DB_USER}" "${DB_PASSWORD}"
 else
   echo "Database '${DB_NAME}' already exists."
-  msgYn="$(msg -yn 'Are you sure you want to delete the database? (y/n) ')"
-  if [ "${msgYn}" == "Yes" ]; then
+  OVERWRITE_MESSAGE="$(msg -yn "Are you sure you want to delete and create the database? (y/n) ")"
+  if [ "${OVERWRITE_MESSAGE}" == "Yes" ]; then
     delete_database "${DB_NAME}" "${DB_USER}"
     create_database "${DB_NAME}" "${DB_USER}" "${DB_PASSWORD}"
   fi

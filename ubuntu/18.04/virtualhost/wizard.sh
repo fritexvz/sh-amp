@@ -12,7 +12,7 @@
 # Work even if somebody does "sh thisscript.sh".
 set -e
 
-# Set constants in the file.
+# Set global constants.
 ENVPATH=""
 ABSPATH=""
 DIRNAME=""
@@ -64,10 +64,10 @@ select COMMAND in ${COMMANDS[@]}; do
     echo
     DB_NAME=""
     while [ -z "${DB_NAME}" ]; do
-      DB_NAME="$(msg -yn -p1='Enter the database name: ' -p2='Are you sure you want to save this? (y/n) ')"
-      if [ -z "$(mysql -u root -e 'SELECT db FROM mysql.db;' | egrep "^${DB_NAME}$")" ] ||
-        [ -z "$(mysql -u root -e 'SELECT User FROM mysql.user;' | egrep "^${DB_NAME}$")" ]; then
-        echo "${DB_NAME} does not exists."
+      DB_NAME="$(msg -yn -c "Enter the database name: ")"
+      if [ ! -z "$(mysql -u root -e 'SELECT db FROM mysql.db;' | egrep "^${DB_NAME}$")" ] ||
+        [ ! -z "$(mysql -u root -e 'SELECT User FROM mysql.user;' | egrep "^${DB_NAME}$")" ]; then
+        echo "${DB_NAME} already exists."
         DB_NAME=""
       fi
     done
@@ -87,7 +87,7 @@ select COMMAND in ${COMMANDS[@]}; do
     echo
     DB_NAME=""
     while [ -z "${DB_NAME}" ]; do
-      DB_NAME="$(msg -yn -p1='Enter the database name: ' -p2='Are you sure you want to save this? (y/n) ')"
+      DB_NAME="$(msg -yn -c "Enter the database name: ")"
       if [ -z "$(mysql -u root -e 'SELECT db FROM mysql.db;' | egrep "^${DB_NAME}$")" ] ||
         [ -z "$(mysql -u root -e 'SELECT User FROM mysql.user;' | egrep "^${DB_NAME}$")" ]; then
         echo "${DB_NAME} does not exists."
@@ -105,7 +105,7 @@ select COMMAND in ${COMMANDS[@]}; do
     echo
     VHOST_NAME=""
     while [ -z "${VHOST_NAME}" ]; do
-      VHOST_NAME="$(msg -yn -p1='Enter domain name (ex) example.com: ')"
+      VHOST_NAME="$(msg -yn -c "Enter the domain name. (ex) example.com : ")"
       if [ ! -d "/var/www/${VHOST_NAME}" ]; then
         echo "${VHOST_NAME} does not exists."
         VHOST_NAME=""

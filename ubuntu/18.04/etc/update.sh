@@ -6,13 +6,13 @@
 # Usage
 # git clone https://github.com/w3src/sh-amp.git
 # cd sh-amp
-# chmod +x ./ubuntu/18.04/hosts/update.sh
-# ./ubuntu/18.04/hosts/update.sh
+# chmod +x ./ubuntu/18.04/etc/update.sh
+# ./ubuntu/18.04/etc/update.sh
 
 # Work even if somebody does "sh thisscript.sh".
 set -e
 
-# Set constants in the file.
+# Set global constants.
 ENVPATH=""
 ABSPATH=""
 DIRNAME=""

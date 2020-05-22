@@ -12,7 +12,7 @@
 # Work even if somebody does "sh thisscript.sh".
 set -e
 
-# Set constants in the file.
+# Set global constants.
 ENVPATH=""
 ABSPATH=""
 DIRNAME=""
@@ -39,22 +39,33 @@ source "${OS_PATH}/utils.sh"
 source "${OS_PATH}/functions.sh"
 source "${DIRNAME}/functions.sh"
 
+# Import variables from the env file.
+PUBLIC_IP="$(getPubIPs)"
+
+# Add a variable to the env file.
+addPkgCnf -rs="\[HOSTS\]" -fs="=" -o="<<HERE
+PUBLIC_IP = ${PUBLIC_IP}
+<<HERE"
+
 echo
 echo "Set the host name."
 
-# Create a backup file.
-cp -v /etc/hosts{,.bak}
-cp -v /etc/cloud/cloud.cfg{,.bak}
+# Set the host name
+CHANGE_MESSAGE="$(msg -yn "Do you want to change host name? (y/n) ")"
+if [ "${CHANGE_MESSAGE}" == "No" ]; then
+  exit 0
+fi
 
 # Set the host name
-HOST_NAME=""
-while [ -z "${HOST_NAME}" ]; do
-  read -p "hostname or FQDN (ex) example.com : " HOST_NAME
-done
+HOST_NAME="$(msg -yn -c "hostname or FQDN (ex) example.com : ")"
 
 if [ hostname != "${HOST_NAME}" ]; then
   hostnamectl set-hostname "${HOST_NAME}"
 fi
+
+# Create a backup file.
+cp -v /etc/hosts{,.bak}
+cp -v /etc/cloud/cloud.cfg{,.bak}
 
 f_hosts="/etc/hosts"
 
@@ -74,11 +85,6 @@ if [ -f ".${f_cloud}" ]; then
 else
   sed -i -E -e '/preserve_hostname\s{0,}\:/{ s/\:.*/\: true/; }' "${f_cloud}"
 fi
-
-# Add a variable to the env file.
-addPkgCnf -rs="\[HOSTS\]" -fs="=" -o="<<HERE
-PUBLIC_IP = $(getPubIPs)
-<<HERE"
 
 echo
 echo "Host name has been set."

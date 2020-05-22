@@ -12,7 +12,7 @@
 # Work even if somebody does "sh thisscript.sh".
 set -e
 
-# Set constants in the file.
+# Set global constants.
 ENVPATH=""
 ABSPATH=""
 DIRNAME=""
@@ -45,14 +45,16 @@ pkgAudit "apache2"
 echo
 VHOST_NAME=""
 while [ -z "${VHOST_NAME}" ]; do
-  VHOST_NAME="$(msg -yn -p1='Enter domain name (ex) example.com: ')"
+  VHOST_NAME="$(msg -yn -c "Enter the domain name. (ex) example.com : ")"
   if [ ! -d "/var/www/${VHOST_NAME}" ]; then
     echo "${VHOST_NAME} does not exists."
     VHOST_NAME=""
   fi
 done
 
-if [ "$(msg -yn 'Are you sure you want to remove it? (y/n) ')" != "Yes" ]; then
+echo
+REMOVE_MESSAGE="$(msg -yn "Are you sure you want to remove it? (y/n) ")"
+if [ "${REMOVE_MESSAGE}" != "Yes" ]; then
   exit 0
 fi
 

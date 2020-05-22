@@ -12,7 +12,7 @@
 # Work even if somebody does "sh thisscript.sh".
 set -e
 
-# Set constants in the file.
+# Set global constants.
 ENVPATH=""
 ABSPATH=""
 DIRNAME=""
@@ -116,7 +116,8 @@ echo "MINSPARESERVERS: ${MINSPARESERVERS}"
 echo "MAXSPARESERVERS: ${MAXSPARESERVERS}"
 echo "SERVERLIMIT: ${SERVERLIMIT}"
 
-if [ "$(msg -yn 'Do you want to change it? (y/n)')" == "Yes" ]; then
+CHANGE_MESSAGE="$(msg -yn "Do you want to change it? (y/n) ")"
+if [ "${CHANGE_MESSAGE}" == "Yes" ]; then
   NEW_CONFIG=""
   while [ -z "${NEW_CONFIG}" ]; do
     read -p "STARTSERVERS: " NEW_STARTSERVERS
@@ -125,8 +126,8 @@ if [ "$(msg -yn 'Do you want to change it? (y/n)')" == "Yes" ]; then
     read -p "MINSPARESERVERS: " NEW_MINSPARESERVERS
     read -p "MAXSPARESERVERS: " NEW_MAXSPARESERVERS
     read -p "SERVERLIMIT: " NEW_SERVERLIMIT
-    msgYnc=$(msg -ync 'Do you want to save it? (y/n/c)')
-    case "${msgYnc}" in
+    SAVE_MESSAGE="$(msg -ync "Do you want to save it? (y/n/c) ")"
+    case "${SAVE_MESSAGE}" in
     "Yes")
       STARTSERVERS="${NEW_STARTSERVERS}"
       MAXREQUESTWORKERS="${NEW_MAXREQUESTWORKERS}"

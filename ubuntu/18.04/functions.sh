@@ -171,9 +171,9 @@ function addPkgCnf() {
   while IFS= read -r line; do
 
     if [ -z "${line}" ] ||
-       [ ! -z "$(echo ${line} | sed -E -n '/^[<]{2}HERE/p')" ] ||
-       [ ! -z "$(echo ${line} | sed -E -n '/^\[.*\]/p')" ] ||
-       [ ! -z "$(echo ${line} | sed -E -n '/^[#;](\s|\t){1,}/p')" ]; then
+      [ ! -z "$(echo ${line} | sed -E -n '/^[<]{2}HERE/p')" ] ||
+      [ ! -z "$(echo ${line} | sed -E -n '/^\[.*\]/p')" ] ||
+      [ ! -z "$(echo ${line} | sed -E -n '/^[#;](\s|\t){1,}/p')" ]; then
       continue
     fi
 
@@ -356,128 +356,206 @@ PUBLIC_IP = ${ip}
 <<HERE"
 }
 
+#
+# Message box
+#
+# Usage
+#
+# Return: response string
+# msg "something : "
+# msg -p="something : "
+#
+# Return: Yes or No
+# msg -yn "Am I hansome? (y/n) "
+#
+# Return: response string
+# msg -c "something : "
+# msg -c -p="something : "
+# msg -yn -c "something : "
+# msg -yn -c -p="something : "
+# msg -yn -c="Keep going? (y/n) " "What is your name? "
+# msg -yn -c="Keep going? (y/n) " -p="What is your name? "
+#
+# Return: Yes, No or Cancel
+# msg -ync "Am I hansome? (y/n/c) "
+#
+# Return: response or empty string
+# msg -ync -c "something : "
+# msg -ync -c -p="something : "
+# msg -ync -c="Keep going? (y/n/c) " "What is your name? "
+# msg -ync -c="Keep going? (y/n/c) " -p="What is your name? "
+#
 function msg() {
 
-  local param=""
+  local response=""
+  local confirm=""
   local prompt=""
-  local p1=""
-  local p2=""
-  local a1=""
-  local a2=""
 
   for arg in "${@}"; do
     case "${arg}" in
     -yn)
-      param="yn"
+      response="(y/n)"
       ;;
     -ync)
-      param="ync"
+      response="(y/n/c)"
       ;;
-    -p1=* | --print1=*)
-      p1="$(echo "${arg}" | sed -E 's/(-p1=|--print1=)//')"
+    -c)
+      if [ -z "${response}" ]; then
+        response="(y/n)"
+      fi
+      confirm="Are you sure? ${response} "
       ;;
-    -p2=* | --print2=*)
-      prompt="2"
-      p2="$(echo "${arg}" | sed -E 's/(-p2=|--print2=)//')"
+    -c=* | --confirm=*)
+      confirm="$(echo "${arg}" | sed -E 's/(-c=|--confirm=)//')"
+      ;;
+    -p=* | --prompt=*)
+      prompt="$(echo "${arg}" | sed -E 's/(-p=|--prompt=)//')"
       ;;
     *)
-      p1="${arg}"
+      prompt="${arg}"
       ;;
     esac
   done
 
-  if [ "${param}" == "yn" ]; then
-    if [ "${prompt}" == "2" ]; then
-      a1=""
-      while [ -z "${a1}" ]; do
-        read -p "${p1}" a1
-        a2=""
-        while [ -z "${a2}" ]; do
-          read -p "${p2}" a2
-          case "${a2}" in
-          y | Y)
-            echo "${a1}"
-            break 2
-            ;;
-          n | N)
-            a1=""
-            break
-            ;;
-          *)
-            a2=""
-            ;;
-          esac
-        done
-      done
+  # msg -c "What is your name? "
+  if [ ! -z "${response}" ] && [ ! -z "${prompt}" ] && [ ! -z "${confirm}" ]; then
+
+    if [ "${response}" == "(y/n/c)" ]; then
+      # msg -ync -c "What is your name? "
+      msgRequestYnc "${prompt}" "${confirm}"
     else
-      a1=""
-      while [ -z "${a1}" ]; do
-        read -p "${p1}" a1
-        case "${a1}" in
-        y | Y)
-          echo "Yes"
-          break
-          ;;
-        n | N)
-          echo "No"
-          break
-          ;;
-        *)
-          a1=""
-          ;;
-        esac
-      done
+      # msg -yn -c "What is your name? "
+      msgRequestYn "${prompt}" "${confirm}"
     fi
-  elif [ "${param}" == "ync" ]; then
-    if [ "${prompt}" == "2" ]; then
-      a1=""
-      while [ -z "${a1}" ]; do
-        read -p "${p1}" a1
-        a2=""
-        while [ -z "${a2}" ]; do
-          read -p "${p2}" a2
-          case "${a2}" in
-          y | Y)
-            echo "${a1}"
-            break 2
-            ;;
-          n | N)
-            a1=""
-            break
-            ;;
-          c | C)
-            break 2
-            ;;
-          *)
-            a2=""
-            ;;
-          esac
-        done
-      done
+
+  # msg -yn "What is your name? "
+  elif [ ! -z "${response}" ] && [ ! -z "${prompt}" ]; then
+
+    if [ "${response}" == "(y/n/c)" ]; then
+      # msg -ync "What is your name? "
+      msgResponseYnc "${prompt}"
     else
-      a1=""
-      while [ -z "${a1}" ]; do
-        read -p "${p1}" a1
-        case "${a1}" in
-        y | Y)
-          echo "Yes"
-          break
-          ;;
-        n | N)
-          echo "No"
-          break
-          ;;
-        c | C)
-          echo "Cancel"
-          break
-          ;;
-        *)
-          a1=""
-          ;;
-        esac
-      done
+      # msg -yn "What is your name? "
+      msgResponseYn "${prompt}"
     fi
+
+  # msg "What is your name? "
+  else
+
+    msgRequest "${prompt}"
 
   fi
 
+}
+
+function msgResponseYn() {
+  local response=""
+  while [ -z "${response}" ]; do
+    read -p "$1" response
+    case "${response}" in
+    [yY][eE][sS] | [yY])
+      response="Yes"
+      break
+      ;;
+    [nN][oO] | [nN])
+      response="No"
+      break
+      ;;
+    *)
+      response=""
+      ;;
+    esac
+  done
+  echo "${response}"
+}
+
+function msgResponseYnc() {
+  local response=""
+  while [ -z "${response}" ]; do
+    read -p "$1" response
+    case "${response}" in
+    [yY][eE][sS] | [yY])
+      response="Yes"
+      break
+      ;;
+    [nN][oO] | [nN])
+      response="No"
+      break
+      ;;
+    [cC][aA][nN][cC][eE][lL] | [cC])
+      response="Cancel"
+      break
+      ;;
+    *)
+      response=""
+      ;;
+    esac
+  done
+  echo "${response}"
+}
+
+function msgRequest() {
+  local response=""
+  while [ -z "${response}" ]; do
+    read -p "$1" response
+  done
+  echo "${response}"
+}
+
+function msgRequestYn() {
+  local response=""
+  local confirm=""
+  while [ -z "${response}" ]; do
+    read -p "$1" response
+    if [ ! -z "${response}" ]; then
+      confirm=""
+      while [ -z "${confirm}" ]; do
+        read -p "$2" confirm
+        case "${confirm}" in
+        [yY][eE][sS] | [yY])
+          break 2
+          ;;
+        [nN][oO] | [nN])
+          response=""
+          break
+          ;;
+        *)
+          confirm=""
+          ;;
+        esac
+      done
+    fi
+  done
+  echo "${response}"
+}
+
+function msgRequestYnc() {
+  local response=""
+  local confirm=""
+  while [ -z "${response}" ]; do
+    read -p "$1" response
+    if [ ! -z "${response}" ]; then
+      confirm=""
+      while [ -z "${confirm}" ]; do
+        read -p "$2" confirm
+        case "${confirm}" in
+        [yY][eE][sS] | [yY])
+          break 2
+          ;;
+        [nN][oO] | [nN])
+          response=""
+          break
+          ;;
+        [cC][aA][nN][cC][eE][lL] | [cC])
+          response=""
+          break 2
+          ;;
+        *)
+          confirm=""
+          ;;
+        esac
+      done
+    fi
+  done
+  echo "${response}"
 }

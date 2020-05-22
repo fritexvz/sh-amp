@@ -19,7 +19,7 @@ DIRNAME=""
 OS_PATH=""
 PKGNAME=""
 
-# Set constants in the file.
+# Set global constants.
 VHOST_NAME=""
 VHOST_DIR="/var/www/html"
 VHOST_SUBDIR=""

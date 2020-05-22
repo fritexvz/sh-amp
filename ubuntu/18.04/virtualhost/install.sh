@@ -45,10 +45,11 @@ pkgAudit "apache2"
 echo
 VHOST_NAME=""
 while [ -z "${VHOST_NAME}" ]; do
-  VHOST_NAME="$(msg -yn -p1='Enter server name. (ex) example.com : ')"
+  VHOST_NAME="$(msg -yn -c "Enter the domain name. (ex) example.com : ")"
   if [ -d "/var/www/${VHOST_NAME}" ]; then
     echo "${VHOST_NAME} already exists."
-    if [ "$(msg -yn 'Do you want to overwrite it? (y/n) ')" == "No" ]; then
+    OVERWRITE_MESSAGE="$(msg -yn "Do you want to overwrite it? (y/n) ")"
+    if [ "${OVERWRITE_MESSAGE}" == "No" ]; then
       VHOST_NAME=""
     fi
   fi
@@ -62,7 +63,7 @@ fi
 echo
 echo "Start installing ${VHOST_NAME}."
 
-# Wizard
+# Run the command wizard.
 COMMANDS=(
   "default"
   "laravel"

@@ -57,11 +57,11 @@ fi
 
 # operating system
 OSFILE="/${OS_PATH}/etc/os.sh"
-if [ -f ."${OSFILE}" ]; then
-  bash ."${OSFILE}"
+if [ -f ".${OSFILE}" ]; then
+  bash ".${OSFILE}"
 fi
 
-# hostname
+# host name
 HOSTFILE="/${OS_PATH}/etc/hosts.sh"
 if [ -f ".${HOSTFILE}" ]; then
   bash ".${HOSTFILE}" --ENVPATH="$(cd "$(dirname "")" && pwd)/env" --ABSPATH="$(cd "$(dirname "")" && pwd)${HOSTFILE}"

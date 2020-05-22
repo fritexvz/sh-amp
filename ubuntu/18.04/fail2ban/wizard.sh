@@ -12,7 +12,7 @@
 # Work even if somebody does "sh thisscript.sh".
 set -e
 
-# Set constants in the file.
+# Set global constants.
 ENVPATH=""
 ABSPATH=""
 DIRNAME=""
@@ -84,28 +84,22 @@ select COMMAND in ${COMMANDS[@]}; do
   "${COMMANDS[3]}")
     # "destemail"
     echo "$(cat /etc/fail2ban/jail.local | egrep "destemail\s{0,}=")"
-    msgYn="$(msg -yn 'Would you like to change? (y/n) ')"
-    if [ "${msgYn}" == "Yes" ]; then
-      DESTEMAIL="$(msg -ync -p1='destemail = ' -p2='Are you sure you want to save the changes? (y/n/c) ')"
-      if [ ! -z "${DESTEMAIL}" ]; then
-        sed -i -E \
-          -e "/\[DEFAULT\]/,/\[.*\]/{ s/^[#\t ]{0,}(destemail\s{0,}=)/\1 ${DESTEMAIL}/; }" \
-          /etc/fail2ban/jail.local
-      fi
+    DESTEMAIL="$(msg -ync -c 'destemail = ')"
+    if [ ! -z "${DESTEMAIL}" ]; then
+      sed -i -E \
+        -e "/\[DEFAULT\]/,/\[.*\]/{ s/^[#\t ]{0,}(destemail\s{0,}=)/\1 ${DESTEMAIL}/; }" \
+        /etc/fail2ban/jail.local
     fi
     echo "Destmail has been changed."
     ;;
   "${COMMANDS[4]}")
     # "sender"
     echo "$(cat /etc/fail2ban/jail.local | egrep "sender\s{0,}=")"
-    msgYn="$(msg -yn 'Would you like to change? (y/n) ')"
-    if [ "${msgYn}" == "Yes" ]; then
-      SENDMAIL="$(msg -ync -p1='sender = ' -p2='Are you sure you want to save the changes? (y/n/c) ')"
-      if [ ! -z "${SENDMAIL}" ]; then
-        sed -i -E \
-          -e "/\[DEFAULT\]/,/\[.*\]/{ s/^[#\t ]{0,}(sender\s{0,}=)/\1 ${SENDMAIL}/; }" \
-          /etc/fail2ban/jail.local
-      fi
+    SENDMAIL="$(msg -ync -c 'sender = ')"
+    if [ ! -z "${SENDMAIL}" ]; then
+      sed -i -E \
+        -e "/\[DEFAULT\]/,/\[.*\]/{ s/^[#\t ]{0,}(sender\s{0,}=)/\1 ${SENDMAIL}/; }" \
+        /etc/fail2ban/jail.local
     fi
     echo "Sender has been changed."
     ;;
