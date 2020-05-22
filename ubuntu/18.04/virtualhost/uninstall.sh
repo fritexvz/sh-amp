@@ -53,12 +53,6 @@ while [ -z "${VHOST_NAME}" ]; do
 done
 
 echo
-REMOVE_MESSAGE="$(msg -yn "Are you sure you want to remove it? (y/n) ")"
-if [ "${REMOVE_MESSAGE}" != "Yes" ]; then
-  exit 0
-fi
-
-echo
 echo "The ${VHOST_NAME} starts to be removed."
 
 # Disabling virtualhost

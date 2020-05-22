@@ -48,9 +48,11 @@ while [ -z "${VHOST_NAME}" ]; do
   VHOST_NAME="$(msg -yn -c "Enter the domain name. (ex) example.com : ")"
   if [ -d "/var/www/${VHOST_NAME}" ]; then
     echo "${VHOST_NAME} already exists."
-    OVERWRITE_MESSAGE="$(msg -yn "Do you want to overwrite it? (y/n) ")"
-    if [ "${OVERWRITE_MESSAGE}" == "No" ]; then
+    REINSTALL_MESSAGE="$(msg -yn "Would you like to reinstall? (y/n) ")"
+    if [ "${REINSTALL_MESSAGE}" == "No" ]; then
       VHOST_NAME=""
+    else
+      rm -rf "/var/www/${VHOST_NAME}/html"
     fi
   fi
 done

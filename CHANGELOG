@@ -4,6 +4,7 @@
 1. fixed: Job for apache2.service failed have been fixed.
 2. fixed: Fixed apache2.service not activated when running config.sh
 3. fixed: Fixed SQL syntax error when installing WordPress.
+4. added: A reinstall command line was added.
 
 # 0.0.34
 1. fixed: The wrong file path was fixed.
