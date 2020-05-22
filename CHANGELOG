@@ -8,6 +8,7 @@
 4. removed: Unnecessary command have been removed.
 5. added: Added root directory settings when installing virtualhost.
 6. updated: Message arguments have been updated.
+7. updated: The README.md file has been updated.
 
 # 0.0.33
 1. fixed: Syntax errors have been fixed.

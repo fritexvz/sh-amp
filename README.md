@@ -1,5 +1,5 @@
 # Amp Stack   
-Easy and fast installation of the latest version of the amp stack (apache2 + mariadb10 + php7 + fail2ban + vsftpd + sendmail + virtualhost).   
+Easy and fast installation of the latest version of the amp stack (apache2 + mariadb10 + php7 + fail2ban + vsftpd + sendmail + virtualhost) on ubuntu 18+.   
 
 ## Firewall   
 If you are installing scripts on cloud servers like aws, gcloud and azure, you need to open the following ports.   
@@ -81,6 +81,9 @@ php-tokenizer
 php-oauth
 composer
 ```
+
+## Support
+ubuntu 18+
 
 ## License   
 [MIT License](LICENSE)   
