@@ -57,13 +57,13 @@ apt -y install libapache2-mpm-itk
 chmod 711 /home
 chmod -R 700 /home/*
 
+# Reload the service.
+systemctl reload apache2
+
 # Create a basic SSL configuration file.
 if [ -f /etc/apache2/sites-available/default-ssl.conf ]; then
   cp -v /etc/apache2/sites-available/default-ssl.conf /etc/apache2/sites-available/000-default-ssl.conf
 fi
-
-# Reload the service.
-systemctl reload apache2
 
 # Create a backup file.
 cp -v /etc/apache2/conf-available/charset.conf{,.bak}

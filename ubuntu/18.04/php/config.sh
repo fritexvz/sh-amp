@@ -55,7 +55,7 @@ if [ -f ".${f_dir}" ]; then
 else
   sed -i -E \
     -e "/DirectoryIndex\s+/{ 
-      s/\s+index.php//;
+      s/[\t ]{1,}index.php//;
       s/index.html/index.php index.html/;
     }" \
     "${f_dir}"
