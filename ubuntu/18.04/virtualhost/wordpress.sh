@@ -87,6 +87,11 @@ rm latest.zip
 mv wordpress/* .
 rmdir wordpress
 
+# Change directory permissions.
+chown -R www-data:www-data "${VHOST_ROOT_DIR}"
+chmod -R 775 "${VHOST_ROOT_DIR}"
+
+# Create wp-config.php file.
 cp "${VHOST_ROOT_DIR}/wp-config-sample.php" "${VHOST_ROOT_DIR}/wp-config.php"
 cp "${VHOST_ROOT_DIR}/wp-config.php"{,.bak}
 
@@ -150,8 +155,8 @@ if [ "${CHANGE_MESSAGE}" == "Yes" ]; then
 fi
 
 # Check if the database and user name exists.
-if [ -z "$(mysql -u root -e 'SELECT db FROM mysql.db;' | egrep "^${DB_NAME}$")" ] ||
-  [ -z "$(mysql -u root -e 'SELECT User FROM mysql.user;' | egrep "^${DB_NAME}$")" ]; then
+if [ -z "$(mysql -uroot -e 'SHOW DATABASES;' | egrep "^${DB_NAME}$")" ] ||
+  [ -z "$(mysql -uroot -e 'SELECT User FROM mysql.user;' | egrep "^${DB_NAME}$")" ]; then
   create_database "${DB_NAME}" "${DB_USER}" "${DB_PASSWORD}"
 else
   echo "Database '${DB_NAME}' already exists."

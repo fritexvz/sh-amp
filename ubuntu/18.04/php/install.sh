@@ -77,5 +77,9 @@ addPkgCnf -rs="\[PHP\]" -fs="=" -o="<<HERE
 PHP_VERSION = ${PHP_VERSION}
 <<HERE"
 
+# Download the laravel global project.
+cd /var/www/
+composer create-project --prefer-dist laravel/laravel
+
 echo
 echo "${PKGNAME^^} is completely installed."

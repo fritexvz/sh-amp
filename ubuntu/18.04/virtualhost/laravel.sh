@@ -82,6 +82,10 @@ cd "${VHOST_ROOT_DIR}"
 
 composer create-project --prefer-dist laravel/laravel .
 
+# Change directory permissions.
+chown -R www-data:www-data "${VHOST_ROOT_DIR}"
+chmod -R 775 "${VHOST_ROOT_DIR}"
+
 php artisan serve
 
 # Restarting the service

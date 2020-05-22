@@ -65,8 +65,8 @@ select COMMAND in ${COMMANDS[@]}; do
     DB_NAME=""
     while [ -z "${DB_NAME}" ]; do
       DB_NAME="$(msg -yn -c "Enter the database name: ")"
-      if [ ! -z "$(mysql -u root -e 'SELECT db FROM mysql.db;' | egrep "^${DB_NAME}$")" ] ||
-        [ ! -z "$(mysql -u root -e 'SELECT User FROM mysql.user;' | egrep "^${DB_NAME}$")" ]; then
+      if [ ! -z "$(mysql -uroot -e 'SHOW DATABASES;' | egrep "^${DB_NAME}$")" ] ||
+        [ ! -z "$(mysql -uroot -e 'SELECT User FROM mysql.user;' | egrep "^${DB_NAME}$")" ]; then
         echo "${DB_NAME} already exists."
         DB_NAME=""
       fi
@@ -88,8 +88,8 @@ select COMMAND in ${COMMANDS[@]}; do
     DB_NAME=""
     while [ -z "${DB_NAME}" ]; do
       DB_NAME="$(msg -yn -c "Enter the database name: ")"
-      if [ -z "$(mysql -u root -e 'SELECT db FROM mysql.db;' | egrep "^${DB_NAME}$")" ] ||
-        [ -z "$(mysql -u root -e 'SELECT User FROM mysql.user;' | egrep "^${DB_NAME}$")" ]; then
+      if [ -z "$(mysql -uroot -e 'SHOW DATABASES;' | egrep "^${DB_NAME}$")" ] ||
+        [ -z "$(mysql -uroot -e 'SELECT User FROM mysql.user;' | egrep "^${DB_NAME}$")" ]; then
         echo "${DB_NAME} does not exists."
         DB_NAME=""
       fi
