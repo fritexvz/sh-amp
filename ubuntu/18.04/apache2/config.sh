@@ -215,7 +215,10 @@ if [ "${APACHE2_HTTPS^^}" == "ON" ]; then
   fi
 
   # Enable site available
-  a2ensite "$(basename "${f_443}")"
+  if [ -z "$(a2query -s | awk '{print $1}' | egrep "^000-default-ssl$")" ]; then
+    cd /etc/apache2/sites-available
+    a2ensite 000-default-ssl.conf
+  fi
 fi
 
 # Reloading the service.

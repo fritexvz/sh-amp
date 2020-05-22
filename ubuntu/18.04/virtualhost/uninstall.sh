@@ -62,12 +62,14 @@ echo
 echo "The ${VHOST_NAME} starts to be removed."
 
 # Disabling virtualhost
-if [ ! -z "$(a2query -s | egrep "${VHOST_NAME}[\t ]{1,}")" ]; then
+if [ ! -z "$(a2query -s | awk '{print $1}' | egrep "^${VHOST_NAME}$")" ]; then
+  cd /etc/apache2/sites-available
   a2dissite "${VHOST_NAME}.conf"
 fi
 
 # Disabling SSL virtualhost
-if [ ! -z "$(a2query -s | egrep "${VHOST_NAME}-ssl[\t ]{1,}")" ]; then
+if [ ! -z "$(a2query -s | awk '{print $1}' | egrep "^${VHOST_NAME}-ssl$")" ]; then
+  cd /etc/apache2/sites-available
   a2dissite "${VHOST_NAME}-ssl.conf"
 fi
 

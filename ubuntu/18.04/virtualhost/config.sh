@@ -58,6 +58,16 @@ pkgAudit "apache2"
 echo
 echo "Start setting up ${PKGNAME} configuration."
 
+# Import variables from the env file.
+PUBLIC_IP="$(getPkgCnf -rs="\[HOSTS\]" -fs="=" -s="PUBLIC_IP")"
+
+# Adding virtual host name to the /etc/hosts file.
+if [ ! -z "${VHOST_NAME}" ]; then
+  if [ -z "$(cat "/etc/hosts" | egrep "^${PUBLIC_IP}[\t ]{1,}${VHOST_NAME}$")" ]; then
+    sed -i "2 a\\${PUBLIC_IP} ${VHOST_NAME}" /etc/hosts
+  fi
+fi
+
 # Vhosting root directory settings.
 if [ -z "${VHOST_NAME}" ]; then
   VHOST_DIR="/var/www/html"
@@ -109,14 +119,6 @@ VHOSTCONFSCRIPT
 
 fi
 
-# Disabling default vhosting
-if [ ! -z "$(a2query -s | egrep "000-default[\t ]{1,}")" ]; then
-  a2dissite 000-default.conf
-fi
-
-# Enabling new vhosting
-a2ensite "${VHOST_NAME}.conf"
-
 #
 # HTTPS: 443 port
 # Apache2 configuration in env file.
@@ -143,22 +145,34 @@ VHOSTCONFSCRIPT
 
   fi
 
+fi
+
+# Disabling default vhosting
+if [ ! -z "$(a2query -s | awk '{print $1}' | egrep "^000-default$")" ]; then
+  cd /etc/apache2/sites-available
+  a2dissite 000-default.conf
+fi
+
+# Enabling new vhosting
+if [ -z "$(a2query -s | awk '{print $1}' | egrep "^${VHOST_NAME}$")" ]; then
+  cd /etc/apache2/sites-available
+  a2ensite "${VHOST_NAME}.conf"
+fi
+
+if [ "${APACHE2_HTTPS^^}" == "ON" ]; then
+
   # Disabling default SSL vhosting
-  if [ ! -z "$(a2query -s | egrep "000-default-ssl[\t ]{1,}")" ]; then
+  if [ ! -z "$(a2query -s | awk '{print $1}' | egrep "^000-default-ssl$")" ]; then
+    cd /etc/apache2/sites-available
     a2dissite 000-default-ssl.conf
   fi
 
   # Enabling new ssl vhosting
-  a2ensite "${VHOST_NAME}-ssl.conf"
+  if [ -z "$(a2query -s | awk '{print $1}' | egrep "^${VHOST_NAME}-ssl$")" ]; then
+    cd /etc/apache2/sites-available
+    a2ensite "${VHOST_NAME}-ssl.conf"
+  fi
 
-fi
-
-# Import variables from the env file.
-PUBLIC_IP="$(getPkgCnf -rs="\[HOSTS\]" -fs="=" -s="PUBLIC_IP")"
-
-# Adding virtual host name to the /etc/hosts file.
-if [ -z "$(cat "/etc/hosts" | egrep "^${PUBLIC_IP}[\t ]{1,}${VHOST_NAME}$")" ]; then
-  sed -i "2 a\\${PUBLIC_IP} ${VHOST_NAME}" /etc/hosts
 fi
 
 # Reloading the service
