@@ -159,6 +159,7 @@ if [ -z "$(mysql -uroot -e 'SHOW DATABASES;' | egrep "^${DB_NAME}$")" ] &&
   [ -z "$(mysql -uroot -e 'SELECT User FROM mysql.user;' | egrep "^${DB_NAME}$")" ]; then
   create_database "${DB_NAME}" "${DB_USER}" "${DB_PASSWORD}"
 else
+  echo
   echo "Database ${DB_NAME} already exists."
   REINSTALL_MESSAGE="$(msg -yn "Would you like to reinstall the database? (y/n) ")"
   if [ "${REINSTALL_MESSAGE}" == "Yes" ]; then
