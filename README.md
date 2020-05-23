@@ -1,5 +1,5 @@
 # Amp Stack   
-Easy and fast installation of the latest version of the amp stack (apache2 + mariadb10 + php7 + fail2ban + vsftpd + sendmail + virtualhost) on ubuntu 18+.   
+Easy and fast installation of the latest version of the amp stack (apache2 + mariadb10 + php7 + fail2ban + vsftpd + sendmail + virtualhost) on ubuntu 18.04+.   
 
 ## Firewall   
 If you are installing scripts on cloud servers like aws, gcloud and azure, you need to open the following ports.   
@@ -37,9 +37,15 @@ $ ./config.sh
 ```
 
 ## Update   
-Download and run the latest release version.   
+Download the latest version of the amp stack.
 ```
 $ ./update.sh
+```
+
+## Upgrade   
+Run the package's apt upgrade.
+```
+$ ./upgrade.sh
 ```
 
 ## Reset   
@@ -83,7 +89,7 @@ composer
 ```
 
 ## Support
-ubuntu 18+
+ubuntu 18.04+
 
 ## License   
 [MIT License](LICENSE)   
