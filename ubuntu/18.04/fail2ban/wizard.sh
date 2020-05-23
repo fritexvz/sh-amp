@@ -12,35 +12,28 @@
 # Work even if somebody does "sh thisscript.sh".
 set -e
 
-# Set global constants.
-ENVPATH=""
-ABSPATH=""
-DIRNAME=""
-OS_PATH=""
-PKGNAME=""
+# Set constants.
+OSPATH="$(dirname "$(dirname $0)")"
+PKGNAME="$(basename "$(dirname $0)")"
+FILENAME="$(basename $0)"
 
-# Set the arguments of the file.
-for arg in "${@}"; do
-  case "${arg}" in
-  --ENVPATH=*)
-    ENVPATH="$(echo "${arg}" | sed -E 's/(--ENVPATH=)//')"
-    ;;
-  --ABSPATH=*)
-    ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
-    DIRNAME="$(dirname "${ABSPATH}")"
-    OS_PATH="$(dirname "${DIRNAME}")"
-    PKGNAME="$(basename "${DIRNAME,,}")"
-    ;;
-  esac
-done
+# Set directory path.
+ABSROOT="${1#*=}"
+ABSENV="${ABSROOT}/env"
+ABSOS="${ABSROOT}/${OSPATH}"
+ABSPKG="${ABSOS}/${PKGNAME}"
+ABSPATH="${ABSPKG}/${FILENAME}"
 
 # Include the file.
-source "${OS_PATH}/utils.sh"
-source "${OS_PATH}/functions.sh"
-source "${DIRNAME}/functions.sh"
+source "${ABSOS}/utils.sh"
+source "${ABSOS}/functions.sh"
+source "${ABSPKG}/functions.sh"
 
 # Make sure the package is installed.
 pkgAudit "${PKGNAME}"
+
+echo
+echo "Start the ${PKGNAME} wizard."
 
 # Run the command wizard.
 COMMANDS=(
@@ -114,3 +107,6 @@ select COMMAND in ${COMMANDS[@]}; do
     ;;
   esac
 done
+
+echo
+echo "Exit the ${PKGNAME} wizard."

@@ -6,8 +6,8 @@
 # Usage
 # git clone https://github.com/w3src/sh-amp.git
 # cd sh-amp
-# chmod +x ./ubuntu/18.04/fail2ban/reset.sh
-# ./ubuntu/18.04/fail2ban/reset.sh
+# chmod +x ./ubuntu/18.04/laravel/install.sh
+# ./ubuntu/18.04/laravel/install.sh
 
 # Work even if somebody does "sh thisscript.sh".
 set -e
@@ -30,16 +30,14 @@ source "${ABSOS}/functions.sh"
 source "${ABSPKG}/functions.sh"
 
 # Make sure the package is installed.
-pkgAudit "${PKGNAME}"
+pkgAudit "php"
 
 echo
-echo "Reset the ${PKGNAME} configuration."
+echo "Start installing ${PKGNAME^^}."
 
-# Reset the file.
-cp -v /etc/fail2ban/jail.local.bak /etc/fail2ban/jail.local
-
-# Restart the service.
-service fail2ban restart
+# Download the laravel global project.
+cd /var/www/
+composer create-project --prefer-dist laravel/laravel
 
 echo
-echo "The ${PKGNAME} configuration has been reset."
+echo "${PKGNAME^^} is completely installed."

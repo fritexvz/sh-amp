@@ -102,9 +102,9 @@ done
 
 # Run the command wizard.
 FILENAME="$(basename $0)"
-FILEPATH="/${OS_PATH}/${PACKAGE_ID}/${FILENAME}"
-if [ -f ".${FILEPATH}" ]; then
-  bash ".${FILEPATH}" --ENVPATH="$(cd "$(dirname "")" && pwd)/env" --ABSPATH="$(cd "$(dirname "")" && pwd)${FILEPATH}"
+FILEPATH="${OS_ID}/${OS_VERSION_ID}/${PACKAGE_ID}/${FILENAME}"
+if [ -f "${FILEPATH}" ]; then
+  bash "${FILEPATH}" --ABSROOT="$(cd "$(dirname "")" && pwd)"
 else
   echo "There is no ${PACKAGE_ID} ${FILENAME%%.*} file."
 fi

@@ -6,42 +6,45 @@
 # Usage
 # git clone https://github.com/w3src/sh-amp.git
 # cd sh-amp
-# chmod +x ./ubuntu/18.04/vhost/config.sh
-# ./ubuntu/18.04/vhost/config.sh
+# chmod +x ./ubuntu/18.04/virtualhost/config.sh
+# ./ubuntu/18.04/virtualhost/config.sh
 
 # Work even if somebody does "sh thisscript.sh".
 set -e
 
-# Set global constants.
-ENVPATH=""
-ABSPATH=""
-DIRNAME=""
-OS_PATH=""
-PKGNAME=""
+# Set constants.
+OSPATH="$(dirname "$(dirname $0)")"
+PKGNAME="$(basename "$(dirname $0)")"
+FILENAME="$(basename $0)"
 
-# Set local constants.
+# Set directory path.
+ABSROOT="${1#*=}"
+ABSENV="${ABSROOT}/env"
+ABSOS="${ABSROOT}/${OSPATH}"
+ABSPKG="${ABSOS}/${PKGNAME}"
+ABSPATH="${ABSPKG}/${FILENAME}"
+
+# Include the file.
+source "${ABSOS}/utils.sh"
+source "${ABSOS}/functions.sh"
+source "${ABSPKG}/functions.sh"
+
+# Make sure the package is installed.
+pkgAudit "apache2"
+
+echo
+echo "Start setting up ${PKGNAME} configuration."
+
+# Set constants.
 VHOST_NAME=""
 VHOST_DIR=""
 VHOST_LOG_DIR=""
 VHOST_ROOT=""
 VHOST_ROOT_DIR=""
 
-# Set regex pattern.
-SPACE0='[\t ]{0,}'
-SPACE1='[\t ]{1,}'
-
 # Set the arguments of the file.
 for arg in "${@}"; do
   case "${arg}" in
-  --ENVPATH=*)
-    ENVPATH="$(echo "${arg}" | sed -E 's/(--ENVPATH=)//')"
-    ;;
-  --ABSPATH=*)
-    ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
-    DIRNAME="$(dirname "${ABSPATH}")"
-    OS_PATH="$(dirname "${DIRNAME}")"
-    PKGNAME="$(basename "${DIRNAME,,}")"
-    ;;
   --vhostname=*)
     VHOST_NAME="$(echo "${arg}" | sed -E 's/(--vhostname=)//')"
     ;;
@@ -51,16 +54,9 @@ for arg in "${@}"; do
   esac
 done
 
-# Include the file.
-source "${OS_PATH}/utils.sh"
-source "${OS_PATH}/functions.sh"
-source "${DIRNAME}/functions.sh"
-
-# Make sure the package is installed.
-pkgAudit "apache2"
-
-echo
-echo "Start setting up ${PKGNAME} configuration."
+# Set regex pattern.
+SPACE0='[\t ]{0,}'
+SPACE1='[\t ]{1,}'
 
 # Import variables from the env file.
 PUBLIC_IP="$(getPkgCnf -rs="\[HOSTS\]" -fs="=" -s="PUBLIC_IP")"
@@ -112,7 +108,7 @@ if [ -f ".${f_80}" ]; then
 else
 
   cat >"${f_80}" <<VHOSTCONFSCRIPT
-$(cat "${DIRNAME}/tmpl/vhost.conf")
+$(cat "${ABSPKG}/tmpl/vhost.conf")
 VHOSTCONFSCRIPT
 
   sed -i -E \
@@ -138,7 +134,7 @@ if [ "${APACHE2_HTTPS^^}" == "ON" ]; then
   else
 
     cat >"${f_443}" <<VHOSTCONFSCRIPT
-$(cat "${DIRNAME}/tmpl/vhost-ssl.conf")
+$(cat "${ABSPKG}/tmpl/vhost-ssl.conf")
 VHOSTCONFSCRIPT
 
     sed -i -E \

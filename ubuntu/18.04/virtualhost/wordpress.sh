@@ -6,40 +6,44 @@
 # Usage
 # git clone https://github.com/w3src/sh-amp.git
 # cd sh-amp
-# chmod +x ./ubuntu/18.04/vhost/wordpress.sh
-# ./ubuntu/18.04/vhost/wordpress.sh
+# chmod +x ./ubuntu/18.04/virtualhost/wordpress.sh
+# ./ubuntu/18.04/virtualhost/wordpress.sh
 
 # Work even if somebody does "sh thisscript.sh".
 set -e
 
-# Set global constants.
-ENVPATH=""
-ABSPATH=""
-DIRNAME=""
-OS_PATH=""
-PKGNAME=""
+# Set constants.
+OSPATH="$(dirname "$(dirname $0)")"
+PKGNAME="$(basename "$(dirname $0)")"
+FILENAME="$(basename $0)"
 
-# Set local constants.
+# Set directory path.
+ABSROOT="${1#*=}"
+ABSENV="${ABSROOT}/env"
+ABSOS="${ABSROOT}/${OSPATH}"
+ABSPKG="${ABSOS}/${PKGNAME}"
+ABSPATH="${ABSPKG}/${FILENAME}"
+
+# Include the file.
+source "${ABSOS}/utils.sh"
+source "${ABSOS}/functions.sh"
+source "${ABSPKG}/functions.sh"
+
+# Make sure the package is installed.
+pkgAudit "apache2"
+
+echo
+echo "Start installing wordpress."
+
+# Set constants.
 VHOST_NAME=""
 VHOST_DIR=""
 VHOST_ROOT=""
 VHOST_ROOT_DIR=""
 
-# Set regex pattern.
-SPACE0='[\t ]{0,}'
-
 # Set the arguments.
 for arg in "${@}"; do
   case "${arg}" in
-  --ENVPATH=*)
-    ENVPATH="$(echo "${arg}" | sed -E 's/(--ENVPATH=)//')"
-    ;;
-  --ABSPATH=*)
-    ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
-    DIRNAME="$(dirname "${ABSPATH}")"
-    OS_PATH="$(dirname "${DIRNAME}")"
-    PKGNAME="$(basename "${DIRNAME,,}")"
-    ;;
   --vhostname=*)
     VHOST_NAME="$(echo "${arg}" | sed -E 's/(--vhostname=)//')"
     ;;
@@ -49,16 +53,8 @@ for arg in "${@}"; do
   esac
 done
 
-# Include the file.
-source "${OS_PATH}/utils.sh"
-source "${OS_PATH}/functions.sh"
-source "${DIRNAME}/functions.sh"
-
-# Make sure the package is installed.
-pkgAudit "apache2"
-
-echo
-echo "Start installing wordpress."
+# Set regex pattern.
+SPACE0='[\t ]{0,}'
 
 # Vhosting root directory settings.
 if [ -z "${VHOST_NAME}" ]; then
@@ -181,10 +177,8 @@ sed -i -E \
   -e "s/^(${SPACE0}\\\$table_prefix${SPACE0}=${SPACE0}')(.*)('${SPACE0}\;.*)$/\1${TABLE_PREFIX}\3/" \
   "${VHOST_ROOT_DIR}/wp-config.php"
 
-# Reloading the service
-if [ ! -z "$(isApache2)" ]; then
-  systemctl reload apache2
-fi
+# Restarting the service
+systemctl restart apache2
 
 echo
 echo "Wordpress is completely installed."

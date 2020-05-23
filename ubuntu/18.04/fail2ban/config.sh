@@ -12,41 +12,31 @@
 # Work even if somebody does "sh thisscript.sh".
 set -e
 
-# Set global constants.
-ENVPATH=""
-ABSPATH=""
-DIRNAME=""
-OS_PATH=""
-PKGNAME=""
+# Set constants.
+OSPATH="$(dirname "$(dirname $0)")"
+PKGNAME="$(basename "$(dirname $0)")"
+FILENAME="$(basename $0)"
 
-# Set the arguments of the file.
-for arg in "${@}"; do
-  case "${arg}" in
-  --ENVPATH=*)
-    ENVPATH="$(echo "${arg}" | sed -E 's/(--ENVPATH=)//')"
-    ;;
-  --ABSPATH=*)
-    ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
-    DIRNAME="$(dirname "${ABSPATH}")"
-    OS_PATH="$(dirname "${DIRNAME}")"
-    PKGNAME="$(basename "${DIRNAME,,}")"
-    ;;
-  esac
-done
+# Set directory path.
+ABSROOT="${1#*=}"
+ABSENV="${ABSROOT}/env"
+ABSOS="${ABSROOT}/${OSPATH}"
+ABSPKG="${ABSOS}/${PKGNAME}"
+ABSPATH="${ABSPKG}/${FILENAME}"
 
 # Include the file.
-source "${OS_PATH}/utils.sh"
-source "${OS_PATH}/functions.sh"
-source "${DIRNAME}/functions.sh"
+source "${ABSOS}/utils.sh"
+source "${ABSOS}/functions.sh"
+source "${ABSPKG}/functions.sh"
 
 # Make sure the package is installed.
 pkgAudit "${PKGNAME}"
 
-# Import variables from the env file.
-PUBLIC_IP="$(getPkgCnf -rs="\[HOSTS\]" -fs="=" -s="PUBLIC_IP")"
-
 echo
 echo "Start setting up ${PKGNAME} configuration."
+
+# Import variables from the env file.
+PUBLIC_IP="$(getPkgCnf -rs="\[HOSTS\]" -fs="=" -s="PUBLIC_IP")"
 
 f_jail="/etc/fail2ban/jail.local"
 
@@ -55,7 +45,7 @@ if [ -f ".${f_jail}" ]; then
 else
 
   cat >"${f_jail}" <<FAIL2BANSCRIPT
-$(cat "${DIRNAME}/tmpl/jail.local")
+$(cat "${ABSPKG}/tmpl/jail.local")
 FAIL2BANSCRIPT
 
   # Public IP are added to the whitelist

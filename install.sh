@@ -52,25 +52,27 @@ else
   exit 0
 fi
 
+ABSPATH="$(cd "$(dirname "")" && pwd)"
+
 # operating system
-OSFILE="/${OS_PATH}/etc/os.sh"
+OSFILE="/${OS_ID}/${OS_VERSION_ID}/etc/os.sh"
 if [ -f ".${OSFILE}" ]; then
   bash ".${OSFILE}"
 fi
 
 # host name
-HOSTFILE="/${OS_PATH}/etc/hosts.sh"
+HOSTFILE="/${OS_ID}/${OS_VERSION_ID}/etc/hosts.sh"
 if [ -f ".${HOSTFILE}" ]; then
-  bash ".${HOSTFILE}" --ENVPATH="$(cd "$(dirname "")" && pwd)/env" --ABSPATH="$(cd "$(dirname "")" && pwd)${HOSTFILE}"
+  bash ".${HOSTFILE}" --ABSROOT="${ABSPATH}"
 fi
 
 # Run the package installation.
-PACKAGES=('apache2' 'sendmail' 'ufw' 'fail2ban' 'vsftpd' 'mariadb' 'php')
+PACKAGES=('apache2' 'sendmail' 'ufw' 'fail2ban' 'vsftpd' 'mariadb' 'php' 'laravel' 'wp-cli')
 FILENAME="$(basename $0)"
 for ((i=0; i<${#PACKAGES[@]}; i++)); do
-  FILEPATH="/${OS_PATH}/${PACKAGES[$i]}/${FILENAME}"
-  if [ -f ".${FILEPATH}" ]; then
-    bash ".${FILEPATH}" --ENVPATH="$(cd "$(dirname "")" && pwd)/env" --ABSPATH="$(cd "$(dirname "")" && pwd)${FILEPATH}"
+  FILEPATH="${OS_ID}/${OS_VERSION_ID}/${PACKAGES[$i]}/${FILENAME}"
+  if [ -f "${FILEPATH}" ]; then
+    bash "${FILEPATH}" --ABSROOT="${ABSPATH}"
   else
     echo "There is no ${PACKAGES[$i]} ${FILENAME%%.*} file."
   fi

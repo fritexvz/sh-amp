@@ -12,51 +12,39 @@
 # Work even if somebody does "sh thisscript.sh".
 set -e
 
-# Set global constants.
-ENVPATH=""
-ABSPATH=""
-DIRNAME=""
-OS_PATH=""
-PKGNAME=""
+# Set constants.
+OSPATH="$(dirname "$(dirname $0)")"
+PKGNAME="$(basename "$(dirname $0)")"
+FILENAME="$(basename $0)"
 
-# Set the arguments of the file.
-for arg in "${@}"; do
-  case "${arg}" in
-  --ENVPATH=*)
-    ENVPATH="$(echo "${arg}" | sed -E 's/(--ENVPATH=)//')"
-    ;;
-  --ABSPATH=*)
-    ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
-    DIRNAME="$(dirname "${ABSPATH}")"
-    OS_PATH="$(dirname "${DIRNAME}")"
-    PKGNAME="$(basename "${DIRNAME,,}")"
-    ;;
-  esac
-done
+# Set directory path.
+ABSROOT="${1#*=}"
+ABSENV="${ABSROOT}/env"
+ABSOS="${ABSROOT}/${OSPATH}"
+ABSPKG="${ABSOS}/${PKGNAME}"
+ABSPATH="${ABSPKG}/${FILENAME}"
 
 # Include the file.
-source "${OS_PATH}/utils.sh"
-source "${OS_PATH}/functions.sh"
-source "${DIRNAME}/functions.sh"
+source "${ABSOS}/utils.sh"
+source "${ABSOS}/functions.sh"
+source "${ABSPKG}/functions.sh"
 
 # Make sure the package is installed.
 pkgAudit "${PKGNAME}"
 
-# Import variables from the env file.
-PHP_VERSION="$(getPkgCnf -rs="\[PHP\]" -fs="=" -s="PHP_VERSION")"
-
 echo
 echo "Reset the ${PKGNAME} configuration."
+
+# Import variables from the env file.
+PHP_VERSION="$(getPkgCnf -rs="\[PHP\]" -fs="=" -s="PHP_VERSION")"
 
 # Reset the file.
 cp -v "/etc/apache2/mods-available/dir.conf.bak" "/etc/apache2/mods-available/dir.conf"
 cp -v "/etc/apache2/mods-available/php${PHP_VERSION}.conf.bak" "/etc/apache2/mods-available/php${PHP_VERSION}.conf"
 cp -v "/etc/php/${PHP_VERSION}/apache2/php.ini.bak" "/etc/php/${PHP_VERSION}/apache2/php.ini"
 
-# Reload the service.
-if [ ! -z "$(isApache2)" ]; then
-  systemctl reload apache2
-fi
+# Reloading the service.
+systemctl reload apache2
 
 echo
 echo "The ${PKGNAME} configuration has been reset."

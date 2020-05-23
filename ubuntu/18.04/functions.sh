@@ -2,7 +2,7 @@
 #echo "$(getPkgCnf -rs="\[HOSTS\]" -fs="=" -s="PUBLIC_IP")"
 function getPkgCnf() {
 
-  local FILE="${ENVPATH}"
+  local FILE="${ABSENV}"
   local BEGIN_RECORD_SEPERATOR=""
   local END_RECORD_SEPERATOR="\[.*\]"
   local FIELD_SEPERATOR=""
@@ -128,7 +128,7 @@ function getPkgCnf() {
 #<<HERE"
 function addPkgCnf() {
 
-  local FILE="${ENVPATH}"
+  local FILE="${ABSENV}"
   local BEGIN_RECORD_SEPERATOR=""
   local END_RECORD_SEPERATOR="\[.*\]"
   local FIELD_SEPERATOR=""

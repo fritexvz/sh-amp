@@ -53,9 +53,9 @@ fi
 PACKAGES=('apache2' 'sendmail' 'fail2ban' 'vsftpd' 'mariadb' 'php')
 FILENAME="$(basename $0)"
 for ((i=0; i<${#PACKAGES[@]}; i++)); do
-  FILEPATH="/${OS_PATH}/${PACKAGES[$i]}/${FILENAME}"
-  if [ -f ".${FILEPATH}" ]; then
-    bash ".${FILEPATH}" --ENVPATH="$(cd "$(dirname "")" && pwd)/env" --ABSPATH="$(cd "$(dirname "")" && pwd)${FILEPATH}"
+  FILEPATH="${OS_ID}/${OS_VERSION_ID}/${PACKAGES[$i]}/${FILENAME}"
+  if [ -f "${FILEPATH}" ]; then
+    bash "${FILEPATH}" --ABSROOT="$(cd "$(dirname "")" && pwd)"
   else
     echo "There is no ${PACKAGES[$i]} ${FILENAME%%.*} file."
   fi

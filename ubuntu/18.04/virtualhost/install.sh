@@ -6,41 +6,34 @@
 # Usage
 # git clone https://github.com/w3src/sh-amp.git
 # cd sh-amp
-# chmod +x ./ubuntu/18.04/vhost/install.sh
-# ./ubuntu/18.04/vhost/install.sh
+# chmod +x ./ubuntu/18.04/virtualhost/install.sh
+# ./ubuntu/18.04/virtualhost/install.sh
 
 # Work even if somebody does "sh thisscript.sh".
 set -e
 
-# Set global constants.
-ENVPATH=""
-ABSPATH=""
-DIRNAME=""
-OS_PATH=""
-PKGNAME=""
+# Set constants.
+OSPATH="$(dirname "$(dirname $0)")"
+PKGNAME="$(basename "$(dirname $0)")"
+FILENAME="$(basename $0)"
 
-# Set the arguments of the file.
-for arg in "${@}"; do
-  case "${arg}" in
-  --ENVPATH=*)
-    ENVPATH="$(echo "${arg}" | sed -E 's/(--ENVPATH=)//')"
-    ;;
-  --ABSPATH=*)
-    ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
-    DIRNAME="$(dirname "${ABSPATH}")"
-    OS_PATH="$(dirname "${DIRNAME}")"
-    PKGNAME="$(basename "${DIRNAME,,}")"
-    ;;
-  esac
-done
+# Set directory path.
+ABSROOT="${1#*=}"
+ABSENV="${ABSROOT}/env"
+ABSOS="${ABSROOT}/${OSPATH}"
+ABSPKG="${ABSOS}/${PKGNAME}"
+ABSPATH="${ABSPKG}/${FILENAME}"
 
 # Include the file.
-source "${OS_PATH}/utils.sh"
-source "${OS_PATH}/functions.sh"
-source "${DIRNAME}/functions.sh"
+source "${ABSOS}/utils.sh"
+source "${ABSOS}/functions.sh"
+source "${ABSPKG}/functions.sh"
 
 # Make sure the package is installed.
 pkgAudit "apache2"
+
+echo
+echo "Start installing ${VHOST_NAME}."
 
 echo
 VHOST_NAME=""
@@ -62,9 +55,6 @@ if [ ! -d "/var/www/${VHOST_NAME}/html" ]; then
   mkdir -p "/var/www/${VHOST_NAME}/html"
 fi
 
-echo
-echo "Start installing ${VHOST_NAME}."
-
 # Run the command wizard.
 COMMANDS=(
   "default"
@@ -80,24 +70,24 @@ PS3="Please select one of the options. (1-${#COMMANDS[@]}): "
 select COMMAND in ${COMMANDS[@]}; do
   case "${COMMAND}" in
   "${COMMANDS[0]}")
-    bash "${DIRNAME}/config.sh" --ENVPATH="${ENVPATH}" --ABSPATH="${DIRNAME}/config.sh" --vhostname="${VHOST_NAME}"
-    bash "${DIRNAME}/default.sh" --ENVPATH="${ENVPATH}" --ABSPATH="${DIRNAME}/default.sh" --vhostname="${VHOST_NAME}"
+    bash "${ABSPKG}/config.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}"
+    bash "${ABSPKG}/default.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}"
     break
     ;;
   "${COMMANDS[1]}")
-    bash "${DIRNAME}/config.sh" --ENVPATH="${ENVPATH}" --ABSPATH="${DIRNAME}/config.sh" --vhostname="${VHOST_NAME}" --vhostroot="/public"
-    bash "${DIRNAME}/laravel.sh" --ENVPATH="${ENVPATH}" --ABSPATH="${DIRNAME}/laravel.sh" --vhostname="${VHOST_NAME}"
+    bash "${ABSPKG}/config.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}" --vhostroot="/public"
+    bash "${ABSPKG}/laravel.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}"
     break
     ;;
   "${COMMANDS[2]}")
-    bash "${DIRNAME}/config.sh" --ENVPATH="${ENVPATH}" --ABSPATH="${DIRNAME}/config.sh" --vhostname="${VHOST_NAME}"
-    bash "${DIRNAME}/wordpress.sh" --ENVPATH="${ENVPATH}" --ABSPATH="${DIRNAME}/wordpress.sh" --vhostname="${VHOST_NAME}"
+    bash "${ABSPKG}/config.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}"
+    bash "${ABSPKG}/wordpress.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}"
     break
     ;;
   "${COMMANDS[3]}")
-    bash "${DIRNAME}/config.sh" --ENVPATH="${ENVPATH}" --ABSPATH="${DIRNAME}/config.sh" --vhostname="${VHOST_NAME}" --vhostroot="/public"
-    bash "${DIRNAME}/laravel.sh" --ENVPATH="${ENVPATH}" --ABSPATH="${DIRNAME}/laravel.sh" --vhostname="${VHOST_NAME}"
-    bash "${DIRNAME}/wordpress.sh" --ENVPATH="${ENVPATH}" --ABSPATH="${DIRNAME}/wordpress.sh" --vhostname="${VHOST_NAME}" --vhostroot="/blog"
+    bash "${ABSPKG}/config.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}" --vhostroot="/public"
+    bash "${ABSPKG}/laravel.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}"
+    bash "${ABSPKG}/wordpress.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}" --vhostroot="/blog"
     break
     ;;
   "${COMMANDS[4]}")

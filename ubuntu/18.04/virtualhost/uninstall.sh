@@ -6,45 +6,38 @@
 # Usage
 # git clone https://github.com/w3src/sh-amp.git
 # cd sh-amp
-# chmod +x ./ubuntu/18.04/vhost/uninstall.sh
-# ./ubuntu/18.04/vhost/uninstall.sh
+# chmod +x ./ubuntu/18.04/virtualhost/uninstall.sh
+# ./ubuntu/18.04/virtualhost/uninstall.sh
 
 # Work even if somebody does "sh thisscript.sh".
 set -e
 
-# Set global constants.
-ENVPATH=""
-ABSPATH=""
-DIRNAME=""
-OS_PATH=""
-PKGNAME=""
+# Set constants.
+OSPATH="$(dirname "$(dirname $0)")"
+PKGNAME="$(basename "$(dirname $0)")"
+FILENAME="$(basename $0)"
+
+# Set directory path.
+ABSROOT="${1#*=}"
+ABSENV="${ABSROOT}/env"
+ABSOS="${ABSROOT}/${OSPATH}"
+ABSPKG="${ABSOS}/${PKGNAME}"
+ABSPATH="${ABSPKG}/${FILENAME}"
+
+# Include the file.
+source "${ABSOS}/utils.sh"
+source "${ABSOS}/functions.sh"
+source "${ABSPKG}/functions.sh"
+
+# Make sure the package is installed.
+pkgAudit "apache2"
+
+echo
+echo "The ${VHOST_NAME} starts to be removed."
 
 # Set regex pattern.
 SPACE0='[\t ]{0,}'
 SPACE1='[\t ]{1,}'
-
-# Set the arguments of the file.
-for arg in "${@}"; do
-  case "${arg}" in
-  --ENVPATH=*)
-    ENVPATH="$(echo "${arg}" | sed -E 's/(--ENVPATH=)//')"
-    ;;
-  --ABSPATH=*)
-    ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
-    DIRNAME="$(dirname "${ABSPATH}")"
-    OS_PATH="$(dirname "${DIRNAME}")"
-    PKGNAME="$(basename "${DIRNAME,,}")"
-    ;;
-  esac
-done
-
-# Include the file.
-source "${OS_PATH}/utils.sh"
-source "${OS_PATH}/functions.sh"
-source "${DIRNAME}/functions.sh"
-
-# Make sure the package is installed.
-pkgAudit "apache2"
 
 echo
 VHOST_NAME=""
@@ -55,9 +48,6 @@ while [ -z "${VHOST_NAME}" ]; do
     VHOST_NAME=""
   fi
 done
-
-echo
-echo "The ${VHOST_NAME} starts to be removed."
 
 # Disabling virtualhost
 if [ ! -z "$(a2query -s | awk '{print $1}' | egrep "^${VHOST_NAME}$")" ]; then

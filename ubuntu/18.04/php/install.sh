@@ -12,32 +12,22 @@
 # Work even if somebody does "sh thisscript.sh".
 set -e
 
-# Set global constants.
-ENVPATH=""
-ABSPATH=""
-DIRNAME=""
-OS_PATH=""
-PKGNAME=""
+# Set constants.
+OSPATH="$(dirname "$(dirname $0)")"
+PKGNAME="$(basename "$(dirname $0)")"
+FILENAME="$(basename $0)"
 
-# Set the arguments of the file.
-for arg in "${@}"; do
-  case "${arg}" in
-  --ENVPATH=*)
-    ENVPATH="$(echo "${arg}" | sed -E 's/(--ENVPATH=)//')"
-    ;;
-  --ABSPATH=*)
-    ABSPATH="$(echo "${arg}" | sed -E 's/(--ABSPATH=)//')"
-    DIRNAME="$(dirname "${ABSPATH}")"
-    OS_PATH="$(dirname "${DIRNAME}")"
-    PKGNAME="$(basename "${DIRNAME,,}")"
-    ;;
-  esac
-done
+# Set directory path.
+ABSROOT="${1#*=}"
+ABSENV="${ABSROOT}/env"
+ABSOS="${ABSROOT}/${OSPATH}"
+ABSPKG="${ABSOS}/${PKGNAME}"
+ABSPATH="${ABSPKG}/${FILENAME}"
 
 # Include the file.
-source "${OS_PATH}/utils.sh"
-source "${OS_PATH}/functions.sh"
-source "${DIRNAME}/functions.sh"
+source "${ABSOS}/utils.sh"
+source "${ABSOS}/functions.sh"
+source "${ABSPKG}/functions.sh"
 
 echo
 echo "Start installing ${PKGNAME^^}."
@@ -59,10 +49,8 @@ apt -y install php-oauth
 # Search php modules.
 #apt-cache search php- | grep ^php- | grep module
 
-# Restart the service.
-if [ ! -z "$(isApache2)" ]; then
-  systemctl restart apache2
-fi
+# Reloading the service.
+systemctl reload apache2
 
 # Import variables from the env file.
 PHP_VERSION="$(getPhpVer)"
@@ -76,10 +64,6 @@ cp -v "/etc/php/${PHP_VERSION}/apache2/php.ini"{,.bak}
 addPkgCnf -rs="\[PHP\]" -fs="=" -o="<<HERE
 PHP_VERSION = ${PHP_VERSION}
 <<HERE"
-
-# Download the laravel global project.
-cd /var/www/
-composer create-project --prefer-dist laravel/laravel
 
 echo
 echo "${PKGNAME^^} is completely installed."
