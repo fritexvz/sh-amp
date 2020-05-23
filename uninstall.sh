@@ -31,19 +31,16 @@ fi
 # following command will give you the both OS name and version-
 #
 # https://askubuntu.com/questions/459402/how-to-know-if-the-running-platform-is-ubuntu-or-centos-with-help-of-a-bash-scri
-OS_NAME=$(cat /etc/os-release | awk -F '=' '/^NAME=/{print $2}' | awk '{print $1}' | tr -d '"')
+OS_NAME="$(cat /etc/os-release | awk -F '=' '/^NAME=/{print $2}' | awk '{print $1}' | tr -d '"')"
 
 if [ "${OS_NAME}" == "Ubuntu" ]; then
   OS_ID="ubuntu"
-  OS_VERSION_ID="18.04"
-  OS_PATH="${OS_ID}/${OS_VERSION_ID}"
-  # OS_VERSION_ID=$(cat /etc/os-release | awk -F '=' '/^VERSION_ID/{print $2}' | awk '{print $1}' | tr -d '"')
-  # case ${OS_VERSION_ID} in
-  # "14.04") sudo apt-get update;;
-  # "16.04") sudo apt-get update;;
-  # "18.04") sudo apt update;;
-  # "20.04") sudo apt update;;
-  # esac
+  OS_VERSION_ID="$(cat /etc/os-release | awk -F '=' '/^VERSION_ID=/{print $2}' | awk '{print $1}' | tr -d '"')"
+  OS_VERSION_NUMBER="${OS_VERSION_ID//./}"
+  if [ "${OS_VERSION_NUMBER}" -lt "1804" ]; then
+    echo "Sorry. Amp Stack is not supported on Ubuntu versions below 18.04."
+    exit 0
+  fi
 elif [ "${OS_NAME}" == "CentOS" ]; then
   echo "Sorry. Amp Stack is not supported on CentOS."
   exit 0
