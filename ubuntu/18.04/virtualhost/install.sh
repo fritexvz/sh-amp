@@ -71,24 +71,24 @@ PS3="Please select one of the options. (1-${#COMMANDS[@]}): "
 select COMMAND in ${COMMANDS[@]}; do
   case "${COMMAND}" in
   "${COMMANDS[0]}")
-    bash "${PKGPATH}/config.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}"
-    bash "${PKGPATH}/default.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}"
+    bash "${PKGPATH}/config.sh" --vhostname="${VHOST_NAME}"
+    bash "${PKGPATH}/default.sh" --vhostname="${VHOST_NAME}"
     break
     ;;
   "${COMMANDS[1]}")
-    bash "${PKGPATH}/config.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}" --vhostroot="/public"
-    bash "${PKGPATH}/laravel.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}"
+    bash "${PKGPATH}/config.sh" --vhostname="${VHOST_NAME}" --vhostroot="/public"
+    bash "${PKGPATH}/laravel.sh" --vhostname="${VHOST_NAME}"
     break
     ;;
   "${COMMANDS[2]}")
-    bash "${PKGPATH}/config.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}"
-    bash "${PKGPATH}/wp-cli.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}"
+    bash "${PKGPATH}/config.sh" --vhostname="${VHOST_NAME}"
+    bash "${PKGPATH}/wp-cli.sh" --vhostname="${VHOST_NAME}"
     break
     ;;
   "${COMMANDS[3]}")
-    bash "${PKGPATH}/config.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}" --vhostroot="/public"
-    bash "${PKGPATH}/laravel.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}"
-    bash "${PKGPATH}/wp-cli.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}" --vhostroot="/blog"
+    bash "${PKGPATH}/config.sh" --vhostname="${VHOST_NAME}" --vhostroot="/public"
+    bash "${PKGPATH}/laravel.sh" --vhostname="${VHOST_NAME}"
+    bash "${PKGPATH}/wp-cli.sh" --vhostname="${VHOST_NAME}" --vhostroot="/blog"
     break
     ;;
   "${COMMANDS[4]}")
