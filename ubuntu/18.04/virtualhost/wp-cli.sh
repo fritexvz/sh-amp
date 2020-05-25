@@ -75,7 +75,7 @@ if [ ! -d "${VHOST_ROOT_DIR}" ]; then
   mkdir -p "${VHOST_ROOT_DIR}"
 fi
 
-# Set database constants in the file.
+# Set the constant in wp-config.
 DB_NAME="${VHOST_NAME//[^a-zA-Z0-9_]/}"
 DB_NAME="${DB_NAME:0:16}"
 DB_USER="${DB_NAME}"
@@ -83,48 +83,9 @@ DB_USER="${DB_USER:0:16}"
 DB_PASS="$(openssl rand -base64 12)"
 DB_PASS="${DB_PASS:0:16}"
 DB_HOST="localhost"
+DB_CHARSET="$(getPkgCnf -f="/etc/my.cnf" -rs="\[mysqld\]" -fs="=" -s="character-set-server")"
+DB_COLLATE="$(getPkgCnf -f="/etc/my.cnf" -rs="\[mysqld\]" -fs="=" -s="collation-server")"
 DB_PREFIX="wp_"
-
-echo
-echo "Would you like to install WordPress with the following settings?"
-echo "DB_NAME: ${DB_NAME}"
-echo "DB_USER: ${DB_USER}"
-echo "DB_PASS: ${DB_PASS}"
-echo "DB_HOST: ${DB_HOST}"
-echo "DB_PREFIX: ${DB_PREFIX}"
-
-CHANGE_MESSAGE="$(msg -yn "Do you want to change it? (y/n) ")"
-if [ "${CHANGE_MESSAGE}" == "Yes" ]; then
-  NEW_CONFIG=""
-  while [ -z "${NEW_CONFIG}" ]; do
-    read -p "DB_NAME: " NEW_DB_NAME
-    read -p "DB_USER: " NEW_DB_USER
-    read -p "DB_PASS: " NEW_DB_PASS
-    read -p "DB_HOST: " NEW_DB_HOST
-    read -p "DB_PREFIX: " NEW_DB_PREFIX
-    SAVE_MESSAGE="$(msg -ync "Are you sure? (y/n/c) ")"
-    case "${SAVE_MESSAGE}" in
-    "Yes")
-      DB_NAME="${NEW_DB_NAME//[^a-zA-Z0-9_]/}"
-      DB_NAME="${DB_NAME:0:16}"
-      DB_USER="${NEW_DB_USER//[^a-zA-Z0-9_]/}"
-      DB_USER="${DB_USER:0:16}"
-      DB_PASS="${NEW_DB_PASS:0:16}"
-      DB_HOST="${NEW_DB_HOST}"
-      DB_PREFIX="${NEW_DB_PREFIX}"
-      NEW_CONFIG="Yes"
-      break
-      ;;
-    "No")
-      NEW_CONFIG=""
-      ;;
-    "Cancel")
-      NEW_CONFIG=""
-      break
-      ;;
-    esac
-  done
-fi
 
 # Check if the database and user name exists.
 if [ -z "$(isDb "${DB_NAME}")" ] && [ -z "$(isDbUser "${DB_USER}")" ]; then
@@ -152,8 +113,8 @@ ADMIN_EMAIL="$(msg -yn -c "admin_email: ")"
 cd "${VHOST_ROOT_DIR}"
 
 wp core download --allow-root
-wp core config --allow-root --dbname="${DB_NAME}" --dbuser="${DB_USER}" --dbpass="${DB_PASS}" --dbhost="${DB_HOST}" --dbprefix="${DB_PREFIX}"
-wp core install --allow-root --url="${PROTO,,}://${VHOST_NAME}" --title="${SITE_TITLE}" --admin_user="${ADMIN_USER}" --admin_password="${ADMIN_PASSWORD}" --admin_email="${ADMIN_EMAIL}"
+wp core config --allow-root --dbname="${DB_NAME}" --dbuser="${DB_USER}" --dbpass="${DB_PASS}" --dbhost="${DB_HOST}" --dbcharset="${DB_CHARSET}" --dbcollate="${DB_COLLATE}" --dbprefix="${DB_PREFIX}"
+wp core install --allow-root --allow-root --url="${PROTO,,}://${VHOST_NAME}" --title="${SITE_TITLE}" --admin_user="${ADMIN_USER}" --admin_password="${ADMIN_PASSWORD}" --admin_email="${ADMIN_EMAIL}"
 
 echo "title: ${SITE_TITLE}"
 echo "admin_user: ${ADMIN_USER}"

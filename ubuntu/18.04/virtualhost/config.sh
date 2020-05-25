@@ -113,9 +113,9 @@ $(cat "${ABSPKG}/tmpl/vhost.conf")
 VHOSTCONFSCRIPT
 
   sed -i -E \
-    -e "s/VHOST_NAME/\$(escapeString "${VHOST_NAME}")/g" \
-    -e "s/VHOST_ROOT_DIR/\$(escapeString "${VHOST_ROOT_DIR}")/g" \
-    -e "s/VHOST_LOG_DIR/\$(escapeString "${VHOST_LOG_DIR}")/g" \
+    -e "s/VHOST_NAME/$(escapeString "${VHOST_NAME}")/g" \
+    -e "s/VHOST_ROOT_DIR/$(escapeString "${VHOST_ROOT_DIR}")/g" \
+    -e "s/VHOST_LOG_DIR/$(escapeString "${VHOST_LOG_DIR}")/g" \
     "${f_80}"
 
 fi
@@ -139,9 +139,9 @@ $(cat "${ABSPKG}/tmpl/vhost-ssl.conf")
 VHOSTCONFSCRIPT
 
     sed -i -E \
-      -e "s/VHOST_NAME/\$(escapeString "${VHOST_NAME}")/g" \
-      -e "s/VHOST_ROOT_DIR/\$(escapeString "${VHOST_ROOT_DIR}")/g" \
-      -e "s/VHOST_LOG_DIR/\$(escapeString "${VHOST_LOG_DIR}")/g" \
+      -e "s/VHOST_NAME/$(escapeString "${VHOST_NAME}")/g" \
+      -e "s/VHOST_ROOT_DIR/$(escapeString "${VHOST_ROOT_DIR}")/g" \
+      -e "s/VHOST_LOG_DIR/$(escapeString "${VHOST_LOG_DIR}")/g" \
       "${f_443}"
 
   fi
