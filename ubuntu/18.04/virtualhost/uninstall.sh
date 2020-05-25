@@ -73,6 +73,8 @@ fi
 # Removing virtualhost directory
 if [ -d "/var/www/${VHOST_NAME}" ]; then
   rm -rf "/var/www/${VHOST_NAME}"
+else
+  echo "Directory does not exists."
 fi
 
 # Drop the database.

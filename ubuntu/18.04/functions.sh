@@ -452,7 +452,6 @@ function msg() {
 
 function msgResponseYn() {
   local response=""
-  echo
   while [ -z "${response}" ]; do
     read -p "$1" response
     case "${response}" in
@@ -474,7 +473,6 @@ function msgResponseYn() {
 
 function msgResponseYnc() {
   local response=""
-  echo
   while [ -z "${response}" ]; do
     read -p "$1" response
     case "${response}" in
@@ -500,7 +498,6 @@ function msgResponseYnc() {
 
 function msgRequest() {
   local response=""
-  echo
   while [ -z "${response}" ]; do
     read -p "$1" response
   done
@@ -510,7 +507,6 @@ function msgRequest() {
 function msgRequestYn() {
   local response=""
   local confirm=""
-  echo
   while [ -z "${response}" ]; do
     read -p "$1" response
     if [ ! -z "${response}" ]; then
@@ -538,7 +534,6 @@ function msgRequestYn() {
 function msgRequestYnc() {
   local response=""
   local confirm=""
-  echo
   while [ -z "${response}" ]; do
     read -p "$1" response
     if [ ! -z "${response}" ]; then

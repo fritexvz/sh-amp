@@ -5,6 +5,7 @@
 2. fixed: Fixed sed syntax error when installing WordPress.
 3. removed: Removed unnecessary parameters.
 4. fixed: Added escape string when installing virtual hosts.
+5. fixed: Fixed an issue where a blank line was added to the msg return value.
 
 # 0.0.36
 1. added: OS version detection was added.
