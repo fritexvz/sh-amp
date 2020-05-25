@@ -155,8 +155,7 @@ if [ "${CHANGE_MESSAGE}" == "Yes" ]; then
 fi
 
 # Check if the database and user name exists.
-if [ -z "$(mysql -uroot -e 'SHOW DATABASES;' | egrep "^${DB_NAME}$")" ] &&
-  [ -z "$(mysql -uroot -e 'SELECT User FROM mysql.user;' | egrep "^${DB_NAME}$")" ]; then
+if [ -z "$(isDb "${DB_NAME}")" ] && [ -z "$(isDbUser "${DB_USER}")" ]; then
   create_database "${DB_NAME}" "${DB_USER}" "${DB_PASS}"
 else
   echo

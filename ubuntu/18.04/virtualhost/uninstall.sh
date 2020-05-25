@@ -75,6 +75,16 @@ if [ -d "/var/www/${VHOST_NAME}" ]; then
   rm -rf "/var/www/${VHOST_NAME}"
 fi
 
+# Drop the database.
+DB_NAME="${VHOST_NAME//[^a-zA-Z0-9_]/}"
+DB_NAME="${DB_NAME:0:16}"
+DB_USER="${DB_NAME}"
+DB_USER="${DB_USER:0:16}"
+
+if [ ! -z "$(isDb "${DB_NAME}")" ] || [ ! -z "$(isDbUser "${DB_USER}")" ]; then
+  delete_database "${DB_NAME}" "${DB_USER}"
+fi
+
 # Reloading apache2
 systemctl reload apache2
 

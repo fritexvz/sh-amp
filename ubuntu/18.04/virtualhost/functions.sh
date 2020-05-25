@@ -25,3 +25,11 @@ function delete_database() {
   echo
   echo "The database has been deleted."
 }
+
+function isDb() {
+  mysql -uroot -e 'SHOW DATABASES;' | egrep "^$1$"
+}
+
+function isDbUser() {
+  mysql -uroot -e 'SELECT User FROM mysql.user;' | egrep "^$1$"
+}
