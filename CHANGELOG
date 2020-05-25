@@ -9,6 +9,7 @@
 6. fixed: The wrong file path was fixed.
 6. fixed: The wrong directory path was fixed.
 7. added: The functions.sh file has been added.
+8. added: A package reinstallation message was added.
 
 # 0.0.35
 1. fixed: Job for apache2.service failed have been fixed.

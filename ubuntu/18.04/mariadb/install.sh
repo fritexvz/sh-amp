@@ -32,6 +32,14 @@ source "${ABSPKG}/functions.sh"
 echo
 echo "Start installing ${PKGNAME}."
 
+# Make sure the package is installed.
+if [ ! -z "$(is${PKGNAME^})" ]; then
+  CONFIRM_MESSAGE="$(msg -yn "The ${PKGNAME} package is already installed. Would you like to reinstall?")"
+  if [ CONFIRM_MESSAGE == "No" ]; then
+    exit 0
+  fi
+fi
+
 apt -y install mariadb-server mariadb-client
 
 # Enables you to improve the security of your MariaDB installation.
