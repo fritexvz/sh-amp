@@ -99,6 +99,9 @@ fi
 chown -R www-data:www-data "${VHOST_DIR}"
 chmod -R 775 "${VHOST_DIR}"
 
+ENABLE_WWW="$(msg -yn "Would you like to use the www alias?")"
+ENABLE_HTTPS="$(msg -yn "Would you like to activate https?")"
+
 #
 # HTTP: 80 port
 # Creating new vhosting files
@@ -108,9 +111,15 @@ if [ -f ".${f_80}" ]; then
   cp -v ".${f_80}" "${f_80}"
 else
 
-  cat >"${f_80}" <<VHOSTCONFSCRIPT
+  if [ "${ENABLE_WWW}" == "Yes" ]; then
+    cat >"${f_80}" <<VHOSTCONFSCRIPT
+$(cat "${ABSPKG}/tmpl/vhost-alias.conf")
+VHOSTCONFSCRIPT
+  else
+    cat >"${f_80}" <<VHOSTCONFSCRIPT
 $(cat "${ABSPKG}/tmpl/vhost.conf")
 VHOSTCONFSCRIPT
+  fi
 
   sed -i -E \
     -e "s/VHOST_NAME/$(escapeString "${VHOST_NAME}")/g" \
@@ -134,9 +143,15 @@ if [ "${PROTO^^}" == "HTTPS" ]; then
     cp -v ".${f_443}" "${f_443}"
   else
 
-    cat >"${f_443}" <<VHOSTCONFSCRIPT
+    if [ "${ENABLE_WWW}" == "Yes" ]; then
+      cat >"${f_443}" <<VHOSTCONFSCRIPT
+$(cat "${ABSPKG}/tmpl/vhost-ssl-alias.conf")
+VHOSTCONFSCRIPT
+    else
+      cat >"${f_443}" <<VHOSTCONFSCRIPT
 $(cat "${ABSPKG}/tmpl/vhost-ssl.conf")
 VHOSTCONFSCRIPT
+    fi
 
     sed -i -E \
       -e "s/VHOST_NAME/$(escapeString "${VHOST_NAME}")/g" \
@@ -160,7 +175,7 @@ if [ -z "$(a2query -s | awk '{print $1}' | egrep "^${VHOST_NAME}$")" ]; then
   a2ensite "${VHOST_NAME}.conf"
 fi
 
-if [ "${PROTO}" == "https" ]; then
+if [ "${PROTO^^}" == "HTTPS" ]; then
 
   # Disabling default SSL vhosting
   if [ ! -z "$(a2query -s | awk '{print $1}' | egrep "^000-default-ssl$")" ]; then

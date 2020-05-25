@@ -102,6 +102,7 @@ fi
 
 # Import variables from the env file.
 PROTO="$(getPkgCnf -rs="\[HOSTS\]" -fs="=" -s="PROTO")"
+PROTO="http"
 
 # Set WordPress parameters.
 SITE_TITLE="SiteTitle"
@@ -114,7 +115,7 @@ cd "${VHOST_ROOT_DIR}"
 
 wp core download --allow-root
 wp core config --allow-root --dbname="${DB_NAME}" --dbuser="${DB_USER}" --dbpass="${DB_PASS}" --dbhost="${DB_HOST}" --dbcharset="${DB_CHARSET}" --dbcollate="${DB_COLLATE}" --dbprefix="${DB_PREFIX}"
-wp core install --allow-root --url="${PROTO,,}://${VHOST_NAME}" --title="${SITE_TITLE}" --admin_user="${ADMIN_USER}" --admin_password="${ADMIN_PASSWORD}" --admin_email="${ADMIN_EMAIL}"
+wp core install --allow-root --url="${PROTO}://${VHOST_NAME}" --title="${SITE_TITLE}" --admin_user="${ADMIN_USER}" --admin_password="${ADMIN_PASSWORD}" --admin_email="${ADMIN_EMAIL}"
 
 echo "title: ${SITE_TITLE}"
 echo "admin_user: ${ADMIN_USER}"

@@ -74,7 +74,7 @@ fi
 if [ -d "/var/www/${VHOST_NAME}" ]; then
   rm -rf "/var/www/${VHOST_NAME}"
 else
-  echo "Directory does not exists."
+  echo "The ${VHOST_NAME} directory does not exists."
 fi
 
 # Drop the database.
