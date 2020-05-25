@@ -82,7 +82,11 @@ DB_USER="${DB_NAME}"
 DB_USER="${DB_USER:0:16}"
 
 if [ ! -z "$(isDb "${DB_NAME}")" ] || [ ! -z "$(isDbUser "${DB_USER}")" ]; then
-  delete_database "${DB_NAME}" "${DB_USER}"
+  echo
+  DELETE_MESSAGE="$(msg -yn "Are you sure you want to delete the database? (y/n) ")"
+  if [ "${DELETE_MESSAGE}" == "Yes" ]; then
+    delete_database "${DB_NAME}" "${DB_USER}"
+  fi
 fi
 
 # Reloading apache2

@@ -129,23 +129,13 @@ fi
 # Download and extract the latest WordPress.
 cd "${VHOST_ROOT_DIR}"
 
-# Download and extract the latest WordPress.
-wp core download --allow-root
-wp core config --allow-root --dbname="${DB_NAME}" --dbuser="${DB_USER}" --dbpass="${DB_PASS}" --dbhost="${DB_HOST}" --dbprefix="${DB_PREFIX}" --extra-php <<PHP
-define( 'WP_DEBUG', true );
-define( 'WP_DEBUG_LOG', true );
-PHP
-
 # Check if the database and user name exists.
-if [ -z "$(isDb "${DB_NAME}")" ] && [ -z "$(isDbUser "${DB_USER}")" ]; then
-  create_database "${DB_NAME}" "${DB_USER}" "${DB_PASS}"
-else
+if [ ! -z "$(isDb "${DB_NAME}")" ] || [ ! -z "$(isDbUser "${DB_USER}")" ]; then
   echo
   echo "Database ${DB_NAME} already exists."
-  REINSTALL_MESSAGE="$(msg -yn "Would you like to reinstall the database? (y/n) ")"
-  if [ "${REINSTALL_MESSAGE}" == "Yes" ]; then
+  DELETE_MESSAGE="$(msg -yn "Are you sure you want to delete the database? (y/n) ")"
+  if [ "${DELETE_MESSAGE}" == "Yes" ]; then
     delete_database "${DB_NAME}" "${DB_USER}"
-    create_database "${DB_NAME}" "${DB_USER}" "${DB_PASS}"
   fi
 fi
 
@@ -158,6 +148,10 @@ ADMIN_USER="admin"
 ADMIN_PASSWORD="123456"
 ADMIN_EMAIL="$(msg -yn -c "admin_email: ")"
 
+# Download and extract the latest WordPress.
+wp core download --allow-root
+wp core config --allow-root --dbname="${DB_NAME}" --dbuser="${DB_USER}" --dbpass="${DB_PASS}" --dbhost="${DB_HOST}" --dbprefix="${DB_PREFIX}"
+wp db create
 wp core install --allow-root --url="${PROTO}://${VHOST_NAME}" --title="${SITE_TITLE}" --admin_user="${ADMIN_USER}" --admin_password="${ADMIN_PASSWORD}" --admin_email="${ADMIN_EMAIL}"
 
 echo "title: ${SITE_TITLE}"

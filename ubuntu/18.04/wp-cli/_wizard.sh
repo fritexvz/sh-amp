@@ -33,6 +33,17 @@ source "${ABSPKG}/functions.sh"
 echo
 echo "Start installing ${PKGNAME^^}."
 
+wp core download --allow-root
+wp core config --allow-root --dbname="${DB_NAME}" --dbuser="${DB_USER}" --dbpass="${DB_PASS}" --dbhost="${DB_HOST}" --dbprefix="${DB_PREFIX}" --extra-php <<PHP
+define( 'WP_DEBUG', true );
+define( 'WP_DEBUG_LOG', true );
+PHP
+wp db create
+wp core install --allow-root --url="${PROTO}://${VHOST_NAME}" --title="${SITE_TITLE}" --admin_user="${ADMIN_USER}" --admin_password="${ADMIN_PASSWORD}" --admin_email="${ADMIN_EMAIL}"
+
+
+
+
 wp ssh core update --host=clientA
 
 wp theme install twentyseventeen --activate
