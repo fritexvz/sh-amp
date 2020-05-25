@@ -8,6 +8,7 @@
 5. changed: Environment constant changed from APACHE2_HTTPS to PROTO.
 6. fixed: The wrong file path was fixed.
 6. fixed: The wrong directory path was fixed.
+7. added: The functions.sh file has been added.
 
 # 0.0.35
 1. fixed: Job for apache2.service failed have been fixed.
