@@ -177,8 +177,8 @@ sed -i -E \
   -e "s/^(${SPACE0}\\\$table_prefix${SPACE0}=${SPACE0}')(.*)('${SPACE0}\;.*)$/\1${DB_PREFIX}\3/" \
   "${VHOST_ROOT_DIR}/wp-config.php"
 
-# Restarting the service
-systemctl restart apache2
+# Reloading the service
+systemctl reload apache2
 
 echo
 echo "Wordpress is completely installed."

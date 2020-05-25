@@ -55,7 +55,7 @@ fi
 apt update
 
 # Run the package upgrade.
-PACKAGES=('apache2' 'sendmail' 'ufw' 'fail2ban' 'vsftpd' 'mariadb' 'php' 'wp-cli')
+PACKAGES=('apache2' 'sendmail' 'ufw' 'fail2ban' 'vsftpd' 'mariadb' 'php' 'npm' 'wp-cli')
 FILENAME="$(basename $0)"
 for ((i=0; i<${#PACKAGES[@]}; i++)); do
   FILEPATH="${OS_ID}/${OS_VERSION_ID}/${PACKAGES[$i]}/${FILENAME}"

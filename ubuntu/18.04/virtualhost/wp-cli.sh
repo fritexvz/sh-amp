@@ -111,10 +111,11 @@ ADMIN_EMAIL="$(msg -yn -c "admin_email: ")"
 
 # Download and extract the latest WordPress.
 cd "${VHOST_ROOT_DIR}"
+vi ubuntu/18.04/virtualhost/wp-cli.sh
 
 wp core download --allow-root
 wp core config --allow-root --dbname="${DB_NAME}" --dbuser="${DB_USER}" --dbpass="${DB_PASS}" --dbhost="${DB_HOST}" --dbcharset="${DB_CHARSET}" --dbcollate="${DB_COLLATE}" --dbprefix="${DB_PREFIX}"
-wp core install --allow-root --allow-root --url="${PROTO,,}://${VHOST_NAME}" --title="${SITE_TITLE}" --admin_user="${ADMIN_USER}" --admin_password="${ADMIN_PASSWORD}" --admin_email="${ADMIN_EMAIL}"
+wp core install --allow-root --url="${PROTO,,}://${VHOST_NAME}" --title="${SITE_TITLE}" --admin_user="${ADMIN_USER}" --admin_password="${ADMIN_PASSWORD}" --admin_email="${ADMIN_EMAIL}"
 
 echo "title: ${SITE_TITLE}"
 echo "admin_user: ${ADMIN_USER}"
@@ -128,6 +129,9 @@ chmod -R 775 "${VHOST_ROOT_DIR}"
 # initialize
 wp theme delete --all
 wp plugin delete --all
+
+# Reloading the service
+systemctl reload apache2
 
 echo
 echo "Wordpress is completely installed."

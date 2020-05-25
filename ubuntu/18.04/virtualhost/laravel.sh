@@ -77,7 +77,22 @@ fi
 # Download and extract the latest laravel.
 cd "${VHOST_ROOT_DIR}"
 
-composer create-project --prefer-dist laravel/laravel .
+laravel new .
+
+npm install && npm run dev
+
+# Set a database.
+CREATE_DB="No"
+if [ "${CREATE_DB}" == "No" ]; then
+  sed -i -E -e '/^DB_(.*)=/{ s/^/#/; s/^#+/#/; }' .env
+else
+  sed -i -E -e 's/(DB_CONNECTION=)(.*)/\1(mysql)/' .env
+  sed -i -E -e 's/(DB_HOST=)(.*)/\1(127.0.0.1)/' .env
+  sed -i -E -e 's/(DB_PORT=)(.*)/\1(3306)/' .env
+  sed -i -E -e 's/(DB_DATABASE=)(.*)/\1(laravel)/' .env
+  sed -i -E -e 's/(DB_USERNAME=)(.*)/\1(root)/' .env
+  sed -i -E -e 's/(DB_PASSWORD=)(.*)/\1(password)/' .env
+fi
 
 # Change directory permissions.
 chown -R www-data:www-data "${VHOST_ROOT_DIR}"
@@ -85,8 +100,8 @@ chmod -R 775 "${VHOST_ROOT_DIR}"
 
 php artisan serve
 
-# Restarting the service
-systemctl restart apache2
+# Reloading the service
+systemctl reload apache2
 
 echo
 echo "Laravel configuration is complete."

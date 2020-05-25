@@ -36,9 +36,28 @@ pkgAudit "php"
 echo
 echo "Start installing ${PKGNAME^^}."
 
-# Download the laravel global project.
-cd /var/www/
-composer create-project --prefer-dist laravel/laravel
+# Install laravel installer.
+composer global require laravel/installer
+
+# Edit environment config.
+# https://stackoverflow.com/questions/28597648/laravel-5-installation-in-ubuntu-laravel-command-not-found
+
+#echo 'export PATH="$PATH:$HOME/.composer/vendor/bin"' >> ~/.bashrc
+
+# Ubuntu 17.04 and 17.10:
+#echo 'export PATH="~/.config/composer/vendor/bin:$PATH"' >> ~/.bashrc
+
+# Ubuntu 18.04
+echo 'export PATH="$HOME/.composer/vendor/bin:$PATH"' >> ~/.bashrc
+
+# Then reload path config.
+source ~/.bashrc
+
+# JavaScript & CSS Scaffolding
+composer require laravel/ui
 
 echo
 echo "${PKGNAME^^} is completely installed."
+
+
+

@@ -71,7 +71,7 @@ else
 fi
 
 # Run the package installation.
-PACKAGES=('apache2' 'sendmail' 'ufw' 'fail2ban' 'vsftpd' 'mariadb' 'php' 'laravel' 'wp-cli')
+PACKAGES=('apache2' 'sendmail' 'ufw' 'fail2ban' 'vsftpd' 'mariadb' 'php' 'npm' 'laravel' 'wp-cli')
 FILENAME="$(basename $0)"
 for ((i=0; i<${#PACKAGES[@]}; i++)); do
   FILEPATH="${OS_ID}/${OS_VERSION_ID}/${PACKAGES[$i]}/${FILENAME}"
