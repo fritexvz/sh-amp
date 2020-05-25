@@ -99,6 +99,11 @@ fi
 chown -R www-data:www-data "${VHOST_DIR}"
 chmod -R 775 "${VHOST_DIR}"
 
+# Escape String.
+ESCAPE_VHOST_NAME="$(escapeString "${VHOST_NAME}")"
+ESCAPE_VHOST_ROOT_DIR="$(escapeString "${VHOST_ROOT_DIR}")"
+ESCAPE_VHOST_LOG_DIR="$(escapeString "${VHOST_LOG_DIR}")"
+
 #
 # HTTP: 80 port
 # Creating new vhosting files
@@ -113,9 +118,9 @@ $(cat "${ABSPKG}/tmpl/vhost.conf")
 VHOSTCONFSCRIPT
 
   sed -i -E \
-    -e "s/VHOST_NAME/$(escapeString "${VHOST_NAME}")/g" \
-    -e "s/VHOST_ROOT_DIR/$(escapeString "${VHOST_ROOT_DIR}")/g" \
-    -e "s/VHOST_LOG_DIR/$(escapeString "${VHOST_LOG_DIR}")/g" \
+    -e "s/VHOST_NAME/${ESCAPE_VHOST_NAME}/g" \
+    -e "s/VHOST_ROOT_DIR/${ESCAPE_VHOST_NAME}/g" \
+    -e "s/VHOST_LOG_DIR/${ESCAPE_VHOST_NAME}/g" \
     "${f_80}"
 
 fi
@@ -139,9 +144,9 @@ $(cat "${ABSPKG}/tmpl/vhost-ssl.conf")
 VHOSTCONFSCRIPT
 
     sed -i -E \
-      -e "s/VHOST_NAME/$(escapeString "${VHOST_NAME}")/g" \
-      -e "s/VHOST_ROOT_DIR/$(escapeString "${VHOST_ROOT_DIR}")/g" \
-      -e "s/VHOST_LOG_DIR/$(escapeString "${VHOST_LOG_DIR}")/g" \
+      -e "s/VHOST_NAME/${ESCAPE_VHOST_NAME}/g" \
+      -e "s/VHOST_ROOT_DIR/${ESCAPE_VHOST_NAME}/g" \
+      -e "s/VHOST_LOG_DIR/${ESCAPE_VHOST_NAME}/g" \
       "${f_443}"
 
   fi
