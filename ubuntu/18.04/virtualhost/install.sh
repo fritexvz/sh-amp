@@ -81,7 +81,7 @@ select COMMAND in ${COMMANDS[@]}; do
     ;;
   "${COMMANDS[2]}")
     bash "${ABSPKG}/config.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}"
-    bash "${ABSPKG}/wordpress.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}"
+    bash "${ABSPKG}/wp-cli.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}"
     break
     ;;
   "${COMMANDS[3]}")

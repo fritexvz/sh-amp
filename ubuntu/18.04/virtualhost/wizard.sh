@@ -72,11 +72,11 @@ select COMMAND in ${COMMANDS[@]}; do
     DB_NAME="${DB_NAME//[^a-zA-Z0-9_]/}"
     DB_NAME="${DB_NAME:0:16}"
     DB_USER="${DB_NAME}"
-    DB_PASSWORD="$(openssl rand -base64 12)"
-    DB_PASSWORD="${DB_PASSWORD:0:16}"
+    DB_PASS="$(openssl rand -base64 12)"
+    DB_PASS="${DB_PASS:0:16}"
 
     # Creating a database
-    create_database "${DB_NAME}" "${DB_USER}" "${DB_PASSWORD}"
+    create_database "${DB_NAME}" "${DB_USER}" "${DB_PASS}"
 
     ;;
   "${COMMANDS[2]}")

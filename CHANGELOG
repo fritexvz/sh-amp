@@ -1,5 +1,13 @@
 # Amp Stack   
 
+# 0.0.36
+1. added: OS version detection was added.
+2. updated: Absolute path updated.
+3. added: The wp-cli command has been added.
+4. added: upgrade.sh was added.
+5. changed: Environment constant changed from APACHE2_HTTPS to PROTO.
+
+
 # 0.0.35
 1. fixed: Job for apache2.service failed have been fixed.
 2. fixed: Fixed apache2.service not activated when running config.sh
@@ -7,6 +15,7 @@
 4. added: A reinstall command line was added.
 5. fixed: Fixed the syntax error.
 6. updated: whitespace regex has been updated.
+7. changed: Changed the comment.
 
 # 0.0.34
 1. fixed: The wrong file path was fixed.

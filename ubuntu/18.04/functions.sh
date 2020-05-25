@@ -283,13 +283,6 @@ function addPkgCnf() {
 
 }
 
-# Delete the variable from the env file.
-function delPkgCnf() {
-  addPkgCnf -rs="\[${1^^}\]" -fs="=" -o="<<HERE
-${1^^}_VERSION = 
-<<HERE"
-}
-
 # Remove the package completely.
 function delPkg() {
 
@@ -304,7 +297,9 @@ function delPkg() {
   fi
 
   # Delete the variable from the env file.
-  delPkgCnf "$1"
+  addPkgCnf -rs="\[${1^^}\]" -fs="=" -o="<<HERE
+${1^^}_VERSION = 
+<<HERE"
 
   # Upgrade your operating system to the latest.
   apt update && apt -y upgrade
@@ -317,6 +312,13 @@ function pkgAudit() {
     echo "The ${1,,} package is not installed."
     exit 0
   fi
+}
+
+# Start the package and set it to start on boot.
+function pkgOnBoot() {
+  systemctl stop "$1"
+  systemctl start "$1"
+  systemctl enable "$1"
 }
 
 # Get a public IPv4 address.
