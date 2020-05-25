@@ -126,16 +126,16 @@ if [ "${CHANGE_MESSAGE}" == "Yes" ]; then
   done
 fi
 
-# Download and extract the latest WordPress.
-cd "${VHOST_ROOT_DIR}"
-
 # Check if the database and user name exists.
-if [ ! -z "$(isDb "${DB_NAME}")" ] || [ ! -z "$(isDbUser "${DB_USER}")" ]; then
+if [ -z "$(isDb "${DB_NAME}")" ] && [ -z "$(isDbUser "${DB_USER}")" ]; then
+  create_database "${DB_NAME}" "${DB_USER}" "${DB_PASS}"
+else
   echo
   echo "Database ${DB_NAME} already exists."
   DELETE_MESSAGE="$(msg -yn "Are you sure you want to delete the database? (y/n) ")"
   if [ "${DELETE_MESSAGE}" == "Yes" ]; then
     delete_database "${DB_NAME}" "${DB_USER}"
+    create_database "${DB_NAME}" "${DB_USER}" "${DB_PASS}"
   fi
 fi
 
@@ -149,9 +149,10 @@ ADMIN_PASSWORD="123456"
 ADMIN_EMAIL="$(msg -yn -c "admin_email: ")"
 
 # Download and extract the latest WordPress.
+cd "${VHOST_ROOT_DIR}"
+
 wp core download --allow-root
 wp core config --allow-root --dbname="${DB_NAME}" --dbuser="${DB_USER}" --dbpass="${DB_PASS}" --dbhost="${DB_HOST}" --dbprefix="${DB_PREFIX}"
-wp db create
 wp core install --allow-root --url="${PROTO}://${VHOST_NAME}" --title="${SITE_TITLE}" --admin_user="${ADMIN_USER}" --admin_password="${ADMIN_PASSWORD}" --admin_email="${ADMIN_EMAIL}"
 
 echo "title: ${SITE_TITLE}"
