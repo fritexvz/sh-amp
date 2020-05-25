@@ -126,12 +126,19 @@ echo "admin_email: ${ADMIN_EMAIL}"
 chown -R www-data:www-data "${VHOST_ROOT_DIR}"
 chmod -R 775 "${VHOST_ROOT_DIR}"
 
-# initialize
-wp theme delete --all
-wp plugin delete --all
-
 # Reloading the service
 systemctl reload apache2
+
+# Initialize WordPress.
+wp maintenance-mode activate --allow-root
+
+wp theme delete --all --allow-root
+wp plugin delete --all --allow-root
+
+wp theme update --all --allow-root
+wp plugin update --all --allow-root
+
+wp maintenance-mode deactivate --allow-root
 
 echo
 echo "Wordpress is completely installed."

@@ -2,6 +2,7 @@
 
 # 0.0.38
 1. added: A virtual host alias option was added.
+2. fixed: Added WordPress initial settings.
 
 # 0.0.37
 1. fixed: Fixed an issue where users were denied access.

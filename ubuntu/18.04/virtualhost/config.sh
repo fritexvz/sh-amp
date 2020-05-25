@@ -99,8 +99,8 @@ fi
 chown -R www-data:www-data "${VHOST_DIR}"
 chmod -R 775 "${VHOST_DIR}"
 
-ENABLE_WWW="$(msg -yn "Would you like to use the www alias?")"
-ENABLE_HTTPS="$(msg -yn "Would you like to activate https?")"
+ENABLE_WWW="$(msg -yn "Would you like to use the www alias? ")"
+ENABLE_HTTPS="$(msg -yn "Would you like to activate https? ")"
 
 #
 # HTTP: 80 port
