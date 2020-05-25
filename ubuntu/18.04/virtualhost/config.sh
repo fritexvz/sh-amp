@@ -122,10 +122,10 @@ fi
 #
 # HTTPS: 443 port
 # Apache2 configuration in env file.
-APACHE2_HTTPS="$(getPkgCnf -rs="\[APACHE2\]" -fs="=" -s="APACHE2_HTTPS")"
+PROTO="$(getPkgCnf -rs="\[HOSTS\]" -fs="=" -s="PROTO")"
 
 # Creating new SSL vhosting files
-if [ "${APACHE2_HTTPS^^}" == "ON" ]; then
+if [ "${PROTO}" == "https" ]; then
 
   f_443="/etc/apache2/sites-available/${VHOST_NAME}-ssl.conf"
 
@@ -159,7 +159,7 @@ if [ -z "$(a2query -s | awk '{print $1}' | egrep "^${VHOST_NAME}$")" ]; then
   a2ensite "${VHOST_NAME}.conf"
 fi
 
-if [ "${APACHE2_HTTPS^^}" == "ON" ]; then
+if [ "${PROTO}" == "https" ]; then
 
   # Disabling default SSL vhosting
   if [ ! -z "$(a2query -s | awk '{print $1}' | egrep "^000-default-ssl$")" ]; then

@@ -189,9 +189,9 @@ else
 fi
 
 # 000-default-ssl configure
-APACHE2_HTTPS="$(getPkgCnf -rs="\[APACHE2\]" -fs="=" -s="APACHE2_HTTPS")"
+PROTO="$(getPkgCnf -rs="\[HOSTS\]" -fs="=" -s="PROTO")"
 
-if [ "${APACHE2_HTTPS^^}" == "ON" ]; then
+if [ "${PROTO}" == "https" ]; then
 
   f_443="/etc/apache2/sites-available/000-default-ssl.conf"
 
