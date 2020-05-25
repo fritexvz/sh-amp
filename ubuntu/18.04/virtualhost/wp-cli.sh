@@ -18,6 +18,7 @@ set -e
 
 # Set constants.
 OSPATH="$(dirname "$(dirname $0)")"
+PKGPATH="$(dirname $0)"
 PKGNAME="$(basename "$(dirname $0)")"
 FILENAME="$(basename $0)"
 
@@ -82,7 +83,6 @@ DB_USER="${DB_USER:0:16}"
 DB_PASS="$(openssl rand -base64 12)"
 DB_PASS="${DB_PASS:0:16}"
 DB_HOST="localhost"
-DB_CHARSET="$(getPkgCnf -f="/etc/my.cnf" -rs="\[mysqld\]" -fs="=" -s="character-set-server")"
 DB_PREFIX="wp_"
 
 echo
@@ -101,7 +101,6 @@ if [ "${CHANGE_MESSAGE}" == "Yes" ]; then
     read -p "DB_USER: " NEW_DB_USER
     read -p "DB_PASS: " NEW_DB_PASS
     read -p "DB_HOST: " NEW_DB_HOST
-    read -p "DB_CHARSET: " NEW_DB_CHARSET
     read -p "DB_PREFIX: " NEW_DB_PREFIX
     SAVE_MESSAGE="$(msg -ync "Are you sure? (y/n/c) ")"
     case "${SAVE_MESSAGE}" in
@@ -112,7 +111,6 @@ if [ "${CHANGE_MESSAGE}" == "Yes" ]; then
       DB_USER="${DB_USER:0:16}"
       DB_PASS="${NEW_DB_PASS:0:16}"
       DB_HOST="${NEW_DB_HOST}"
-      DB_CHARSET="${NEW_DB_CHARSET}"
       DB_PREFIX="${NEW_DB_PREFIX}"
       NEW_CONFIG="Yes"
       break
@@ -133,7 +131,7 @@ cd "${VHOST_ROOT_DIR}"
 
 # Download and extract the latest WordPress.
 wp core download --allow-root
-wp core config --allow-root --dbname="${DB_NAME}" --dbuser="${DB_USER}" --dbpass="${DB_PASS}" --dbhost="${DB_HOST}" --default-character-set="${DB_CHARSET}" --dbprefix="${DB_PREFIX}" --extra-php <<PHP
+wp core config --allow-root --dbname="${DB_NAME}" --dbuser="${DB_USER}" --dbpass="${DB_PASS}" --dbhost="${DB_HOST}" --dbprefix="${DB_PREFIX}" --extra-php <<PHP
 define( 'WP_DEBUG', true );
 define( 'WP_DEBUG_LOG', true );
 PHP

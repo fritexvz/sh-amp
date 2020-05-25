@@ -14,6 +14,7 @@ set -e
 
 # Set constants.
 OSPATH="$(dirname "$(dirname $0)")"
+PKGPATH="$(dirname $0)"
 PKGNAME="$(basename "$(dirname $0)")"
 FILENAME="$(basename $0)"
 
@@ -70,24 +71,24 @@ PS3="Please select one of the options. (1-${#COMMANDS[@]}): "
 select COMMAND in ${COMMANDS[@]}; do
   case "${COMMAND}" in
   "${COMMANDS[0]}")
-    bash "${ABSPKG}/config.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}"
-    bash "${ABSPKG}/default.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}"
+    bash "${PKGPATH}/config.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}"
+    bash "${PKGPATH}/default.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}"
     break
     ;;
   "${COMMANDS[1]}")
-    bash "${ABSPKG}/config.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}" --vhostroot="/public"
-    bash "${ABSPKG}/laravel.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}"
+    bash "${PKGPATH}/config.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}" --vhostroot="/public"
+    bash "${PKGPATH}/laravel.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}"
     break
     ;;
   "${COMMANDS[2]}")
-    bash "${ABSPKG}/config.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}"
-    bash "${ABSPKG}/wp-cli.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}"
+    bash "${PKGPATH}/config.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}"
+    bash "${PKGPATH}/wp-cli.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}"
     break
     ;;
   "${COMMANDS[3]}")
-    bash "${ABSPKG}/config.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}" --vhostroot="/public"
-    bash "${ABSPKG}/laravel.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}"
-    bash "${ABSPKG}/wordpress.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}" --vhostroot="/blog"
+    bash "${PKGPATH}/config.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}" --vhostroot="/public"
+    bash "${PKGPATH}/laravel.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}"
+    bash "${PKGPATH}/wp-cli.sh" --ABSROOT="${ABSROOT}" --vhostname="${VHOST_NAME}" --vhostroot="/blog"
     break
     ;;
   "${COMMANDS[4]}")

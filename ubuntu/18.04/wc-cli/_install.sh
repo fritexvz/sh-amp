@@ -17,6 +17,7 @@ set -e
 
 # Set constants.
 OSPATH="$(dirname "$(dirname $0)")"
+PKGPATH="$(dirname $0)"
 PKGNAME="$(basename "$(dirname $0)")"
 FILENAME="$(basename $0)"
 
