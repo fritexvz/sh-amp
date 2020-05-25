@@ -40,6 +40,8 @@ if [ "${OS_NAME}" == "Ubuntu" ]; then
   if [ "${OS_VERSION_NUMBER}" -lt "1804" ]; then
     echo "Sorry. Amp Stack is not supported on Ubuntu versions below 18.04."
     exit 0
+  else
+    OS_VERSION_ID="18.04"
   fi
 elif [ "${OS_NAME}" == "CentOS" ]; then
   echo "Sorry. Amp Stack is not supported on CentOS."
@@ -114,9 +116,9 @@ fi
 
 # Run the command wizard.
 FILENAME="$(basename $0)"
-FILEPATH="/${OS_ID}/${OS_VERSION_ID}/${PACKAGE_ID}/${FILENAME}"
-if [ -f ".${FILEPATH}" ]; then
-  bash ".${FILEPATH}" --ABSROOT="$(cd "$(dirname "")" && pwd)"
+FILEPATH="${OS_ID}/${OS_VERSION_ID}/${PACKAGE_ID}/${FILENAME}"
+if [ -f "${FILEPATH}" ]; then
+  bash "${FILEPATH}" --ABSROOT="$(cd "$(dirname "")" && pwd)"
 else
   echo "There is no ${PACKAGE_ID} ${FILENAME%%.*} file."
 fi

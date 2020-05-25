@@ -43,6 +43,8 @@ if [ "${OS_NAME}" == "Ubuntu" ]; then
   if [ "${OS_VERSION_NUMBER}" -lt "1804" ]; then
     echo "Sorry. Amp Stack is not supported on Ubuntu versions below 18.04."
     exit 0
+  else
+    OS_VERSION_ID="18.04"
   fi
 elif [ "${OS_NAME}" == "CentOS" ]; then
   echo "Sorry. Amp Stack is not supported on CentOS."
@@ -55,17 +57,17 @@ fi
 ABSPATH="$(cd "$(dirname "")" && pwd)"
 
 # operating system
-OSFILE="/${OS_ID}/${OS_VERSION_ID}/etc/os.sh"
-if [ -f ".${OSFILE}" ]; then
-  bash ".${OSFILE}"
+OSFILE="${OS_ID}/${OS_VERSION_ID}/etc/os.sh"
+if [ -f "${OSFILE}" ]; then
+  bash "${OSFILE}"
 else
   echo "There is no $(basename ${OSFILE})."
 fi
 
 # host name
-HOSTFILE="/${OS_ID}/${OS_VERSION_ID}/etc/hosts.sh"
-if [ -f ".${HOSTFILE}" ]; then
-  bash ".${HOSTFILE}" --ABSROOT="${ABSPATH}"
+HOSTFILE="${OS_ID}/${OS_VERSION_ID}/etc/hosts.sh"
+if [ -f "${HOSTFILE}" ]; then
+  bash "${HOSTFILE}" --ABSROOT="${ABSPATH}"
 else
   echo "There is no $(basename ${HOSTFILE})."
 fi
@@ -74,9 +76,9 @@ fi
 PACKAGES=('apache2' 'sendmail' 'ufw' 'fail2ban' 'vsftpd' 'mariadb' 'php' 'laravel' 'wp-cli')
 FILENAME="$(basename $0)"
 for ((i=0; i<${#PACKAGES[@]}; i++)); do
-  FILEPATH="/${OS_ID}/${OS_VERSION_ID}/${PACKAGES[$i]}/${FILENAME}"
-  if [ -f ".${FILEPATH}" ]; then
-    bash ".${FILEPATH}" --ABSROOT="${ABSPATH}"
+  FILEPATH="${OS_ID}/${OS_VERSION_ID}/${PACKAGES[$i]}/${FILENAME}"
+  if [ -f "${FILEPATH}" ]; then
+    bash "${FILEPATH}" --ABSROOT="${ABSPATH}"
   else
     echo "There is no ${PACKAGES[$i]} ${FILENAME%%.*} file."
   fi
