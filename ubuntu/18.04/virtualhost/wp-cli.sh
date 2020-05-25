@@ -107,11 +107,10 @@ PROTO="$(getPkgCnf -rs="\[HOSTS\]" -fs="=" -s="PROTO")"
 SITE_TITLE="SiteTitle"
 ADMIN_USER="admin"
 ADMIN_PASSWORD="123456"
-ADMIN_EMAIL="$(msg -yn -c "admin_email: ")"
+ADMIN_EMAIL="admin@${VHOST_NAME}"
 
 # Download and extract the latest WordPress.
 cd "${VHOST_ROOT_DIR}"
-vi ubuntu/18.04/virtualhost/wp-cli.sh
 
 wp core download --allow-root
 wp core config --allow-root --dbname="${DB_NAME}" --dbuser="${DB_USER}" --dbpass="${DB_PASS}" --dbhost="${DB_HOST}" --dbcharset="${DB_CHARSET}" --dbcollate="${DB_COLLATE}" --dbprefix="${DB_PREFIX}"

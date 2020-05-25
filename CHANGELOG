@@ -10,6 +10,7 @@
 7. added: Fixed an issue where the laravel command could not be found.
 8. added: JavaScript and CSS scaffolding when installing laravel.
 9. added: npm installation was added.
+10. removed: Removed test command.
 
 # 0.0.36
 1. added: OS version detection was added.
