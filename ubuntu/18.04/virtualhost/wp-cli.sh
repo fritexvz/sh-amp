@@ -6,8 +6,8 @@
 # Usage
 # git clone https://github.com/w3src/sh-amp.git
 # cd sh-amp
-# chmod +x ./ubuntu/18.04/wp-cli/config.sh
-# ./ubuntu/18.04/wp-cli/config.sh
+# chmod +x ./ubuntu/18.04/virtualhost/wp-cli.sh
+# ./ubuntu/18.04/virtualhost/wp-cli.sh
 #
 # Installation
 # https://github.com/wp-cli/wp-cli
