@@ -19,7 +19,7 @@ PKGNAME="$(basename "$(dirname $0)")"
 FILENAME="$(basename $0)"
 
 # Set directory path.
-ABSROOT="${1#*=}"
+ABSROOT="$(cd "$(dirname "")" && pwd)"
 ABSENV="${ABSROOT}/env"
 ABSOS="${ABSROOT}/${OSPATH}"
 ABSPKG="${ABSOS}/${PKGNAME}"
@@ -36,11 +36,11 @@ pkgAudit "${PKGNAME}"
 echo
 echo "Start setting up ${PKGNAME} configuration."
 
-f1="/etc/my.cnf"
-if [ -f ".${f1}" ]; then
-  cp -v ".${f1}" "${f1}"
+f_my="/etc/my.cnf"
+if [ -f ".${f_my}" ]; then
+  cp -v ".${f_my}" "${f_my}"
 else
-  cat >"${f1}" <<MYCNFSCRIPT
+  cat >"${f_my}" <<MYCNFSCRIPT
 $(cat "${ABSPKG}/tmpl/my.cnf")
 MYCNFSCRIPT
 fi

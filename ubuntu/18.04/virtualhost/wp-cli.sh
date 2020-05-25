@@ -23,7 +23,7 @@ PKGNAME="$(basename "$(dirname $0)")"
 FILENAME="$(basename $0)"
 
 # Set directory path.
-ABSROOT="${1#*=}"
+ABSROOT="$(cd "$(dirname "")" && pwd)"
 ABSENV="${ABSROOT}/env"
 ABSOS="${ABSROOT}/${OSPATH}"
 ABSPKG="${ABSOS}/${PKGNAME}"
@@ -153,7 +153,7 @@ cd "${VHOST_ROOT_DIR}"
 
 wp core download --allow-root
 wp core config --allow-root --dbname="${DB_NAME}" --dbuser="${DB_USER}" --dbpass="${DB_PASS}" --dbhost="${DB_HOST}" --dbprefix="${DB_PREFIX}"
-wp core install --allow-root --url="${PROTO}://${VHOST_NAME}" --title="${SITE_TITLE}" --admin_user="${ADMIN_USER}" --admin_password="${ADMIN_PASSWORD}" --admin_email="${ADMIN_EMAIL}"
+wp core install --allow-root --url="${PROTO,,}://${VHOST_NAME}" --title="${SITE_TITLE}" --admin_user="${ADMIN_USER}" --admin_password="${ADMIN_PASSWORD}" --admin_email="${ADMIN_EMAIL}"
 
 echo "title: ${SITE_TITLE}"
 echo "admin_user: ${ADMIN_USER}"

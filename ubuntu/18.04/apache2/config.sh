@@ -19,7 +19,7 @@ PKGNAME="$(basename "$(dirname $0)")"
 FILENAME="$(basename $0)"
 
 # Set directory path.
-ABSROOT="${1#*=}"
+ABSROOT="$(cd "$(dirname "")" && pwd)"
 ABSENV="${ABSROOT}/env"
 ABSOS="${ABSROOT}/${OSPATH}"
 ABSPKG="${ABSOS}/${PKGNAME}"
@@ -192,7 +192,7 @@ fi
 # 000-default-ssl configure
 PROTO="$(getPkgCnf -rs="\[HOSTS\]" -fs="=" -s="PROTO")"
 
-if [ "${PROTO}" == "https" ]; then
+if [ "${PROTO^^}" == "HTTPS" ]; then
 
   f_443="/etc/apache2/sites-available/000-default-ssl.conf"
 

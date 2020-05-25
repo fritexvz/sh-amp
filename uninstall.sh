@@ -106,7 +106,7 @@ done
 FILENAME="$(basename $0)"
 FILEPATH="${OS_ID}/${OS_VERSION_ID}/${PACKAGE_ID}/${FILENAME}"
 if [ -f "${FILEPATH}" ]; then
-  bash "${FILEPATH}" --ABSROOT="$(cd "$(dirname "")" && pwd)"
+  bash "${FILEPATH}"
 else
   echo "There is no ${PACKAGE_ID} ${FILENAME%%.*} file."
 fi

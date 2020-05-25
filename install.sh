@@ -54,8 +54,6 @@ else
   exit 0
 fi
 
-ABSPATH="$(cd "$(dirname "")" && pwd)"
-
 # operating system
 OSFILE="${OS_ID}/${OS_VERSION_ID}/etc/os.sh"
 if [ -f "${OSFILE}" ]; then
@@ -67,7 +65,7 @@ fi
 # host name
 HOSTFILE="${OS_ID}/${OS_VERSION_ID}/etc/hosts.sh"
 if [ -f "${HOSTFILE}" ]; then
-  bash "${HOSTFILE}" --ABSROOT="${ABSPATH}"
+  bash "${HOSTFILE}"
 else
   echo "There is no $(basename ${HOSTFILE})."
 fi
@@ -78,7 +76,7 @@ FILENAME="$(basename $0)"
 for ((i=0; i<${#PACKAGES[@]}; i++)); do
   FILEPATH="${OS_ID}/${OS_VERSION_ID}/${PACKAGES[$i]}/${FILENAME}"
   if [ -f "${FILEPATH}" ]; then
-    bash "${FILEPATH}" --ABSROOT="${ABSPATH}"
+    bash "${FILEPATH}"
   else
     echo "There is no ${PACKAGES[$i]} ${FILENAME%%.*} file."
   fi

@@ -19,7 +19,7 @@ PKGNAME="$(basename "$(dirname $0)")"
 FILENAME="$(basename $0)"
 
 # Set directory path.
-ABSROOT="${1#*=}"
+ABSROOT="$(cd "$(dirname "")" && pwd)"
 ABSENV="${ABSROOT}/env"
 ABSOS="${ABSROOT}/${OSPATH}"
 ABSPKG="${ABSOS}/${PKGNAME}"
@@ -118,9 +118,9 @@ $(cat "${ABSPKG}/tmpl/vhost.conf")
 VHOSTCONFSCRIPT
 
   sed -i -E \
-    -e "s/VHOST_NAME/${ESCAPE_VHOST_NAME}/g" \
-    -e "s/VHOST_ROOT_DIR/${ESCAPE_VHOST_NAME}/g" \
-    -e "s/VHOST_LOG_DIR/${ESCAPE_VHOST_NAME}/g" \
+    -e "s/VHOST_NAME/${ESCAPE_VHOST_NAME}/" \
+    -e "s/VHOST_ROOT_DIR/${ESCAPE_VHOST_NAME}/" \
+    -e "s/VHOST_LOG_DIR/${ESCAPE_VHOST_NAME}/" \
     "${f_80}"
 
 fi
@@ -131,7 +131,7 @@ fi
 PROTO="$(getPkgCnf -rs="\[HOSTS\]" -fs="=" -s="PROTO")"
 
 # Creating new SSL vhosting files
-if [ "${PROTO}" == "https" ]; then
+if [ "${PROTO^^}" == "HTTPS" ]; then
 
   f_443="/etc/apache2/sites-available/${VHOST_NAME}-ssl.conf"
 
@@ -144,9 +144,9 @@ $(cat "${ABSPKG}/tmpl/vhost-ssl.conf")
 VHOSTCONFSCRIPT
 
     sed -i -E \
-      -e "s/VHOST_NAME/${ESCAPE_VHOST_NAME}/g" \
-      -e "s/VHOST_ROOT_DIR/${ESCAPE_VHOST_NAME}/g" \
-      -e "s/VHOST_LOG_DIR/${ESCAPE_VHOST_NAME}/g" \
+      -e "s/VHOST_NAME/${ESCAPE_VHOST_NAME}/" \
+      -e "s/VHOST_ROOT_DIR/${ESCAPE_VHOST_NAME}/" \
+      -e "s/VHOST_LOG_DIR/${ESCAPE_VHOST_NAME}/" \
       "${f_443}"
 
   fi

@@ -3,6 +3,7 @@
 # 0.0.37
 1. fixed: Fixed an issue where users were denied access.
 2. fixed: Fixed sed syntax error when installing WordPress.
+3. removed: Removed unnecessary parameters.
 
 # 0.0.36
 1. added: OS version detection was added.

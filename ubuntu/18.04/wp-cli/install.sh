@@ -23,7 +23,7 @@ PKGNAME="$(basename "$(dirname $0)")"
 FILENAME="$(basename $0)"
 
 # Set directory path.
-ABSROOT="${1#*=}"
+ABSROOT="$(cd "$(dirname "")" && pwd)"
 ABSENV="${ABSROOT}/env"
 ABSOS="${ABSROOT}/${OSPATH}"
 ABSPKG="${ABSOS}/${PKGNAME}"
