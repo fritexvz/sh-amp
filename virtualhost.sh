@@ -94,9 +94,9 @@ if [ -z "${FILENAME}" ]; then
 fi
 
 # Set up a package list.
-FILEPATH="${OS_ID}/${OS_VERSION_ID}/${PACKAGE_ID}/${FILENAME}"
-if [ -f "${FILEPATH}" ]; then
-  bash "${FILEPATH}" --ABSROOT="$(cd "$(dirname "")" && pwd)"
+FILEPATH="/${OS_ID}/${OS_VERSION_ID}/${PACKAGE_ID}/${FILENAME}"
+if [ -f ".${FILEPATH}" ]; then
+  bash ".${FILEPATH}" --ABSROOT="$(cd "$(dirname "")" && pwd)"
 else
   echo "There is no ${PACKAGE_ID} ${FILENAME%%.*} file."
 fi

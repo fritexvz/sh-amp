@@ -56,9 +56,9 @@ apt update
 PACKAGES=('apache2' 'sendmail' 'ufw' 'fail2ban' 'vsftpd' 'mariadb' 'php' 'wp-cli')
 FILENAME="$(basename $0)"
 for ((i=0; i<${#PACKAGES[@]}; i++)); do
-  FILEPATH="${OS_ID}/${OS_VERSION_ID}/${PACKAGES[$i]}/${FILENAME}"
-  if [ -f "${FILEPATH}" ]; then
-    bash "${FILEPATH}" --ABSROOT="$(cd "$(dirname "")" && pwd)"
+  FILEPATH="/${OS_ID}/${OS_VERSION_ID}/${PACKAGES[$i]}/${FILENAME}"
+  if [ -f ".${FILEPATH}" ]; then
+    bash ".${FILEPATH}" --ABSROOT="$(cd "$(dirname "")" && pwd)"
   else
     echo "There is no ${PACKAGES[$i]} ${FILENAME%%.*} file."
   fi

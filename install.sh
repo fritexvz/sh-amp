@@ -58,21 +58,25 @@ ABSPATH="$(cd "$(dirname "")" && pwd)"
 OSFILE="/${OS_ID}/${OS_VERSION_ID}/etc/os.sh"
 if [ -f ".${OSFILE}" ]; then
   bash ".${OSFILE}"
+else
+  echo "There is no $(basename ${OSFILE})."
 fi
 
 # host name
 HOSTFILE="/${OS_ID}/${OS_VERSION_ID}/etc/hosts.sh"
 if [ -f ".${HOSTFILE}" ]; then
   bash ".${HOSTFILE}" --ABSROOT="${ABSPATH}"
+else
+  echo "There is no $(basename ${HOSTFILE})."
 fi
 
 # Run the package installation.
 PACKAGES=('apache2' 'sendmail' 'ufw' 'fail2ban' 'vsftpd' 'mariadb' 'php' 'laravel' 'wp-cli')
 FILENAME="$(basename $0)"
 for ((i=0; i<${#PACKAGES[@]}; i++)); do
-  FILEPATH="${OS_ID}/${OS_VERSION_ID}/${PACKAGES[$i]}/${FILENAME}"
-  if [ -f "${FILEPATH}" ]; then
-    bash "${FILEPATH}" --ABSROOT="${ABSPATH}"
+  FILEPATH="/${OS_ID}/${OS_VERSION_ID}/${PACKAGES[$i]}/${FILENAME}"
+  if [ -f ".${FILEPATH}" ]; then
+    bash ".${FILEPATH}" --ABSROOT="${ABSPATH}"
   else
     echo "There is no ${PACKAGES[$i]} ${FILENAME%%.*} file."
   fi
