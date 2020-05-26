@@ -1,5 +1,12 @@
 # Amp Stack   
 
+# 0.0.40
+1. moved: The virtual host configuration has been moved to the sh-virtualhost repository.
+2. updated: Module-specific wizard commands have been integrated.
+3. changed: etc directory changed to host and os.
+4. updated: The README.md file has been updated.
+5. updated: Script execution method changed from selection to parameter.
+
 # 0.0.38
 1. added: A virtual host alias option was added.
 2. fixed: Added WordPress initial settings.
@@ -137,7 +144,7 @@
 9. added: The amp-boot.sh file was added.
 10. modified: The comment has been modified.
 
-# 0.0.2
+# 0.0.20
 1. Minor version (0.0.1x) tags have been removed from version 0.0.2.
 
 # 0.0.18

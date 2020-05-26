@@ -51,10 +51,22 @@ else
   exit 0
 fi
 
-# Run the package installation.
-PACKAGES=('apache2' 'sendmail' 'fail2ban' 'vsftpd' 'mariadb' 'php')
+echo
+echo "Start setting up Amp Stack configuration."
+
+# Set the arguments.
 FILENAME="$(basename $0)"
-for ((i=0; i<${#PACKAGES[@]}; i++)); do
+PACKAGES=()
+if [ "${#@}" -gt "0" ]; then
+  for arg in "${@}"; do
+    PACKAGES+=("$arg")
+  done
+else
+  PACKAGES=('apache2' 'sendmail' 'fail2ban' 'vsftpd' 'mariadb' 'php')
+fi
+
+# Run the script.
+for ((i = 0; i < ${#PACKAGES[@]}; i++)); do
   FILEPATH="${OS_ID}/${OS_VERSION_ID}/${PACKAGES[$i]}/${FILENAME}"
   if [ -f "${FILEPATH}" ]; then
     bash "${FILEPATH}"
@@ -62,3 +74,6 @@ for ((i=0; i<${#PACKAGES[@]}; i++)); do
     echo "There is no ${PACKAGES[$i]} ${FILENAME%%.*} file."
   fi
 done
+
+echo
+echo "Amp Stack configuration is complete."

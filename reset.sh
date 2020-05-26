@@ -51,74 +51,29 @@ else
   exit 0
 fi
 
-PACKAGE_ID=""
+echo
+echo "Reset the Amp Stack configuration."
 
-# Set the arguments of the file.
-for arg in "${@}"; do
-  case "${arg}" in
-  --*)
-    PACKAGE_ID="${arg//--/}"
-    ;;
-  esac
+# Set the arguments.
+FILENAME="$(basename $0)"
+PACKAGES=()
+if [ "${#@}" -gt "0" ]; then
+  for arg in "${@}"; do
+    PACKAGES+=("$arg")
+  done
+else
+  PACKAGES=('apache2' 'ufw' 'sendmail' 'fail2ban' 'vsftpd' 'mariadb' 'php')
+fi
+
+# Run the script.
+for ((i = 0; i < ${#PACKAGES[@]}; i++)); do
+  FILEPATH="${OS_ID}/${OS_VERSION_ID}/${PACKAGES[$i]}/${FILENAME}"
+  if [ -f "${FILEPATH}" ]; then
+    bash "${FILEPATH}"
+  else
+    echo "There is no ${PACKAGES[$i]} ${FILENAME%%.*} file."
+  fi
 done
 
-# Set up a package list.
-if [ -z "${PACKAGE_ID}" ]; then
-  PACKAGES=(
-    "apache2"
-    "fail2ban"
-    "mariadb"
-    "php"
-    "sendmail"
-    "ufw"
-    "vsftpd"
-    "quit"
-  )
-  echo
-  IFS=$'\n'
-  PS3="Please select one of the options. (1-${#PACKAGES[@]}): "
-  select PACKAGE in ${PACKAGES[@]}; do
-    case "${PACKAGE}" in
-    "${PACKAGES[0]}")
-      PACKAGE_ID="${PACKAGES[0]}"
-      break
-      ;;
-    "${PACKAGES[1]}")
-      PACKAGE_ID="${PACKAGES[1]}"
-      break
-      ;;
-    "${PACKAGES[2]}")
-      PACKAGE_ID="${PACKAGES[2]}"
-      break
-      ;;
-    "${PACKAGES[3]}")
-      PACKAGE_ID="${PACKAGES[3]}"
-      break
-      ;;
-    "${PACKAGES[4]}")
-      PACKAGE_ID="${PACKAGES[4]}"
-      break
-      ;;
-    "${PACKAGES[5]}")
-      PACKAGE_ID="${PACKAGES[5]}"
-      break
-      ;;
-    "${PACKAGES[6]}")
-      PACKAGE_ID="${PACKAGES[6]}"
-      break
-      ;;
-    "${PACKAGES[7]}")
-      exit 0
-      ;;
-    esac
-  done
-fi
-
-# Run the command wizard.
-FILENAME="$(basename $0)"
-FILEPATH="${OS_ID}/${OS_VERSION_ID}/${PACKAGE_ID}/${FILENAME}"
-if [ -f "${FILEPATH}" ]; then
-  bash "${FILEPATH}"
-else
-  echo "There is no ${PACKAGE_ID} ${FILENAME%%.*} file."
-fi
+echo
+echo "The Amp Stack configuration has been reset."

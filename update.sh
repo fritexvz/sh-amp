@@ -25,6 +25,9 @@ if ! hash git 2>/dev/null; then
   exit 0
 fi
 
+echo
+echo "The Amp Stack package begins to update."
+
 cp env{,.bak}
 
 # Update the latest release version.
@@ -35,3 +38,6 @@ cp env.bak env
 
 # Recursive chmod to make all .sh files in the directory executable.
 find ./ -type f -name "*.sh" -exec chmod +x {} +
+
+echo
+echo "The Amp Stack package has been completely updated."

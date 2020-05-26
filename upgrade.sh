@@ -51,13 +51,25 @@ else
   exit 0
 fi
 
+echo
+echo "The Amp Stack package begins to upgrade."
+
 # Update OS to the latest before upgrading.
 apt update
 
-# Run the package upgrade.
-PACKAGES=('apache2' 'sendmail' 'ufw' 'fail2ban' 'vsftpd' 'mariadb' 'php' 'npm' 'wp-cli')
+# Set the arguments.
 FILENAME="$(basename $0)"
-for ((i=0; i<${#PACKAGES[@]}; i++)); do
+PACKAGES=()
+if [ "${#@}" -gt "0" ]; then
+  for arg in "${@}"; do
+    PACKAGES+=("$arg")
+  done
+else
+  PACKAGES=('apache2' 'ufw' 'sendmail' 'fail2ban' 'vsftpd' 'mariadb' 'php' 'npm' 'wp-cli')
+fi
+
+# Run the script.
+for ((i = 0; i < ${#PACKAGES[@]}; i++)); do
   FILEPATH="${OS_ID}/${OS_VERSION_ID}/${PACKAGES[$i]}/${FILENAME}"
   if [ -f "${FILEPATH}" ]; then
     bash "${FILEPATH}"
@@ -68,3 +80,6 @@ done
 
 # Removing unused dependencies
 apt -y autoremove
+
+echo
+echo "The Amp Stack package has been completely upgraded."
