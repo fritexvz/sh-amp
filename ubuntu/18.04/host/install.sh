@@ -6,8 +6,8 @@
 # Usage
 # git clone https://github.com/w3src/sh-amp.git
 # cd sh-amp
-# chmod +x ./ubuntu/18.04/etc/hosts.sh
-# ./ubuntu/18.04/etc/hosts.sh
+# chmod +x ./ubuntu/18.04/host/install.sh
+# ./ubuntu/18.04/host/install.sh
 
 # Work even if somebody does "sh thisscript.sh".
 set -e
