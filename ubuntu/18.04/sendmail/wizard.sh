@@ -6,8 +6,8 @@
 # Usage
 # git clone https://github.com/w3src/sh-amp.git
 # cd sh-amp
-# chmod +x ./ubuntu/18.04/apache2/wizard.sh
-# ./ubuntu/18.04/apache2/wizard.sh
+# chmod +x ./ubuntu/18.04/sendmail/wizard.sh
+# ./ubuntu/18.04/sendmail/wizard.sh
 
 # Work even if somebody does "sh thisscript.sh".
 set -e
@@ -53,31 +53,31 @@ PS3="Please select one of the options. (1-${#COMMANDS[@]}): "
 select COMMAND in ${COMMANDS[@]}; do
   case "${COMMAND}" in
   "${COMMANDS[0]}")
-    systemctl status apache2
+    systemctl status sendmail
     echo "${PKGNAME^} state loaded."
     ;;
   "${COMMANDS[1]}")
-    systemctl start apache2
+    systemctl start sendmail
     echo "${PKGNAME^} started."
     ;;
   "${COMMANDS[2]}")
-    systemctl stop apache2
+    systemctl stop sendmail
     echo "${PKGNAME^} has stopped."
     ;;
   "${COMMANDS[3]}")
-    systemctl reload apache2
+    systemctl reload sendmail
     echo "${PKGNAME^} was refreshed."
     ;;
   "${COMMANDS[4]}")
-    systemctl restart apache2
+    systemctl restart sendmail
     echo "${PKGNAME^} restarted."
     ;;
   "${COMMANDS[5]}")
-    systemctl enable apache2
+    systemctl enable sendmail
     echo "${PKGNAME^} is enabled."
     ;;
   "${COMMANDS[6]}")
-    systemctl disable apache2
+    systemctl disable sendmail
     echo "${PKGNAME^} is disabled."
     ;;
   "${COMMANDS[7]}")

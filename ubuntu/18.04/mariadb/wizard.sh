@@ -47,7 +47,6 @@ COMMANDS=(
   "disable"
   "quit"
 )
-
 echo
 IFS=$'\n'
 PS3="Please select one of the options. (1-${#COMMANDS[@]}): "

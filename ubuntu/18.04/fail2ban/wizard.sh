@@ -38,72 +38,49 @@ echo "Start the ${PKGNAME} wizard."
 
 # Run the command wizard.
 COMMANDS=(
-  "restart"
   "status"
-  "unbanip"
-  "destemail"
-  "sender"
-  "log"
+  "start"
+  "stop"
+  "reload"
+  "restart"
+  "enable"
+  "disable"
   "quit"
 )
-
 echo
 IFS=$'\n'
 PS3="Please select one of the options. (1-${#COMMANDS[@]}): "
 select COMMAND in ${COMMANDS[@]}; do
   case "${COMMAND}" in
   "${COMMANDS[0]}")
-    # "restart"
-    service fail2ban restart
-    echo "${PKGNAME^} restarted."
-    ;;
-  "${COMMANDS[1]}")
-    # "status"
-    fail2ban-client status sshd
+    systemctl status fail2ban
     echo "${PKGNAME^} state loaded."
     ;;
+  "${COMMANDS[1]}")
+    systemctl start fail2ban
+    echo "${PKGNAME^} started."
+    ;;
   "${COMMANDS[2]}")
-    # "unbanip"
-    banip=""
-    while [ -z "$banip" ]; do
-      read -p "Unban IP : " banip
-      if [ -z "$(iptables -L INPUT -v -n | grep "$banip")" ]; then
-        echo "$banip is not blocked."
-        banip=""
-      fi
-    done
-    fail2ban-client set sshd unbanip "$banip"
-    echo "IP unlocked."
+    systemctl stop fail2ban
+    echo "${PKGNAME^} has stopped."
     ;;
   "${COMMANDS[3]}")
-    # "destemail"
-    echo "$(cat /etc/fail2ban/jail.local | egrep "destemail\s{0,}=")"
-    DESTEMAIL="$(msg -ync -c 'destemail = ')"
-    if [ ! -z "${DESTEMAIL}" ]; then
-      sed -i -E \
-        -e "/\[DEFAULT\]/,/\[.*\]/{ s/^[#\t ]{0,}(destemail\s{0,}=)/\1 ${DESTEMAIL}/; }" \
-        /etc/fail2ban/jail.local
-    fi
-    echo "Destmail has been changed."
+    systemctl reload fail2ban
+    echo "${PKGNAME^} was refreshed."
     ;;
   "${COMMANDS[4]}")
-    # "sender"
-    echo "$(cat /etc/fail2ban/jail.local | egrep "sender\s{0,}=")"
-    SENDMAIL="$(msg -ync -c 'sender = ')"
-    if [ ! -z "${SENDMAIL}" ]; then
-      sed -i -E \
-        -e "/\[DEFAULT\]/,/\[.*\]/{ s/^[#\t ]{0,}(sender\s{0,}=)/\1 ${SENDMAIL}/; }" \
-        /etc/fail2ban/jail.local
-    fi
-    echo "Sender has been changed."
+    systemctl restart fail2ban
+    echo "${PKGNAME^} restarted."
     ;;
   "${COMMANDS[5]}")
-    # "log"
-    tail -f /var/log/fail2ban.log
-    echo "The log is loaded."
+    systemctl enable fail2ban
+    echo "${PKGNAME^} is enabled."
     ;;
   "${COMMANDS[6]}")
-    # "quit"
+    systemctl disable fail2ban
+    echo "${PKGNAME^} is disabled."
+    ;;
+  "${COMMANDS[7]}")
     exit 0
     ;;
   esac
