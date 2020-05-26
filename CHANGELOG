@@ -6,6 +6,7 @@
 3. changed: etc directory changed to host and os.
 4. updated: The README.md file has been updated.
 5. updated: Script execution method changed from selection to parameter.
+6. removed: Minor version (0.0.3x) tags have been removed.
 
 # 0.0.38
 1. added: A virtual host alias option was added.
@@ -145,7 +146,7 @@
 10. modified: The comment has been modified.
 
 # 0.0.20
-1. Minor version (0.0.1x) tags have been removed from version 0.0.2.
+1. Minor version (0.0.1x) tags have been removed.
 
 # 0.0.18
 1. changed: The user home directory permission has been changed.
