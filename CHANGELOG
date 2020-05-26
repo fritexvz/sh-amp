@@ -1,6 +1,9 @@
 # Amp Stack   
 
-# 0.0.40
+# 0.0.41
+1. fixed: A typo in README.md has been fixed.
+
+# 0.0.4
 1. moved: The virtual host configuration has been moved to the sh-virtualhost repository.
 2. updated: Module-specific wizard commands have been integrated.
 3. changed: etc directory changed to host and os.
@@ -145,7 +148,7 @@
 9. added: The amp-boot.sh file was added.
 10. modified: The comment has been modified.
 
-# 0.0.20
+# 0.0.2
 1. Minor version (0.0.1x) tags have been removed.
 
 # 0.0.18

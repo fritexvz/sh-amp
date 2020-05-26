@@ -227,7 +227,7 @@ DirectoryIndex index.php index.html index.cgi index.pl index.xhtml index.htm
 </FilesMatch>
 ```
 
-/etc/php/${PHP_VERSION}/apache2/php.ini   
+/etc/php/\<PHP_VERSION\>/apache2/php.ini   
 ```
 [PHP]
 
