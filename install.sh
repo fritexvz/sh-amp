@@ -60,9 +60,17 @@ echo "Start installing Amp Stack installaion."
 # Set the arguments.
 FILENAME="$(basename $0)"
 PACKAGES=()
+PARAMS=()
 if [ "${#@}" -gt "0" ]; then
   for arg in "${@}"; do
-    PACKAGES+=("$arg")
+    case $arg in
+    -*)
+      PARAMS+=("$arg")
+      ;;
+    *)
+      PACKAGES+=("$arg")
+      ;;
+    esac
   done
 else
   PACKAGES=('os' 'host' 'apache2' 'ufw' 'sendmail' 'fail2ban' 'vsftpd' 'mariadb' 'php' 'npm' 'laravel' 'wp-cli')
@@ -72,7 +80,11 @@ fi
 for ((i = 0; i < ${#PACKAGES[@]}; i++)); do
   FILEPATH="${OS_ID}/${OS_VERSION_ID}/${PACKAGES[$i]}/${FILENAME}"
   if [ -f "${FILEPATH}" ]; then
-    bash "${FILEPATH}"
+    if [ -z "${PARAMS}" ]; then
+      bash "${FILEPATH}"
+    else
+      bash "${FILEPATH}" "${PARAMS[@]}"
+    fi
   else
     echo "There is no ${PACKAGES[$i]} ${FILENAME%%.*} file."
   fi
