@@ -70,7 +70,7 @@ if [ "${#@}" -gt "0" ]; then
     esac
   done
 else
-  PACKAGES=('apache2' 'sendmail' 'fail2ban' 'vsftpd' 'mariadb' 'php')
+  PACKAGES=('host' 'apache2' 'sendmail' 'fail2ban' 'vsftpd' 'mariadb' 'php')
 fi
 
 # Run the script.
