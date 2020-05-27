@@ -1,5 +1,8 @@
 # Amp Stack   
 
+# 0.0.42
+1. removed: Removed unnecessary directory.
+
 # 0.0.41
 1. fixed: A typo in README.md has been fixed.
 2. added: Added parameter passing when running the sub script.
