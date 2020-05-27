@@ -147,7 +147,7 @@ FTPONLYSCRIPT
 
 fi
 
-# Restart the service.
+# Restarting the service.
 systemctl restart vsftpd
 
 echo

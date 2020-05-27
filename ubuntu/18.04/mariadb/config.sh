@@ -55,8 +55,9 @@ cat >/etc/my.cnf <<MYCNFSCRIPT
 $(cat "${ABSPKG}/tmpl/my.cnf")
 MYCNFSCRIPT
 
-# Restart the package.
-systemctl restart mariadb
+# Reloading the package.
+systemctl reload mariadb
+systemctl reload apache2
 
 echo
 echo "${PKGNAME^} configuration is complete."
