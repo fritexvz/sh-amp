@@ -35,7 +35,7 @@ echo "Start installing ${PKGNAME}."
 
 # Make sure the package is installed.
 if [ ! -z "$(is${PKGNAME^})" ]; then
-  CONFIRM_MESSAGE="$(msg -yn "The ${PKGNAME} package is already installed. Would you like to reinstall?")"
+  CONFIRM_MESSAGE="$(msg -yn "The ${PKGNAME} package is already installed. Would you like to reinstall? ")"
   if [ CONFIRM_MESSAGE == "No" ]; then
     exit 0
   fi
