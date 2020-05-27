@@ -52,7 +52,7 @@ Summary of commands for each package.
 | package  | install | config | update | upgrade | reset | uninstall | wizard |
 |----------|---------|--------|--------|---------|-------|-----------|--------|
 | os       | o       | -      | -      | o       | -     | -         | -      |
-| host     | o       | -      | -      | -       | -     | -         | -      |
+| host     | o       | o      | -      | -       | -     | -         | -      |
 | apache2  | o       | o      | -      | o       | o     | o         | o      |
 | ufw      | o       | o      | -      | o       | o     | o         | -      |
 | sendmail | o       | o      | -      | o       | o     | o         | o      |
@@ -105,8 +105,16 @@ $ ./config.sh apache2 sendmail fail2ban vsftpd mariadb php
 ```
 
 If you don't want the default configuration, you can use your own configuration file.   
+This option copies all files in the amp stack package's etc directory with the path,   
+unless the file name starts with _.   
 ```
-# ./config.sh --my <package-name>
+# ./config.sh --my <package-name> <package-name> <package-name>
+```
+
+Example:   
+```
+# vi ./ubuntu/18.04/apache2/etc/conf-available/charset.conf
+# ./config.sh --my apache2
 ```
 
 ### Update   
