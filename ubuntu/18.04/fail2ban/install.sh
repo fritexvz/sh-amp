@@ -46,17 +46,12 @@ apt -y install fail2ban whois
 # Start the package and set it to start on boot.
 pkgOnBoot "fail2ban"
 
-# Create a blank file.
-if [ ! -f /etc/fail2ban/jail.local ]; then
-  echo "" >/etc/fail2ban/jail.local
-fi
-
-# Create a backup file.
-cp -v /etc/fail2ban/jail.conf{,.bak}
-cp -v /etc/fail2ban/jail.local{,.bak}
+# Create backup and configuration files.
+addPkgCnf "/etc/fail2ban/jail.conf"
+addPkgCnf "/etc/fail2ban/jail.local"
 
 # Add a variable to the env file.
-addPkgCnf -rs="\[FAIL2BAN\]" -fs="=" -o="<<HERE
+setPkgCnf -rs="\[FAIL2BAN\]" -fs="=" -o="<<HERE
 FAIL2BAN_VERSION = $(getFail2banVer)
 <<HERE"
 

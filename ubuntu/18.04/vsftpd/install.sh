@@ -46,22 +46,14 @@ apt -y install vsftpd
 # Start the package and set it to start on boot.
 pkgOnBoot "vsftpd"
 
-# Create a blank file.
-if [ ! -f /etc/vsftpd.user_list ]; then
-  echo "" >/etc/vsftpd.user_list
-fi
-if [ ! -f /etc/vsftpd.chroot_list ]; then
-  echo "" >/etc/vsftpd.chroot_list
-fi
-
-# Create a backup file.
-cp -v /etc/vsftpd.conf{,.bak}
-cp -v /etc/ftpusers{,.bak}
-cp -v /etc/vsftpd.user_list{,.bak}
-cp -v /etc/vsftpd.chroot_list{,.bak}
+# Create backup and configuration files.
+addPkgCnf "/etc/vsftpd.conf"
+addPkgCnf "/etc/ftpusers"
+addPkgCnf "/etc/vsftpd.user_list"
+addPkgCnf "/etc/vsftpd.chroot_list"
 
 # Add a variable to the env file.
-addPkgCnf -rs="\[VSFTPD\]" -fs="=" -o="<<HERE
+setPkgCnf -rs="\[VSFTPD\]" -fs="=" -o="<<HERE
 VSFTPD_VERSION = $(getVsftpdVer)
 <<HERE"
 

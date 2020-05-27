@@ -49,11 +49,11 @@ pkgOnBoot "sendmail"
 # Reloading the service.
 systemctl reload apache2
 
-# Create a backup file.
-cp -v /etc/mail/local-host-names{,.bak}
+# Create backup and configuration files.
+addPkgCnf "/etc/mail/local-host-names"
 
 # Add a variable to the env file.
-addPkgCnf -rs="\[SENDMAIL\]" -fs="=" -o="<<HERE
+setPkgCnf -rs="\[SENDMAIL\]" -fs="=" -o="<<HERE
 SENDMAIL_VERSION = $(getSendmailVer)
 <<HERE"
 

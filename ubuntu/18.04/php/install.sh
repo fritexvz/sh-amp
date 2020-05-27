@@ -64,13 +64,13 @@ systemctl reload apache2
 # Import variables from the env file.
 PHP_VERSION="$(getPhpVer)"
 
-# Create a backup file.
-cp -v "/etc/apache2/mods-available/dir.conf"{,.bak}
-cp -v "/etc/apache2/mods-available/php${PHP_VERSION}.conf"{,.bak}
-cp -v "/etc/php/${PHP_VERSION}/apache2/php.ini"{,.bak}
+# Create backup and configuration files.
+addPkgCnf "/etc/apache2/mods-available/dir.conf"
+addPkgCnf "/etc/apache2/mods-available/php${PHP_VERSION}.conf"
+addPkgCnf "/etc/php/${PHP_VERSION}/apache2/php.ini"
 
 # Add a variable to the env file.
-addPkgCnf -rs="\[PHP\]" -fs="=" -o="<<HERE
+setPkgCnf -rs="\[PHP\]" -fs="=" -o="<<HERE
 PHP_VERSION = ${PHP_VERSION}
 <<HERE"
 

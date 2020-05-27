@@ -52,17 +52,11 @@ pkgOnBoot "mariadb"
 # Reloading the service.
 systemctl reload apache2
 
-# Create a blank file.
-if [ ! -f /etc/my.cnf ]; then
-  echo "" >/etc/my.cnf
-fi
-
-# Create a backup file.
-cp -v /etc/mysql/mariadb.conf.d/50-server.cnf{,.bak}
-cp -v /etc/my.cnf{,.bak}
+# Create backup and configuration files.
+addPkgCnf "/etc/my.cnf"
 
 # Add a variable to the env file.
-addPkgCnf -rs="\[MARIADB\]" -fs="=" -o="<<HERE
+setPkgCnf -rs="\[MARIADB\]" -fs="=" -o="<<HERE
 MARIADB_VERSION = $(getMariadbVer)
 <<HERE"
 

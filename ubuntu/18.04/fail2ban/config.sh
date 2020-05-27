@@ -36,25 +36,29 @@ pkgAudit "${PKGNAME}"
 echo
 echo "Start setting up ${PKGNAME} configuration."
 
-# Import variables from the env file.
-PUBLIC_IP="$(getPkgCnf -rs="\[HOSTS\]" -fs="=" -s="PUBLIC_IP")"
+# Set the arguments.
+for arg in "${@}"; do
+  case $arg in
+  --my)
+    IFS=$'\n'
+    for i in $(find "${ABSPKG}/etc" -type f -name "[^_]*"); do
+      cp "$i" "$(echo "$i" | sed "s/${ABSPKG//\//\\/}//")"
+    done
+    echo "${PKGNAME^} configuration is complete."
+    exit 0
+    ;;
+  esac
+done
 
-f_jail="/etc/fail2ban/jail.local"
-
-if [ -f ".${f_jail}" ]; then
-  cp -v ".${f_jail}" "${f_jail}"
-else
-
-  cat >"${f_jail}" <<FAIL2BANSCRIPT
+# Edit the string using here document.
+cat >/etc/fail2ban/jail.local <<FAIL2BANSCRIPT
 $(cat "${ABSPKG}/tmpl/jail.local")
 FAIL2BANSCRIPT
 
-  # Public IP are added to the whitelist
-  addPkgCnf -f="${f_jail}" -rs="\[DEFAULT\]" -fs="=" -o="<<HERE
-ignoreip = 127.0.0.1/8 127.0.1.1 ${PUBLIC_IP}
+# Public IP are added to the whitelist
+setPkgCnf -f="/etc/fail2ban/jail.local" -rs="\[DEFAULT\]" -fs="=" -o="<<HERE
+ignoreip = 127.0.0.1/8 127.0.1.1 $(getPkgCnf -rs="\[HOSTS\]" -fs="=" -s="PUBLIC_IP")
 <<HERE"
-
-fi
 
 # Restart the package.
 service fail2ban restart

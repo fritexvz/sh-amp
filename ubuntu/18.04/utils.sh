@@ -248,3 +248,18 @@ function openssl_encrypt() {
 function openssl_decrypt() {
   echo "$1" | openssl base64 -d
 }
+
+# Create a directory if it does not exist.
+function addDir() {
+  if [ ! -d "$1" ]; then
+    mkdir -p "$1"
+  fi
+}
+
+# Create the file if it does not exist.
+function addFile() {
+  if [ ! -f "$1" ]; then
+    addDir "$(dirname "$1")"
+    echo "$2" > "$1"
+  fi
+}

@@ -17,6 +17,20 @@ pop3: 110/tcp, 995/tcp
 imap: 143/tcp, 993/tcp
 ```
 
+## Structure   
+```
+o
+|-- os/
+|   |-- os_version/
+|   |   `-- package/
+|   |       |-- etc/
+|   |       |-- tmp/
+|   |       `-- tmpl/
+|   |-- functions.sh
+|   `-- utils.sh
+`-- env
+```
+
 ## Download   
 ```
 $ sudo su
@@ -88,6 +102,11 @@ The basic configuration of the package has been set.
 $ ./config.sh
 or
 $ ./config.sh apache2 sendmail fail2ban vsftpd mariadb php
+```
+
+If you don't want the default configuration, you can use your own configuration file.   
+```
+# ./config.sh --my <package-name>
 ```
 
 ### Update   

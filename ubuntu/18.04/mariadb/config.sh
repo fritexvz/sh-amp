@@ -36,14 +36,24 @@ pkgAudit "${PKGNAME}"
 echo
 echo "Start setting up ${PKGNAME} configuration."
 
-f_my="/etc/my.cnf"
-if [ -f ".${f_my}" ]; then
-  cp -v ".${f_my}" "${f_my}"
-else
-  cat >"${f_my}" <<MYCNFSCRIPT
+# Set the arguments.
+for arg in "${@}"; do
+  case $arg in
+  --my)
+    IFS=$'\n'
+    for i in $(find "${ABSPKG}/etc" -type f -name "[^_]*"); do
+      cp "$i" "$(echo "$i" | sed "s/${ABSPKG//\//\\/}//")"
+    done
+    echo "${PKGNAME^} configuration is complete."
+    exit 0
+    ;;
+  esac
+done
+
+# Edit the string using here document.
+cat >/etc/my.cnf <<MYCNFSCRIPT
 $(cat "${ABSPKG}/tmpl/my.cnf")
 MYCNFSCRIPT
-fi
 
 # Restart the package.
 systemctl restart mariadb

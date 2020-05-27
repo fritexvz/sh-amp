@@ -122,11 +122,11 @@ function getPkgCnf() {
 
 }
 
-# Edit the multiline string using here document.
-#addPkgCnf -rs="\[PHP\]" -fs="=" -o="<<HERE
+# Edit the string using here document.
+#setPkgCnf -rs="\[PHP\]" -fs="=" -o="<<HERE
 #...
 #<<HERE"
-function addPkgCnf() {
+function setPkgCnf() {
 
   local FILE="${ABSENV}"
   local BEGIN_RECORD_SEPERATOR=""
@@ -283,6 +283,14 @@ function addPkgCnf() {
 
 }
 
+# Create backup and configuration files.
+function addPkgCnf() {
+  addDir "$(dirname "${ABSPKG}$1")"
+  addFile "$1"
+  cp -v "$1"{,.bak}
+  cp -v "$1" "${ABSPKG}$1"
+}
+
 # Remove the package completely.
 function delPkg() {
 
@@ -297,7 +305,7 @@ function delPkg() {
   fi
 
   # Delete the variable from the env file.
-  addPkgCnf -rs="\[${1^^}\]" -fs="=" -o="<<HERE
+  setPkgCnf -rs="\[${1^^}\]" -fs="=" -o="<<HERE
 ${1^^}_VERSION = 
 <<HERE"
 
@@ -353,7 +361,7 @@ function addPubIPs() {
     fi
   fi
 
-  addPkgCnf -rs="\[HOSTS\]" -fs="=" -o="<<HERE
+  setPkgCnf -rs="\[HOSTS\]" -fs="=" -o="<<HERE
 PUBLIC_IP = ${ip}
 <<HERE"
 }

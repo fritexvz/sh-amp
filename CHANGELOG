@@ -2,6 +2,10 @@
 
 # 0.0.41
 1. fixed: A typo in README.md has been fixed.
+2. added: Added parameter passing when running the sub script.
+3. changed: The directory structure has been changed.
+4. added: A host configuration file has been added.
+5. added: Added --my option to config.sh.
 
 # 0.0.4
 1. moved: The virtual host configuration has been moved to the sh-virtualhost repository.

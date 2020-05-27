@@ -67,16 +67,16 @@ if [ -f /etc/apache2/sites-available/default-ssl.conf ]; then
   cp -v /etc/apache2/sites-available/default-ssl.conf /etc/apache2/sites-available/000-default-ssl.conf
 fi
 
-# Create a backup file.
-cp -v /etc/apache2/conf-available/charset.conf{,.bak}
-cp -v /etc/apache2/conf-available/security.conf{,.bak}
-cp -v /etc/apache2/apache2.conf{,.bak}
-cp -v /etc/apache2/mods-available/mpm_prefork.conf{,.bak}
-cp -v /etc/apache2/sites-available/000-default.conf{,.bak}
-cp -v /etc/apache2/sites-available/000-default-ssl.conf{,.bak}
+# Create backup and configuration files.
+addPkgCnf "/etc/apache2/conf-available/charset.conf"
+addPkgCnf "/etc/apache2/conf-available/security.conf"
+addPkgCnf "/etc/apache2/apache2.conf"
+addPkgCnf "/etc/apache2/mods-available/mpm_prefork.conf"
+addPkgCnf "/etc/apache2/sites-available/000-default.conf"
+addPkgCnf "/etc/apache2/sites-available/000-default-ssl.conf"
 
 # Add a variable to the env file.
-addPkgCnf -rs="\[APACHE2\]" -fs="=" -o="<<HERE
+setPkgCnf -rs="\[APACHE2\]" -fs="=" -o="<<HERE
 APACHE2_VERSION = $(getApache2Ver)
 <<HERE"
 

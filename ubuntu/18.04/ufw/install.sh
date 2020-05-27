@@ -47,7 +47,7 @@ apt -y install ufw
 systemctl reload apache2
 
 # Add a variable to the env file.
-addPkgCnf -rs="\[UFW\]" -fs="=" -o="<<HERE
+setPkgCnf -rs="\[UFW\]" -fs="=" -o="<<HERE
 UFW_VERSION = $(getUfwVer)
 <<HERE"
 

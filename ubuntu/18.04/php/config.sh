@@ -36,6 +36,20 @@ pkgAudit "${PKGNAME}"
 echo
 echo "Start setting up ${PKGNAME} configuration."
 
+# Set the arguments.
+for arg in "${@}"; do
+  case $arg in
+  --my)
+    IFS=$'\n'
+    for i in $(find "${ABSPKG}/etc" -type f -name "[^_]*"); do
+      cp "$i" "$(echo "$i" | sed "s/${ABSPKG//\//\\/}//")"
+    done
+    echo "${PKGNAME^} configuration is complete."
+    exit 0
+    ;;
+  esac
+done
+
 # Import variables from the env file.
 PHP_VERSION="$(getPkgCnf -rs="\[PHP\]" -fs="=" -s="PHP_VERSION")"
 
@@ -44,48 +58,30 @@ SPACE0='[\t ]{0,}'
 SPACE1='[\t ]{1,}'
 
 # Tell the web server to prefer PHP files over others, so make Apache look for an index.php file first.
-f_dir="/etc/apache2/mods-available/dir.conf"
-if [ -f ".${f_dir}" ]; then
-  cp -v ".${f_dir}" "${f_dir}"
-else
-  sed -i -E \
-    -e "/DirectoryIndex\s+/{ 
+sed -i -E \
+  -e "/DirectoryIndex\s+/{ 
       s/${SPACE1}index.php//;
       s/index.html/index.php index.html/;
     }" \
-    "${f_dir}"
-fi
+  "/etc/apache2/mods-available/dir.conf"
 
 # Deny access to files without filename (e.g. '.php')
-f_conf="/etc/apache2/mods-available/php${PHP_VERSION}.conf"
-
-if [ -f ".${f_conf}" ]; then
-  cp -v ".${f_conf}" "${f_conf}"
-else
-  sed -i \
-    -e '/<FilesMatch/{
+sed -i \
+  -e '/<FilesMatch/{
       s/ph(ar|p|tml)/ph(ar|p[3457]?|tml)/;
       s/ph(ar|p|ps|tml)/ph(p[3457]?|t|tml|ps)/;
     }' \
-    "${f_conf}"
-fi
+  "/etc/apache2/mods-available/php${PHP_VERSION}.conf"
 
-# php.ini
-f_ini="/etc/php/${PHP_VERSION}/apache2/php.ini"
-
-if [ -f ".${f_ini}" ]; then
-  cp -v ".${f_ini}" "${f_ini}"
-else
-
-  addPkgCnf -f="${f_ini}" -rs="\[PHP\]" -fs="=" -o="<<HERE
+# Edit the string using here document.
+setPkgCnf -f="/etc/php/${PHP_VERSION}/apache2/php.ini" -rs="\[PHP\]" -fs="=" -o="<<HERE
 $(cat "${ABSPKG}/tmpl/php.ini")
 <<HERE"
 
-  addPkgCnf -f="${f_ini}" -rs="\[Date\]" -fs="=" -o="<<HERE
+# Edit the string using here document.
+setPkgCnf -f="/etc/php/${PHP_VERSION}/apache2/php.ini" -rs="\[Date\]" -fs="=" -o="<<HERE
 date.timezone = $(cat /etc/timezone)
 <<HERE"
-
-fi
 
 # Restarting the service.
 systemctl restart apache2

@@ -36,13 +36,22 @@ pkgAudit "${PKGNAME}"
 echo
 echo "Start setting up ${PKGNAME} configuration."
 
-f_mail="/etc/mail/local-host-names"
+# Set the arguments.
+for arg in "${@}"; do
+  case $arg in
+  --my)
+    IFS=$'\n'
+    for i in $(find "${ABSPKG}/etc" -type f -name "[^_]*"); do
+      cp "$i" "$(echo "$i" | sed "s/${ABSPKG//\//\\/}//")"
+    done
+    echo "${PKGNAME^} configuration is complete."
+    exit 0
+    ;;
+  esac
+done
 
-if [ -f ".${f_mail}" ]; then
-  cp -v ".${f_mail}" "${f_mail}"
-else
-  echo "localhost" >"${f_mail}"
-fi
+# Add localhost to your script.
+echo "localhost" > /etc/mail/local-host-names
 
 # Restart the service.
 systemctl restart sendmail
