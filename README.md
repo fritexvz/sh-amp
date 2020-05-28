@@ -39,14 +39,14 @@ $ cd sh-amp
 $ chmod +x ./*.sh
 ```
 
-## Usage   
+## Syntax   
 ```
 $ ./<command>.sh
 or
 $ ./<command>.sh <package-name> <package-name> <package-name>
 ```
 
-## Commands   
+## Summary   
 Summary of commands for each package.   
 ```
 | package  | install | config | update | upgrade | reset | uninstall | wizard |
@@ -64,6 +64,8 @@ Summary of commands for each package.
 | laravel  | o       | -      | -      | -       | -     | -         | -      |
 | wp-cli   | o       | -      | -      | o       | -     | -         | -      |
 ```
+
+## Usage   
 
 ### Install   
 Package installation.   
@@ -101,7 +103,7 @@ The basic configuration of the package has been set.
 ```
 $ ./config.sh
 or
-$ ./config.sh apache2 sendmail fail2ban vsftpd mariadb php
+$ ./config.sh host apache2 sendmail fail2ban vsftpd mariadb php
 ```
 
 If you don't want the default configuration, you can use your own configuration file.   
