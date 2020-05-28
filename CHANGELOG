@@ -3,6 +3,7 @@
 # 0.0.42
 1. removed: Removed unnecessary directory.
 2. updated: The README.md file has been updated.
+3. fixed: Broken links have been fixed.
 
 # 0.0.41
 1. fixed: A typo in README.md has been fixed.
@@ -16,7 +17,7 @@
 9. updated: A typo has been fixed.
 
 # 0.0.4
-1. moved: The virtual host configuration has been moved to the sh-virtualhost repository.
+1. moved: The virtual host configuration has been moved to the sh-vhost repository.
 2. updated: Module-specific wizard commands have been integrated.
 3. changed: etc directory changed to host and os.
 4. updated: The README.md file has been updated.
