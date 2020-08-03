@@ -31,19 +31,20 @@ o
 `-- env
 ```
 
-## Download   
-```
-$ sudo su
-$ git clone https://github.com/w3src/sh-amp.git
-$ cd sh-amp
-$ chmod +x ./*.sh
-```
-
 ## Syntax   
 ```
 $ ./<command>.sh
 or
 $ ./<command>.sh <package-name> <package-name> <package-name>
+```
+
+## Download and Run the Script
+```
+$ sudo su
+$ git clone https://github.com/w3src/sh-amp.git
+$ cd sh-amp
+$ chmod +x ./*.sh
+$ ./install.sh
 ```
 
 ## Summary   
