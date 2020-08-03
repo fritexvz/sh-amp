@@ -92,3 +92,6 @@ done
 
 echo
 echo "Amp Stack is completely installed."
+
+# Include the file.
+source "copyright.sh"
