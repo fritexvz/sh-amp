@@ -50,13 +50,11 @@ for arg in "${@}"; do
   esac
 done
 
-# Edit the string using here document.
-cat >/etc/my.cnf <<MYCNFSCRIPT
-$(cat "${ABSPKG}/tmpl/my.cnf")
-MYCNFSCRIPT
+# Create a configuration file.
+cp -v "${ABSTMPL}/my.cnf" /etc/my.cnf
 
 # Reloading the package.
-systemctl reload mariadb
+systemctl restart mariadb
 systemctl reload apache2
 
 echo
