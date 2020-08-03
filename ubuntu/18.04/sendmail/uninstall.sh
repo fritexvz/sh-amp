@@ -12,20 +12,25 @@
 # Work even if somebody does "sh thisscript.sh".
 set -e
 
-# Set constants.
-OSPATH="$(dirname "$(dirname $0)")"
-PKGPATH="$(dirname $0)"
-PKGNAME="$(basename "$(dirname $0)")"
+# Set a relative path.
 FILENAME="$(basename $0)"
+PKGPATH="$(dirname $0)"
+PKGNAME="$(basename "${PKGPATH}")"
+OSPATH="$(dirname "${PKGPATH}")"
+LIBPATH="${PKGPATH}/lib"
+TMPLPATH="${PKGPATH}/tmpl"
 
-# Set directory path.
+# Set absolute path.
 ABSROOT="$(cd "$(dirname "")" && pwd)"
 ABSENV="${ABSROOT}/env"
 ABSOS="${ABSROOT}/${OSPATH}"
 ABSPKG="${ABSOS}/${PKGNAME}"
+ABSLIB="${ABSPKG}/lib"
+ABSTMPL="${ABSPKG}/tmpl"
 ABSPATH="${ABSPKG}/${FILENAME}"
 
 # Include the file.
+source "${ABSOS}/constants.sh"
 source "${ABSOS}/utils.sh"
 source "${ABSOS}/functions.sh"
 source "${ABSPKG}/functions.sh"
