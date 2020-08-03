@@ -12,29 +12,8 @@
 # Work even if somebody does "sh thisscript.sh".
 set -e
 
-# Set constants.
-OSPATH="$(dirname "$(dirname $0)")"
-PKGPATH="$(dirname $0)"
-PKGNAME="$(basename "$(dirname $0)")"
-FILENAME="$(basename $0)"
-
-# Set directory path.
-ABSROOT="$(cd "$(dirname "")" && pwd)"
-ABSENV="${ABSROOT}/env"
-ABSOS="${ABSROOT}/${OSPATH}"
-ABSPKG="${ABSOS}/${PKGNAME}"
-ABSPATH="${ABSPKG}/${FILENAME}"
-
-# Include the file.
-source "${ABSOS}/utils.sh"
-source "${ABSOS}/functions.sh"
-source "${ABSPKG}/functions.sh"
-
-# Make sure the package is installed.
-pkgAudit "${PKGNAME}"
-
 echo
-echo "The ${PKGNAME} package begins to upgrade."
+echo "The node package manager package begins to upgrade."
 
 apt -y install --only-upgrade npm
 
@@ -42,4 +21,4 @@ apt -y install --only-upgrade npm
 systemctl reload apache2
 
 echo
-echo "The ${PKGNAME} package has been completely upgraded."
+echo "The node package manager package has been completely upgraded."

@@ -12,26 +12,8 @@
 # Work even if somebody does "sh thisscript.sh".
 set -e
 
-# Set constants.
-OSPATH="$(dirname "$(dirname $0)")"
-PKGPATH="$(dirname $0)"
-PKGNAME="$(basename "$(dirname $0)")"
-FILENAME="$(basename $0)"
-
-# Set directory path.
-ABSROOT="$(cd "$(dirname "")" && pwd)"
-ABSENV="${ABSROOT}/env"
-ABSOS="${ABSROOT}/${OSPATH}"
-ABSPKG="${ABSOS}/${PKGNAME}"
-ABSPATH="${ABSPKG}/${FILENAME}"
-
-# Include the file.
-source "${ABSOS}/utils.sh"
-source "${ABSOS}/functions.sh"
-source "${ABSPKG}/functions.sh"
-
 echo
-echo "Start installing ${PKGNAME^^}."
+echo "Start installing node package manager."
 
 apt -y install npm
 
@@ -39,5 +21,5 @@ apt -y install npm
 systemctl reload apache2
 
 echo
-echo "${PKGNAME^^} is completely installed."
+echo "Node package manager is completely installed."
 
