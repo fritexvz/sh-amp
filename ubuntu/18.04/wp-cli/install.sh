@@ -37,7 +37,6 @@ ABSPATH="${ABSPKG}/${FILENAME}"
 source "${ABSOS}/constants.sh"
 source "${ABSOS}/utils.sh"
 source "${ABSOS}/functions.sh"
-source "${ABSPKG}/functions.sh"
 
 # Make sure the package is installed.
 pkgAudit "php"

@@ -33,7 +33,6 @@ ABSPATH="${ABSPKG}/${FILENAME}"
 source "${ABSOS}/constants.sh"
 source "${ABSOS}/utils.sh"
 source "${ABSOS}/functions.sh"
-source "${ABSPKG}/functions.sh"
 
 echo
 echo "Start installing ${PKGNAME^^}."
